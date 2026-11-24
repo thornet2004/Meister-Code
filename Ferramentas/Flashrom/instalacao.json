@@ -1,0 +1,10 @@
+{
+  "version": "MSYS2 1.8.0",
+  "packages": [
+    {
+      "package": "mingw-w64-ucrt-x86_64-flashrom",
+      "url": "https://mirror.msys2.org/mingw/ucrt64/mingw-w64-ucrt-x86_64-flashrom-1.8.0-1-any.pkg.tar.zst",
+      "sha256": "6645726f46a620f22d6f5cf950f70cd88d0168d3dd26bdf04c7e580377466f4c"
+    }
+  ]
+}

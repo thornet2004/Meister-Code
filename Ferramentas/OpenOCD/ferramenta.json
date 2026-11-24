@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "name": "OpenOCD · JTAG / SWD",
+  "description": "Firmware. Adaptador, driver e configuração do alvo.",
+  "source": "https://github.com/xpack-dev-tools/openocd-xpack",
+  "enabled": true,
+  "approval": "each",
+  "server": {
+    "adapter": "bench",
+    "kind": "OpenOCD"
+  }
+}

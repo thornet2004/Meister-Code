@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "name": "ClassRevive (adaptador da app)",
+  "description": "Adaptador da app para ClassRevive: identificar, inspecionar, diagnosticar e decompilar Java/JAR/APK com quatro motores e relatórios. Trabalhos longos usam job_status. Comportamento continua NOT_VERIFIED.",
+  "package_version": "0.1.0",
+  "source": "https://github.com/t1zzo/classrevive",
+  "enabled": true,
+  "approval": "each",
+  "server": {
+    "adapter": "classrevive",
+    "cwd": "${workspace}"
+  }
+}

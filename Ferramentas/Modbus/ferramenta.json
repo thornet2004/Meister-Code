@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "name": "Modbus RTU / ASCII / TCP",
+  "description": "Protocolos. Interface RS485/RS232 ou endereço TCP.",
+  "source": "https://github.com/pymodbus-dev/pymodbus",
+  "enabled": true,
+  "approval": "each",
+  "server": {
+    "adapter": "bench",
+    "kind": "Modbus"
+  }
+}

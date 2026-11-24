@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "name": "Glasgow",
+  "description": "Hardware avançado. Placa Glasgow e software/driver correspondente.",
+  "source": "https://github.com/GlasgowEmbedded/glasgow",
+  "enabled": true,
+  "approval": "each",
+  "server": {
+    "adapter": "bench",
+    "kind": "Glasgow"
+  }
+}

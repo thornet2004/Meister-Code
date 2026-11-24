@@ -1,0 +1,467 @@
+[
+  {
+    "name": "altgraph",
+    "version": "0.17.5",
+    "license": "MIT",
+    "files": [
+      "altgraph-0.17.5\\LICENSE"
+    ]
+  },
+  {
+    "name": "annotated-types",
+    "version": "0.8.0",
+    "license": "MIT",
+    "files": [
+      "annotated-types-0.8.0\\licenses\\LICENSE"
+    ]
+  },
+  {
+    "name": "anyio",
+    "version": "4.16.0",
+    "license": "MIT",
+    "files": [
+      "anyio-4.16.0\\licenses\\LICENSE"
+    ]
+  },
+  {
+    "name": "attrs",
+    "version": "26.1.0",
+    "license": "MIT",
+    "files": [
+      "attrs-26.1.0\\licenses\\LICENSE"
+    ]
+  },
+  {
+    "name": "bottle",
+    "version": "0.13.4",
+    "license": "MIT",
+    "files": [
+      "bottle-0.13.4\\licenses\\LICENSE"
+    ]
+  },
+  {
+    "name": "certifi",
+    "version": "2026.10.23",
+    "license": "MPL-2.0",
+    "files": [
+      "certifi-2026.10.23\\licenses\\LICENSE"
+    ]
+  },
+  {
+    "name": "cffi",
+    "version": "2.1.1",
+    "license": "MIT-0",
+    "files": [
+      "cffi-2.1.1\\licenses\\LICENSE"
+    ]
+  },
+  {
+    "name": "charset-normalizer",
+    "version": "3.5.2",
+    "license": "MIT",
+    "files": [
+      "charset-normalizer-3.5.2\\licenses\\LICENSE"
+    ]
+  },
+  {
+    "name": "click",
+    "version": "8.5.0",
+    "license": "BSD-3-Clause",
+    "files": [
+      "click-8.5.0\\licenses\\LICENSE.txt"
+    ]
+  },
+  {
+    "name": "clr_loader",
+    "version": "0.3.1",
+    "license": "",
+    "files": [
+      "clr_loader-0.3.1\\licenses\\LICENSE"
+    ]
+  },
+  {
+    "name": "cryptography",
+    "version": "50.0.2",
+    "license": "Apache-2.0 OR BSD-3-Clause",
+    "files": [
+      "cryptography-50.0.2\\licenses\\LICENSE",
+      "cryptography-50.0.2\\licenses\\LICENSE.APACHE",
+      "cryptography-50.0.2\\licenses\\LICENSE.BSD"
+    ]
+  },
+  {
+    "name": "h11",
+    "version": "0.16.0",
+    "license": "MIT",
+    "files": [
+      "h11-0.16.0\\licenses\\LICENSE.txt"
+    ]
+  },
+  {
+    "name": "httpcore",
+    "version": "1.0.9",
+    "license": "BSD-3-Clause",
+    "files": [
+      "httpcore-1.0.9\\licenses\\LICENSE.md"
+    ]
+  },
+  {
+    "name": "httpx",
+    "version": "0.28.1",
+    "license": "BSD-3-Clause",
+    "files": [
+      "httpx-0.28.1\\licenses\\LICENSE.md"
+    ]
+  },
+  {
+    "name": "httpx-sse",
+    "version": "0.4.3",
+    "license": "MIT",
+    "files": [
+      "httpx-sse-0.4.3\\licenses\\LICENSE"
+    ]
+  },
+  {
+    "name": "idna",
+    "version": "3.20",
+    "license": "BSD-3-Clause",
+    "files": [
+      "idna-3.20\\licenses\\LICENSE.md"
+    ]
+  },
+  {
+    "name": "jsonschema",
+    "version": "4.26.0",
+    "license": "MIT",
+    "files": [
+      "jsonschema-4.26.0\\licenses\\COPYING"
+    ]
+  },
+  {
+    "name": "jsonschema-specifications",
+    "version": "2025.9.1",
+    "license": "MIT",
+    "files": [
+      "jsonschema-specifications-2025.9.1\\licenses\\COPYING"
+    ]
+  },
+  {
+    "name": "mcp",
+    "version": "1.30.0",
+    "license": "MIT",
+    "files": [
+      "mcp-1.30.0\\licenses\\LICENSE"
+    ]
+  },
+  {
+    "name": "packaging",
+    "version": "26.3",
+    "license": "Apache-2.0 OR BSD-2-Clause",
+    "files": [
+      "packaging-26.3\\licenses\\LICENSE",
+      "packaging-26.3\\licenses\\LICENSE.APACHE",
+      "packaging-26.3\\licenses\\LICENSE.BSD"
+    ]
+  },
+  {
+    "name": "pefile",
+    "version": "2024.8.26",
+    "license": "MIT",
+    "files": [
+      "pefile-2024.8.26\\LICENSE"
+    ]
+  },
+  {
+    "name": "pycparser",
+    "version": "3.12",
+    "license": "BSD-3-Clause",
+    "files": [
+      "pycparser-3.12\\licenses\\LICENSE"
+    ]
+  },
+  {
+    "name": "pydantic",
+    "version": "2.14.2",
+    "license": "MIT",
+    "files": [
+      "pydantic-2.14.2\\licenses\\LICENSE"
+    ]
+  },
+  {
+    "name": "pydantic_core",
+    "version": "2.50.2",
+    "license": "MIT",
+    "files": [
+      "pydantic_core-2.50.2\\licenses\\LICENSE"
+    ]
+  },
+  {
+    "name": "pydantic-settings",
+    "version": "2.16.2",
+    "license": "MIT",
+    "files": [
+      "pydantic-settings-2.16.2\\licenses\\LICENSE"
+    ]
+  },
+  {
+    "name": "pyinstaller",
+    "version": "6.22.3",
+    "license": "GPLv2-or-later with a special exception which allows to use PyInstaller to build and distribute non-free programs (including commercial ones)",
+    "files": [
+      "pyinstaller-6.22.3\\licenses\\COPYING.txt"
+    ]
+  },
+  {
+    "name": "pyinstaller-hooks-contrib",
+    "version": "2026.9",
+    "license": "",
+    "files": [
+      "pyinstaller-hooks-contrib-2026.9\\licenses\\LICENSE"
+    ]
+  },
+  {
+    "name": "PyJWT",
+    "version": "2.15.1",
+    "license": "MIT",
+    "files": [
+      "PyJWT-2.15.1\\licenses\\AUTHORS.rst",
+      "PyJWT-2.15.1\\licenses\\LICENSE"
+    ]
+  },
+  {
+    "name": "pythonnet",
+    "version": "3.2.1",
+    "license": "MIT",
+    "files": [
+      "pythonnet-3.2.1\\licenses\\AUTHORS.md",
+      "pythonnet-3.2.1\\licenses\\LICENSE"
+    ]
+  },
+  {
+    "name": "python-dotenv",
+    "version": "1.2.4",
+    "license": "BSD-3-Clause",
+    "files": [
+      "python-dotenv-1.2.4\\licenses\\LICENSE"
+    ]
+  },
+  {
+    "name": "python-multipart",
+    "version": "0.0.33",
+    "license": "Apache-2.0",
+    "files": [
+      "python-multipart-0.0.33\\licenses\\LICENSE.txt"
+    ]
+  },
+  {
+    "name": "pywebview",
+    "version": "6.2.1",
+    "license": "BSD 3-Clause License\n\nCopyright (c) 2014-2017, Roman Sirokov\nAll rights reserved.\n\nRedistribution and use in source and binary forms, with or without\nmodification, are permitted provided that the following conditions are met:\n\n* Redistributions of source code must retain the above copyright notice, this\n  list of conditions and the following disclaimer.\n\n* Redistributions in binary form must reproduce the above copyright notice,\n  this list of conditions and the following disclaimer in the documentation\n  and/or other materials provided with the distribution.\n\n* Neither the name of the copyright holder nor the names of its\n  contributors may be used to endorse or promote products derived from\n  this software without specific prior written permission.\n\nTHIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\"\nAND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE\nIMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE\nDISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE\nFOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL\nDAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR\nSERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER\nCAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,\nOR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE\nOF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n",
+    "files": [
+      "pywebview-6.2.1\\licenses\\LICENSE"
+    ]
+  },
+  {
+    "name": "pywin32",
+    "version": "312",
+    "license": "PSF",
+    "files": [
+      "pywin32-312\\licenses\\adodbapi\\license.txt",
+      "pywin32-312\\licenses\\com\\License.txt",
+      "pywin32-312\\licenses\\com\\win32comext\\mapi\\src\\MAPIStubLibrary\\LICENSE",
+      "pywin32-312\\licenses\\isapi\\README.txt",
+      "pywin32-312\\licenses\\pythonwin\\License.txt",
+      "pywin32-312\\licenses\\pythonwin\\Scintilla\\License.txt",
+      "pywin32-312\\licenses\\pythonwin\\pywin\\idle\\LICENSE.txt",
+      "pywin32-312\\licenses\\win32\\License.txt"
+    ]
+  },
+  {
+    "name": "pywin32-ctypes",
+    "version": "0.2.3",
+    "license": "BSD-3-Clause",
+    "files": [
+      "pywin32-ctypes-0.2.3\\LICENSE.txt"
+    ]
+  },
+  {
+    "name": "referencing",
+    "version": "0.37.0",
+    "license": "MIT",
+    "files": [
+      "referencing-0.37.0\\licenses\\COPYING"
+    ]
+  },
+  {
+    "name": "requests",
+    "version": "2.34.2",
+    "license": "Apache-2.0",
+    "files": [
+      "requests-2.34.2\\licenses\\LICENSE",
+      "requests-2.34.2\\licenses\\NOTICE"
+    ]
+  },
+  {
+    "name": "rpds-py",
+    "version": "2026.9.1",
+    "license": "MIT",
+    "files": [
+      "rpds-py-2026.9.1\\licenses\\LICENSE"
+    ]
+  },
+  {
+    "name": "Send2Trash",
+    "version": "2.1.0",
+    "license": "BSD-3-Clause",
+    "files": [
+      "Send2Trash-2.1.0\\licenses\\LICENSE"
+    ]
+  },
+  {
+    "name": "setuptools",
+    "version": "84.2.1",
+    "license": "MIT",
+    "files": [
+      "setuptools-84.2.1\\licenses\\LICENSE"
+    ]
+  },
+  {
+    "name": "sse-starlette",
+    "version": "3.6.0",
+    "license": "BSD-3-Clause",
+    "files": [
+      "sse-starlette-3.6.0\\licenses\\AUTHORS",
+      "sse-starlette-3.6.0\\licenses\\LICENSE"
+    ]
+  },
+  {
+    "name": "starlette",
+    "version": "1.10.0",
+    "license": "BSD-3-Clause",
+    "files": [
+      "starlette-1.10.0\\licenses\\LICENSE.md"
+    ]
+  },
+  {
+    "name": "typing_extensions",
+    "version": "4.16.0",
+    "license": "PSF-2.0",
+    "files": [
+      "typing_extensions-4.16.0\\licenses\\LICENSE"
+    ]
+  },
+  {
+    "name": "typing-inspection",
+    "version": "0.4.4",
+    "license": "MIT",
+    "files": [
+      "typing-inspection-0.4.4\\licenses\\LICENSE"
+    ]
+  },
+  {
+    "name": "urllib3",
+    "version": "2.8.0",
+    "license": "MIT",
+    "files": [
+      "urllib3-2.8.0\\licenses\\LICENSE.txt"
+    ]
+  },
+  {
+    "name": "uvicorn",
+    "version": "0.54.0",
+    "license": "BSD-3-Clause",
+    "files": [
+      "uvicorn-0.54.0\\licenses\\LICENSE.md"
+    ]
+  },
+  {
+    "name": "@playwright/mcp",
+    "version": "0.0.84",
+    "license": "Apache-2.0",
+    "files": [
+      "playwright-mcp-0.0.84\\LICENSE"
+    ]
+  },
+  {
+    "name": "@piotr-agier/google-drive-mcp",
+    "version": "2.13.0",
+    "license": "MIT",
+    "files": [
+      "google-drive-mcp-2.13.0\\LICENSE"
+    ]
+  },
+  {
+    "name": "marked",
+    "version": "15.0.7",
+    "license": "MIT",
+    "files": [
+      "marked-15.0.7\\LICENSE"
+    ]
+  },
+  {
+    "name": "DOMPurify",
+    "version": "3.2.4",
+    "license": "Apache-2.0 OR MPL-2.0",
+    "files": [
+      "dompurify-3.2.4\\LICENSE"
+    ]
+  },
+  {
+    "name": "highlight.js",
+    "version": "11.11.1",
+    "license": "BSD-3-Clause",
+    "files": [
+      "highlight.js-11.11.1\\LICENSE"
+    ]
+  },
+  {
+    "name": "pg8000",
+    "version": "1.31.6",
+    "license": "BSD 3-Clause License",
+    "files": [
+      "pg8000-1.31.6\\licenses\\LICENSE"
+    ]
+  },
+  {
+    "name": "PyMySQL",
+    "version": "1.2.3",
+    "license": "MIT",
+    "files": [
+      "PyMySQL-1.2.3\\licenses\\LICENSE"
+    ]
+  },
+  {
+    "name": "scramp",
+    "version": "1.5.0",
+    "license": "MIT-0",
+    "files": [
+      "scramp-1.5.0\\licenses\\LICENSE"
+    ]
+  },
+  {
+    "name": "asn1crypto",
+    "version": "1.5.1",
+    "license": "MIT",
+    "files": [
+      "asn1crypto-1.5.1\\LICENSE"
+    ]
+  },
+  {
+    "name": "python-dateutil",
+    "version": "4.0.0",
+    "license": "BSD-3-Clause",
+    "files": [
+      "python-dateutil-4.0.0\\licenses\\AUTHORS.md",
+      "python-dateutil-4.0.0\\licenses\\LICENSE"
+    ]
+  },
+  {
+    "name": "tzdata",
+    "version": "2026.6",
+    "license": "Apache-2.0",
+    "files": [
+      "tzdata-2026.6\\licenses\\LICENSE",
+      "tzdata-2026.6\\licenses\\licenses\\LICENSE_APACHE"
+    ]
+  }
+]

@@ -1,0 +1,23 @@
+# Configuração de qualidade do MeisterCode.
+# Verificar:  python -m ruff check .
+# Testar:     python -m unittest discover -s tests
+
+[tool.ruff]
+target-version = "py310"
+# Só o código do projeto: ferramentas de terceiros, builds e dados ficam de fora.
+extend-exclude = [
+    "dist",
+    "build",
+    "Ferramentas",
+    ".integrations",
+    "Projectos",
+    "Conversas",
+    "imagens-geradas",
+    "third-party-licenses",
+]
+
+[tool.ruff.lint]
+# Apenas erros reais: F = pyflakes (imports/variáveis sem uso, nomes indefinidos),
+# E9 = erros de sintaxe. O estilo compacto do código (várias instruções por
+# linha, etc.) é propositado e não é verificado.
+select = ["F", "E9"]

@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "name": "Bus Pirate · terminal série",
+  "description": "Eletrónica. Selecionar porta, baud rate e protocolo da revisão do Bus Pirate; não instala firmware.",
+  "source": "https://github.com/DangerousPrototypes/BusPirate5-firmware",
+  "enabled": true,
+  "approval": "each",
+  "server": {
+    "adapter": "bench",
+    "kind": "BusPirate"
+  }
+}

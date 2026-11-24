@@ -1,0 +1,14 @@
+[
+  {
+    "file": "classrevive-0.1.0.zip",
+    "url": "https://github.com/t1zzo/classrevive/releases/download/v0.1.0/classrevive-0.1.0.zip",
+    "sha256": "1362edbca3110f5ee9090b718623d6f9ad2736fb039cbb4fef4da01cf51235c5",
+    "upstream_digest_checked": true
+  },
+  {
+    "file": "OpenJDK21U-jdk_x64_windows_hotspot_21.0.13_9.zip",
+    "url": "https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21.0.13%2B9/OpenJDK21U-jdk_x64_windows_hotspot_21.0.13_9.zip",
+    "sha256": "a4dbaa05fca4bd89d84584e58c459bd732efebb1722af80ab13c6516832004f9",
+    "upstream_digest_checked": true
+  }
+]

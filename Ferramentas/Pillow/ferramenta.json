@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "name": "Pillow",
+  "description": "Imagem. ",
+  "source": "https://github.com/python-pillow/Pillow",
+  "enabled": true,
+  "approval": "each",
+  "server": {
+    "adapter": "bench",
+    "kind": "Pillow"
+  }
+}

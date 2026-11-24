@@ -1,0 +1,6 @@
+{
+  "version": "0.7.2",
+  "url": "https://sigrok.org/download/binary/sigrok-cli/sigrok-cli-0.7.2-x86_64-installer.exe",
+  "sha256": "27ddf838c992381f3d9c52ad9d5a7ec7db382d9aea1905d44538a7c7bd368446",
+  "portable_extraction": true
+}

@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "name": "Lemon Serial Monitor",
+  "description": "Drivers opcionais. Driver de kernel com assinatura de teste; alterações de segurança do Windows ficam a cargo do utilizador.",
+  "source": "https://github.com/qingningmneg/LemonSerialMonitor",
+  "enabled": true,
+  "approval": "each",
+  "server": {
+    "adapter": "bench",
+    "kind": "Lemon"
+  }
+}

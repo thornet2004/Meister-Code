@@ -1,0 +1,26 @@
+[
+  {
+    "file": "source-0c7cf898.zip",
+    "url": "https://codeload.github.com/SimoneAvogadro/android-reverse-engineering-skill/zip/0c7cf89830993df7dfc178498f69952262808bea",
+    "sha256": "4800fb58e33f35e998389d33e66b5e2fb5c2cd1ea4ad17c8f5841983c5c8619c",
+    "upstream_digest_checked": false
+  },
+  {
+    "file": "jadx-1.5.6.zip",
+    "url": "https://github.com/skylot/jadx/releases/download/v1.5.6/jadx-1.5.6.zip",
+    "sha256": "545ea2be9c242511bc145755cf4bda2485ade42966e096f8b4d3da2a230e8974",
+    "upstream_digest_checked": true
+  },
+  {
+    "file": "vineflower-1.12.0.jar",
+    "url": "https://github.com/Vineflower/vineflower/releases/download/1.12.0/vineflower-1.12.0.jar",
+    "sha256": "1dfcfe974395734fa467ce620661c7623d05ba83670de0529b1fbd63ff548b9d",
+    "upstream_digest_checked": true
+  },
+  {
+    "file": "dex-tools-v2.4.zip",
+    "url": "https://github.com/pxb1988/dex2jar/releases/download/v2.4/dex-tools-v2.4.zip",
+    "sha256": "ee7c45eb3c1d2474a6145d8d447e651a736a22d9664b6d3d3be5a5a817dda23a",
+    "upstream_digest_checked": false
+  }
+]

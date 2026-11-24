@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "name": "ImageMagick MCP",
+  "description": "Servidor MCP original ImageMagick: composição, texto, filtros, conversões e preparação de imagens. ImageMagick portátil incluído.",
+  "source": "https://github.com/bthurlow/imagemagick-mcp",
+  "enabled": true,
+  "approval": "each",
+  "server": {
+    "transport": "stdio",
+    "command": "${node}",
+    "args": [
+      "${tool_dir}/source/imagemagick-mcp-71ad5ec845ce4e20c3ea21025b8caf1aa29f1615/dist/index.js"
+    ],
+    "cwd": "${workspace}",
+    "env": {
+      "PATH": "${app_dir}/Ferramentas/ImageMagick/app;${path}"
+    }
+  },
+  "package_version": "0.1.0"
+}

@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "name": "Wireshark / TShark / USBPcap",
+  "description": "Protocolos. Captura USB exige driver USBPcap instalado; não é instalado automaticamente.",
+  "source": "https://github.com/wireshark/wireshark",
+  "enabled": true,
+  "approval": "each",
+  "server": {
+    "adapter": "bench",
+    "kind": "Wireshark"
+  }
+}

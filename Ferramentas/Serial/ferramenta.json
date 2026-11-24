@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "name": "Portas série · pySerial",
+  "description": "Eletrónica. Adaptador e driver da porta COM.",
+  "source": "https://github.com/pyserial/pyserial",
+  "enabled": true,
+  "approval": "each",
+  "server": {
+    "adapter": "bench",
+    "kind": "Serial"
+  }
+}

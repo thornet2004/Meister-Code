@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "name": "Packetry · Cynthion",
+  "description": "Hardware avançado. Hardware Cynthion e driver USB.",
+  "source": "https://github.com/greatscottgadgets/packetry",
+  "enabled": true,
+  "approval": "each",
+  "server": {
+    "adapter": "bench",
+    "kind": "Packetry"
+  }
+}

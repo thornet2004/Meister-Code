@@ -1,0 +1,36 @@
+#!/bin/sh
+# Gancho local do MeisterCode: verificações rápidas antes de cada commit.
+# Ativar (uma vez por cópia do repositório):  git config core.hooksPath .githooks
+# Saltar numa emergência:                     git commit --no-verify
+# A suite completa (~2 min) corre-se à mão:   python -m unittest discover -s tests
+
+falhou=0
+
+# 1) Erros reais de Python (regras em pyproject.toml).
+if python -m ruff --version >/dev/null 2>&1; then
+    python -m ruff check . || falhou=1
+else
+    echo "aviso: ruff não instalado (python -m pip install ruff); verificação de Python saltada."
+fi
+
+# 2) Sintaxe dos ficheiros JavaScript da interface incluídos neste commit.
+if command -v node >/dev/null 2>&1; then
+    for f in $(git diff --cached --name-only --diff-filter=ACM | grep -E '^web/[^/]+\.js$'); do
+        node --check "$f" || falhou=1
+    done
+    # 3) Nomes globais da interface: os scripts de web/ partilham o âmbito global,
+    #    por isso um nome em falta ou declarado em dois ficheiros parte a app.
+    #    Mudança de propósito: node tests/js_globals.cjs guardar tests/js-globals-contract.json
+    if git diff --cached --name-only | grep -qE '^web/[^/]+\.js$' && [ -d Ferramentas/_Runtime/lsp/node_modules/typescript ]; then
+        node tests/js_globals.cjs comparar tests/js-globals-contract.json || falhou=1
+    fi
+else
+    echo "aviso: node não encontrado; verificação de JavaScript saltada."
+fi
+
+if [ "$falhou" -ne 0 ]; then
+    echo ""
+    echo "Commit travado: corrige os erros acima (ou usa --no-verify se for mesmo preciso)."
+    exit 1
+fi
+exit 0

@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "name": "PortSniffer",
+  "description": "Drivers opcionais. Driver antigo WDK 7.1; compatibilidade e assinatura têm de ser verificadas.",
+  "source": "https://github.com/enlyze/PortSniffer",
+  "enabled": true,
+  "approval": "each",
+  "server": {
+    "adapter": "bench",
+    "kind": "PortSniffer"
+  }
+}

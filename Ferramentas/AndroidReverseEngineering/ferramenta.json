@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "name": "Android Reverse Engineering",
+  "description": "Skill Android original com guia, referências e scripts: decompilação APK/XAPK/JAR/AAR, pesquisa de endpoints HTTP, triagem e recuperação de nomes Kotlin. Trabalhos longos usam job_status.",
+  "package_version": "0c7cf89830993df7dfc178498f69952262808bea",
+  "source": "https://github.com/SimoneAvogadro/android-reverse-engineering-skill",
+  "enabled": true,
+  "approval": "each",
+  "server": {
+    "adapter": "android-skill",
+    "cwd": "${workspace}"
+  }
+}

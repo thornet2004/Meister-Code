@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "name": "FTDI · I²C / SPI / GPIO",
+  "description": "Eletrónica. FTDI compatível + libusb/WinUSB. Windows não é oficialmente suportado pelo projeto.",
+  "source": "https://github.com/eblot/pyftdi",
+  "enabled": true,
+  "approval": "each",
+  "server": {
+    "adapter": "bench",
+    "kind": "PyFtdi"
+  }
+}

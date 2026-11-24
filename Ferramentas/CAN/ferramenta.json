@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "name": "CAN + cantools",
+  "description": "Protocolos. Interface CAN e respetivo driver; inclui backend virtual para testes.",
+  "source": "https://github.com/hardbyte/python-can",
+  "enabled": true,
+  "approval": "each",
+  "server": {
+    "adapter": "bench",
+    "kind": "CAN"
+  }
+}

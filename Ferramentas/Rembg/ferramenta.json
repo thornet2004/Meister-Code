@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "name": "Remoção de fundo · rembg",
+  "description": "Imagem. Modelo ONNX descarregado na primeira utilização.",
+  "source": "https://github.com/danielgatis/rembg",
+  "enabled": true,
+  "approval": "each",
+  "server": {
+    "adapter": "bench",
+    "kind": "Rembg"
+  }
+}

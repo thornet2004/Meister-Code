@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "name": "ImageMagick",
+  "description": "Imagem. ",
+  "source": "https://github.com/ImageMagick/ImageMagick",
+  "enabled": true,
+  "approval": "each",
+  "server": {
+    "adapter": "bench",
+    "kind": "ImageMagick"
+  }
+}

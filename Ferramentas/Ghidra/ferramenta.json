@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "name": "Ghidra",
+  "description": "Firmware. JDK 21+ compatível com esta versão; análises disponíveis no REA.",
+  "source": "https://github.com/NationalSecurityAgency/ghidra",
+  "enabled": true,
+  "approval": "each",
+  "server": {
+    "adapter": "bench",
+    "kind": "Ghidra"
+  }
+}

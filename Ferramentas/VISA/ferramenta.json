@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "name": "Osciloscópios · VISA / SCPI",
+  "description": "Protocolos. Endereço VISA e comandos SCPI compatíveis com o instrumento.",
+  "source": "https://github.com/pyvisa/pyvisa-py",
+  "enabled": true,
+  "approval": "each",
+  "server": {
+    "adapter": "bench",
+    "kind": "VISA"
+  }
+}

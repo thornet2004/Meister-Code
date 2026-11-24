@@ -1,0 +1,3337 @@
+{
+ "version": 1,
+ "reviewed": "2026-11-24",
+ "about": "Origens fixas das ferramentas do MeisterCode. É a fonte de verdade do instalador (tool_installer.py) e do Sources_ferramentas.md, que é gerado daqui.",
+ "groups": {
+  "N": "Núcleo partilhado: é instalado primeiro, as ferramentas dependem dele",
+  "A": "Arquivo portátil com SHA-256 fixo",
+  "B": "Binário do site oficial do projeto (o repositório está no GitHub, o download não)",
+  "C": "Só código-fonte de um commit fixo do GitHub (não é um executável instalado)",
+  "D": "Pacote Python no ambiente partilhado (PyPI)",
+  "E": "Acrescentadas a pedido do utilizador (19/11/2026): só descarregadas, ainda sem integração na app"
+ },
+ "tools": [
+  {
+   "key": "Core7Zip",
+   "name": "7-Zip 26.05 (núcleo)",
+   "description": "Extrai arquivos .7z, instaladores e pacotes .zst. Serve o próprio instalador: várias ferramentas da lista só se instalam com ele.",
+   "group": "N",
+   "folder": "_Runtime/7zip",
+   "repo": "https://github.com/ip7z/7zip",
+   "version": "26.05",
+   "license": "LGPL-2.1 + restrição unRAR",
+   "installed_mb": 8,
+   "requires": [],
+   "present": "_Runtime/7zip/full/7z.exe",
+   "automatic": true,
+   "pending": "",
+   "note": "Extrai os arquivos .7z, os instaladores NSIS e os pacotes .zst. O instalador do 7-Zip é desempacotado com o 7zr.exe, não é executado.",
+   "steps": [
+    {
+     "action": "copy",
+     "what": "7zr.exe",
+     "url": "https://github.com/ip7z/7zip/releases/download/26.05/7zr.exe",
+     "sha256": "9bf582b894dfa665f852d7e9112b02290a1c303c2d95a21fcdc41ffcb03143b7",
+     "bytes": 602624,
+     "file": "7zr.exe",
+     "to": "7zr.exe",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "what": "7z2605-x64.exe",
+     "url": "https://github.com/ip7z/7zip/releases/download/26.05/7z2605-x64.exe",
+     "sha256": "fd99e86f57d8f429ef5ed045bf98315af962e2309b0f1ba87a147a44c71647d0",
+     "bytes": 1663506,
+     "file": "7z2605-x64.exe",
+     "to": "7z2605-x64.exe",
+     "publisher_digest": true
+    },
+    {
+     "action": "run",
+     "kind": "sevenzip-setup",
+     "what": "desempacotar o 7-Zip completo",
+     "archive": "7z2605-x64.exe",
+     "to": "full",
+     "check": "full/7z.exe"
+    }
+   ]
+  },
+  {
+   "key": "CoreNode",
+   "name": "Node 24.22.1 (núcleo)",
+   "description": "Motor que corre programas JavaScript. Serve para os servidores LSP (erros e navegação no código) e para as ferramentas feitas em Node.",
+   "group": "N",
+   "folder": "_Runtime/node",
+   "repo": "https://github.com/nodejs/node",
+   "version": "24.22.1",
+   "license": "MIT",
+   "installed_mb": 102,
+   "requires": [],
+   "present": [
+    "_Runtime/node/node-v24.22.1-win-x64/node.exe",
+    "REA/runtime/node-v24.22.1-win-x64/node.exe"
+   ],
+   "automatic": true,
+   "pending": "",
+   "note": "Corre os servidores LSP e o ImageMagick MCP. Numa instalação antiga, o Node que está dentro do REA serve para o mesmo.",
+   "steps": [
+    {
+     "action": "extract",
+     "format": "zip",
+     "strip": 1,
+     "what": "Node 24.22.1",
+     "url": "https://nodejs.org/dist/v24.22.1/node-v24.22.1-win-x64.zip",
+     "sha256": "d2046d28c2c3dcd211ac5145c0bf30e2047ef9dfb306693c8c6e2eccd8b95fa5",
+     "bytes": 37748064,
+     "file": "node-v24.22.1-win-x64.zip",
+     "to": "node-v24.22.1-win-x64",
+     "check": "node-v24.22.1-win-x64/node.exe",
+     "publisher_digest": false
+    }
+   ]
+  },
+  {
+   "key": "CorePython",
+   "name": "Python 3.13.18 autónomo (núcleo)",
+   "description": "Python próprio das ferramentas, separado do Python do sistema. Serve para correr as ferramentas feitas em Python sem mexer no teu PC.",
+   "group": "N",
+   "folder": "_Runtime/python",
+   "repo": "https://github.com/astral-sh/python-build-standalone",
+   "version": "3.13.18+20261026",
+   "license": "PSF-2.0",
+   "installed_mb": 123,
+   "requires": [],
+   "present": "_Runtime/python/cpython-3.13.18-windows-x86_64-none/python.exe",
+   "automatic": true,
+   "pending": "",
+   "note": "Python próprio das ferramentas; não toca no Python do sistema.",
+   "steps": [
+    {
+     "action": "extract",
+     "format": "tar",
+     "strip": 1,
+     "what": "Python 3.13.18",
+     "url": "https://github.com/astral-sh/python-build-standalone/releases/download/20261026/cpython-3.13.18%2B20261026-x86_64-pc-windows-msvc-install_only_stripped.tar.gz",
+     "sha256": "7369f7a35f261222a6ac8b3a87c1c88eeebee8af945d85346202591a64038dd3",
+     "bytes": 22023022,
+     "file": "cpython-3.13.18+20261026-x86_64-pc-windows-msvc-install_only_stripped.tar.gz",
+     "to": "cpython-3.13.18-windows-x86_64-none",
+     "check": "cpython-3.13.18-windows-x86_64-none/python.exe",
+     "publisher_digest": true
+    }
+   ]
+  },
+  {
+   "key": "CorePackages",
+   "name": "Pacotes Python partilhados (núcleo, 112 pacotes)",
+   "description": "Bibliotecas Python que as ferramentas partilham (porta série, CAN, Modbus, imagem, rádio, etc.). Sem elas, as ferramentas do grupo D não arrancam.",
+   "group": "N",
+   "folder": "_Runtime/pacotes",
+   "repo": "https://pypi.org",
+   "version": "",
+   "license": "várias (uma por pacote)",
+   "installed_mb": 731,
+   "requires": [
+    "CorePython"
+   ],
+   "present": "_Runtime/site-packages/serial",
+   "automatic": true,
+   "pending": "",
+   "cleanup": [
+    "wheels"
+   ],
+   "note": "Ficheiros .whl do PyPI, cada um com SHA-256, instalados sem rede e sem resolver dependências (--no-index --no-deps). Dão as ferramentas do grupo D.",
+   "steps": [
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "amaranth 0.5.10",
+     "url": "https://files.pythonhosted.org/packages/bd/7f/ca474415d96722639095d3f4544632715b0fb523100f22f190cc3026ee16/amaranth-0.5.10-py3-none-any.whl",
+     "sha256": "f6423258fcb6ea645f27702731a8bbbe6f8f8ec244f4e076a412c0b4f6107157",
+     "bytes": 254445,
+     "file": "amaranth-0.5.10-py3-none-any.whl",
+     "to": "wheels/amaranth-0.5.10-py3-none-any.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "annotated-types 0.8.0",
+     "url": "https://files.pythonhosted.org/packages/99/91/8acff4f5e50511b911bbccb72b8628a49c68ce14148cd9f6431094859a90/annotated_types-0.8.0-py3-none-any.whl",
+     "sha256": "f072f4d804ea359e4eaf198b1af7a8b0943881a87f31bb764f8bf219bb9419e0",
+     "bytes": 13427,
+     "file": "annotated_types-0.8.0-py3-none-any.whl",
+     "to": "wheels/annotated_types-0.8.0-py3-none-any.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "anyio 4.16.0",
+     "url": "https://files.pythonhosted.org/packages/a9/16/7757fb84c819accc7d7e9af5291b261e4abb8627ee040f99e7d35ef2457a/anyio-4.16.0-py3-none-any.whl",
+     "sha256": "c66ae634e0b8228396b801741beb3294326d4b6102f7bba4041c0dfb58c29026",
+     "bytes": 134521,
+     "file": "anyio-4.16.0-py3-none-any.whl",
+     "to": "wheels/anyio-4.16.0-py3-none-any.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "apollo-fpga 1.1.1",
+     "url": "https://files.pythonhosted.org/packages/d8/00/c0f2321c84a54622218e8abf47711fdb0cffd20fe5b61229b79977a9d285/apollo_fpga-1.1.1-py3-none-any.whl",
+     "sha256": "4552b7f87543f19c5f401be6b8e043b62bbc4bd212d558dbd846ba26a6f20beb",
+     "bytes": 58330,
+     "file": "apollo_fpga-1.1.1-py3-none-any.whl",
+     "to": "wheels/apollo_fpga-1.1.1-py3-none-any.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "argparse-addons 0.12.0",
+     "url": "https://files.pythonhosted.org/packages/c1/41/629e70c4cb32c1ddb88de970cd174bbb43d8241c8e07bdffc62a8280297c/argparse_addons-0.12.0-py3-none-any.whl",
+     "sha256": "48b70ecd719054fcb0d7e6f25a1fecc13607aac61d446e83f47d211b4ead0d61",
+     "bytes": 3310,
+     "file": "argparse_addons-0.12.0-py3-none-any.whl",
+     "to": "wheels/argparse_addons-0.12.0-py3-none-any.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "attrs 26.1.0",
+     "url": "https://files.pythonhosted.org/packages/64/b4/17d4b0b2a2dc85a6df63d1157e028ed19f90d4cd97c36717afef2bc2f395/attrs-26.1.0-py3-none-any.whl",
+     "sha256": "c647aa4a12dfbad9333ca4e71fe62ddc36f4e63b2d260a37a8b83d2f043ac309",
+     "bytes": 67548,
+     "file": "attrs-26.1.0-py3-none-any.whl",
+     "to": "wheels/attrs-26.1.0-py3-none-any.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "backports.functools-lru-cache 2.0.0",
+     "url": "https://files.pythonhosted.org/packages/c6/c6/4761a2ccb03d650ca803b11a7cdd69ff0696926d3fea218c8ca22c808448/backports.functools_lru_cache-2.0.0-py2.py3-none-any.whl",
+     "sha256": "0a754323a46847735a112677fb8807b45f6d824d02a5795a50905218ac56a0d6",
+     "bytes": 6657,
+     "file": "backports.functools_lru_cache-2.0.0-py2.py3-none-any.whl",
+     "to": "wheels/backports.functools_lru_cache-2.0.0-py2.py3-none-any.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "backports.zstd 1.8.0",
+     "url": "https://files.pythonhosted.org/packages/12/0e/5c5a916cea73b455850083ccf76078de655face3dfe4126848570c57a6dd/backports_zstd-1.8.0-cp313-cp313-win_amd64.whl",
+     "sha256": "b583990d554cc6f6141c5c43b6db3c7da87a214253e08339d917ee3baa3021b6",
+     "bytes": 330247,
+     "file": "backports_zstd-1.8.0-cp313-cp313-win_amd64.whl",
+     "to": "wheels/backports_zstd-1.8.0-cp313-cp313-win_amd64.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "bitstruct 8.24.0",
+     "url": "https://files.pythonhosted.org/packages/29/3b/670b628618f11bed11da268e110bbadeba791213a6011f59af387a3eb218/bitstruct-8.24.0-cp313-cp313-win_amd64.whl",
+     "sha256": "392f98411cc21bf0eefba8c66a6008fd69ad4fc15359a86d91b72e18854eb701",
+     "bytes": 36272,
+     "file": "bitstruct-8.24.0-cp313-cp313-win_amd64.whl",
+     "to": "wheels/bitstruct-8.24.0-cp313-cp313-win_amd64.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "brotli 1.2.1",
+     "url": "https://files.pythonhosted.org/packages/96/c2/0c7abb25013043d4bcf7dd768d343bf7dee6ce99ac8c172f7ee4aef1c772/brotli-1.2.1-cp313-cp313-win_amd64.whl",
+     "sha256": "e6c4fa55eab6b5684b33239597876a18a35ce1280b63ab960164032afbb8783f",
+     "bytes": 371072,
+     "file": "brotli-1.2.1-cp313-cp313-win_amd64.whl",
+     "to": "wheels/brotli-1.2.1-cp313-cp313-win_amd64.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "cantools 45.1.2",
+     "url": "https://files.pythonhosted.org/packages/fc/2c/c5d032465c92adfa385eecfbab342d34fdd118f55acc1698bdc794d06610/cantools-45.1.2-py3-none-any.whl",
+     "sha256": "2522d53d21ca689168c5dfcb49894ae867b3f82b0c779b72602f0fd077c6076c",
+     "bytes": 170518,
+     "file": "cantools-45.1.2-py3-none-any.whl",
+     "to": "wheels/cantools-45.1.2-py3-none-any.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "certifi 2026.10.23",
+     "url": "https://files.pythonhosted.org/packages/32/d1/a3652fe2c19134d0d15922177821d863cbd7e842d53a21bbe7e8e3a1b5ac/certifi-2026.10.23-py3-none-any.whl",
+     "sha256": "e9b54de76e530bb6cf0ccd036787103acb58fd42ba930ea8bf948ddbaa2f61d1",
+     "bytes": 135082,
+     "file": "certifi-2026.10.23-py3-none-any.whl",
+     "to": "wheels/certifi-2026.10.23-py3-none-any.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "cffi 2.1.1",
+     "url": "https://files.pythonhosted.org/packages/60/a6/8b149b2c3f2e11aaa1618ef64500b45f50f22c57a977a4dff1aff1f91042/cffi-2.1.1-cp313-cp313-win_amd64.whl",
+     "sha256": "1aa5645c30469b09530c4ebca77ebf8f17618293c58f8549cb1a543a50236e7d",
+     "bytes": 185688,
+     "file": "cffi-2.1.1-cp313-cp313-win_amd64.whl",
+     "to": "wheels/cffi-2.1.1-cp313-cp313-win_amd64.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "charset-normalizer 3.5.2",
+     "url": "https://files.pythonhosted.org/packages/9c/76/b8ec57f4e9ee3253541abf95e4a462c0175fe8032dcd070f1f2421240942/charset_normalizer-3.5.2-cp313-cp313-win_amd64.whl",
+     "sha256": "78456a747de8dc58360ffa581f30a002baf5aa28cb262536545e91f113ed7639",
+     "bytes": 206489,
+     "file": "charset_normalizer-3.5.2-cp313-cp313-win_amd64.whl",
+     "to": "wheels/charset_normalizer-3.5.2-cp313-cp313-win_amd64.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "click 8.5.0",
+     "url": "https://files.pythonhosted.org/packages/58/50/6c0d534c5f134586a8e1ba4e330569e32f057e33372ae556463212fb4cd3/click-8.5.0-py3-none-any.whl",
+     "sha256": "255bc9599cf7748b4b1a446ccc735421bd08a2ae529a8b88597d3de5664ee360",
+     "bytes": 125251,
+     "file": "click-8.5.0-py3-none-any.whl",
+     "to": "wheels/click-8.5.0-py3-none-any.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "colorama 0.4.6",
+     "url": "https://files.pythonhosted.org/packages/d1/d6/3965ed04c63042e047cb6a3e6ed1a63a35087b6a609aa3a15ed8ac56c221/colorama-0.4.6-py2.py3-none-any.whl",
+     "sha256": "4f1d9991f5acc0ca119f9d443620b77f9d6b33703e51011c16baf57afb285fc6",
+     "bytes": 25335,
+     "file": "colorama-0.4.6-py2.py3-none-any.whl",
+     "to": "wheels/colorama-0.4.6-py2.py3-none-any.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "construct 2.10.70",
+     "url": "https://files.pythonhosted.org/packages/b2/fb/08b3f4bf05da99aba8ffea52a558758def16e8516bc75ca94ff73587e7d3/construct-2.10.70-py3-none-any.whl",
+     "sha256": "c80be81ef595a1a821ec69dc16099550ed22197615f4320b57cc9ce2a672cb30",
+     "bytes": 63020,
+     "file": "construct-2.10.70-py3-none-any.whl",
+     "to": "wheels/construct-2.10.70-py3-none-any.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "crccheck 1.3.1",
+     "url": "https://files.pythonhosted.org/packages/01/b5/68a9054be852e61f31de1be4e8d95802646b93344ce17c2380a1748706fa/crccheck-1.3.1-py3-none-any.whl",
+     "sha256": "1680c9a7bb1ca4bec45fa19b8ca64319f10d2ce4eb8b0d25d51cb99a20ca0108",
+     "bytes": 24608,
+     "file": "crccheck-1.3.1-py3-none-any.whl",
+     "to": "wheels/crccheck-1.3.1-py3-none-any.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "cryptography 50.0.2",
+     "url": "https://files.pythonhosted.org/packages/9a/4f/adfc442765721292fff86d314ce385d3249d22db42295c0dd057727b60f3/cryptography-50.0.2-cp311-abi3-win_amd64.whl",
+     "sha256": "7afa5a6602a9f29af1f3a2965f831bae7c9d5d597b7cbb716d41ab3b7d89879c",
+     "bytes": 3824692,
+     "file": "cryptography-50.0.2-cp311-abi3-win_amd64.whl",
+     "to": "wheels/cryptography-50.0.2-cp311-abi3-win_amd64.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "cynthion 0.2.5",
+     "url": "https://files.pythonhosted.org/packages/12/b7/da619ce62b22dab7a26ca7707fcce47532adb9a2487b7d092911d4be9dc8/cynthion-0.2.5-py3-none-any.whl",
+     "sha256": "fd18aa736bb0201d04366319f65ef9142c574322ff5c5def473421b1642665bb",
+     "bytes": 5381748,
+     "file": "cynthion-0.2.5-py3-none-any.whl",
+     "to": "wheels/cynthion-0.2.5-py3-none-any.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "Cython 3.3.1",
+     "url": "https://files.pythonhosted.org/packages/e2/2d/8afe74009f266c43033dc54d851f31edadc414842cc061bd2762ffc9737f/cython-3.3.1-cp313-cp313-win_amd64.whl",
+     "sha256": "0f7d52979bf7730351cf9ca2e9257d4b80f729053b521159bab8666e6be7e3bd",
+     "bytes": 2869329,
+     "file": "cython-3.3.1-cp313-cp313-win_amd64.whl",
+     "to": "wheels/cython-3.3.1-cp313-cp313-win_amd64.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "deprecation 2.1.0",
+     "url": "https://files.pythonhosted.org/packages/02/c3/253a89ee03fc9b9682f1541728eb66db7db22148cd94f89ab22528cd1e1b/deprecation-2.1.0-py2.py3-none-any.whl",
+     "sha256": "a10811591210e1fb0e768a8c25517cabeabcba6f0bf96564f8ff45189f90b14a",
+     "bytes": 11178,
+     "file": "deprecation-2.1.0-py2.py3-none-any.whl",
+     "to": "wheels/deprecation-2.1.0-py2.py3-none-any.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "enum-tools 0.13.0",
+     "url": "https://files.pythonhosted.org/packages/84/45/cf8a8df3ebe78db691ab54525d552085b67658877f0334f4b0c08c43b518/enum_tools-0.13.0-py3-none-any.whl",
+     "sha256": "e0112b16767dd08cb94105844b52770eae67ece6f026916a06db4a3d330d2a95",
+     "bytes": 22366,
+     "file": "enum_tools-0.13.0-py3-none-any.whl",
+     "to": "wheels/enum_tools-0.13.0-py3-none-any.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "flatbuffers 25.12.19",
+     "url": "https://files.pythonhosted.org/packages/e8/2d/d2a548598be01649e2d46231d151a6c56d10b964d94043a335ae56ea2d92/flatbuffers-25.12.19-py2.py3-none-any.whl",
+     "sha256": "7634f50c427838bb021c2d66a3d1168e9d199b0607e6329399f04846d42e20b4",
+     "bytes": 26661,
+     "file": "flatbuffers-25.12.19-py2.py3-none-any.whl",
+     "to": "wheels/flatbuffers-25.12.19-py2.py3-none-any.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "future 1.0.0",
+     "url": "https://files.pythonhosted.org/packages/da/71/ae30dadffc90b9006d77af76b393cb9dfbfc9629f339fc1574a1c52e6806/future-1.0.0-py3-none-any.whl",
+     "sha256": "929292d34f5872e70396626ef385ec22355a1fae8ad29e1a734c3e43f9fbc216",
+     "bytes": 491326,
+     "file": "future-1.0.0-py3-none-any.whl",
+     "to": "wheels/future-1.0.0-py3-none-any.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "fx2 0.16",
+     "url": "https://files.pythonhosted.org/packages/47/e3/e4175f3541422218b13c03c983d08746fd03bc5333c2320b3b489b9ec27d/fx2-0.16-py3-none-any.whl",
+     "sha256": "dd85604b11072787c9e7554fdefe1126c6190ec3542dbca862a077c0b16c9b7c",
+     "bytes": 18426,
+     "file": "fx2-0.16-py3-none-any.whl",
+     "to": "wheels/fx2-0.16-py3-none-any.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "h11 0.16.0",
+     "url": "https://files.pythonhosted.org/packages/04/4b/29cac41a4d98d144bf5f6d33995617b185d14b22401f75ca86f384e87ff1/h11-0.16.0-py3-none-any.whl",
+     "sha256": "63cf8bbe7522de3bf65932fda1d9c2772064ffb3dae62d55932da54b31cb6c86",
+     "bytes": 37515,
+     "file": "h11-0.16.0-py3-none-any.whl",
+     "to": "wheels/h11-0.16.0-py3-none-any.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "httpcore 1.0.9",
+     "url": "https://files.pythonhosted.org/packages/7e/f5/f66802a942d491edb555dd61e3a9961140fd64c90bce1eafd741609d334d/httpcore-1.0.9-py3-none-any.whl",
+     "sha256": "2d400746a40668fc9dec9810239072b40b4484b640a8c38fd654a024c7a1bf55",
+     "bytes": 78784,
+     "file": "httpcore-1.0.9-py3-none-any.whl",
+     "to": "wheels/httpcore-1.0.9-py3-none-any.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "httpx 0.28.1",
+     "url": "https://files.pythonhosted.org/packages/2a/39/e50c7c3a983047577ee07d2a9e53faf5a69493943ec3f6a384bdc792deb2/httpx-0.28.1-py3-none-any.whl",
+     "sha256": "d909fcccc110f8c7faf814ca82a9a4d816bc5a6dbfea25d6591d6985b8ba59ad",
+     "bytes": 73517,
+     "file": "httpx-0.28.1-py3-none-any.whl",
+     "to": "wheels/httpx-0.28.1-py3-none-any.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "httpx-sse 0.4.3",
+     "url": "https://files.pythonhosted.org/packages/d2/fd/6668e5aec43ab844de6fc74927e155a3b37bf40d7c3790e49fc0406b6578/httpx_sse-0.4.3-py3-none-any.whl",
+     "sha256": "0ac1c9fe3c0afad2e0ebb25a934a59f4c7823b60792691f779fad2c5568830fc",
+     "bytes": 8960,
+     "file": "httpx_sse-0.4.3-py3-none-any.whl",
+     "to": "wheels/httpx_sse-0.4.3-py3-none-any.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "idna 3.20",
+     "url": "https://files.pythonhosted.org/packages/58/a2/bb081bab032533a855d44de1d56f8e8426114ff1ba5d1f07a438a0a654f8/idna-3.20-py3-none-any.whl",
+     "sha256": "ab7ae7122974553370f0bdb919e1a960b2cd1bc1ef0276416d896db81c14582c",
+     "bytes": 69583,
+     "file": "idna-3.20-py3-none-any.whl",
+     "to": "wheels/idna-3.20-py3-none-any.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "ImageIO 2.38.1",
+     "url": "https://files.pythonhosted.org/packages/7d/8a/3b7f62b9df56460959f1b9bef094248d2a4d7f393c5b0d2da8efcdf0e40e/imageio-2.38.1-py3-none-any.whl",
+     "sha256": "36d23eb7423d2fb63f637098758edb3d2df3687f7125e0a5ce8596572022dcf9",
+     "bytes": 328389,
+     "file": "imageio-2.38.1-py3-none-any.whl",
+     "to": "wheels/imageio-2.38.1-py3-none-any.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "importlib_resources 7.1.0",
+     "url": "https://files.pythonhosted.org/packages/8a/db/55a262f3606bebcae07cc14095338471ad7c0bbcaa37707e6f0ee49725b7/importlib_resources-7.1.0-py3-none-any.whl",
+     "sha256": "1bd7b48b4088eddb2cd16382150bb515af0bd2c70128194392725f82ad2c96a1",
+     "bytes": 37232,
+     "file": "importlib_resources-7.1.0-py3-none-any.whl",
+     "to": "wheels/importlib_resources-7.1.0-py3-none-any.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "inflate64 1.0.4",
+     "url": "https://files.pythonhosted.org/packages/e7/4f/5784ee1eb8260f2310e24ef2883f1f494f9332bcfde4ed14ee780372149e/inflate64-1.0.4-cp313-cp313-win_amd64.whl",
+     "sha256": "3983f53b590ff7d0ba243f664ce852aca882482f30f7a8eab33e10d769336d0c",
+     "bytes": 35578,
+     "file": "inflate64-1.0.4-cp313-cp313-win_amd64.whl",
+     "to": "wheels/inflate64-1.0.4-cp313-cp313-win_amd64.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "Jinja2 3.1.6",
+     "url": "https://files.pythonhosted.org/packages/62/a1/3d680cbfd5f4b8f15abc1d571870c5fc3e594bb582bc3b64ea099db13e56/jinja2-3.1.6-py3-none-any.whl",
+     "sha256": "85ece4451f492d0c13c5dd7c13a64681a86afae63a5f347908daf103ce6d2f67",
+     "bytes": 134899,
+     "file": "jinja2-3.1.6-py3-none-any.whl",
+     "to": "wheels/jinja2-3.1.6-py3-none-any.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "jschon 0.11.1",
+     "url": "https://files.pythonhosted.org/packages/ce/b1/31f454a2ac0d23b0a47283d115f0af4abe2a1ea391f5ccb223e02d685b82/jschon-0.11.1-py3-none-any.whl",
+     "sha256": "2350e8b6747b17358022960f91208bea70de448b914827af3184d30e20500f0f",
+     "bytes": 66971,
+     "file": "jschon-0.11.1-py3-none-any.whl",
+     "to": "wheels/jschon-0.11.1-py3-none-any.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "jsonschema 4.26.0",
+     "url": "https://files.pythonhosted.org/packages/69/90/f63fb5873511e014207a475e2bb4e8b2e570d655b00ac19a9a0ca0a385ee/jsonschema-4.26.0-py3-none-any.whl",
+     "sha256": "d489f15263b8d200f8387e64b4c3a75f06629559fb73deb8fdfb525f2dab50ce",
+     "bytes": 90630,
+     "file": "jsonschema-4.26.0-py3-none-any.whl",
+     "to": "wheels/jsonschema-4.26.0-py3-none-any.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "jsonschema-specifications 2025.9.1",
+     "url": "https://files.pythonhosted.org/packages/41/45/1a4ed80516f02155c51f51e8cedb3c1902296743db0bbc66608a0db2814f/jsonschema_specifications-2025.9.1-py3-none-any.whl",
+     "sha256": "98802fee3a11ee76ecaca44429fda8a41bff98b00a0f2838151b113f210cc6fe",
+     "bytes": 18437,
+     "file": "jsonschema_specifications-2025.9.1-py3-none-any.whl",
+     "to": "wheels/jsonschema_specifications-2025.9.1-py3-none-any.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "lazy-loader 0.6",
+     "url": "https://files.pythonhosted.org/packages/23/93/4e45e37f26c820216704b36b8e67cc55c490a7abd287a78a26a2c0e21386/lazy_loader-0.6-py3-none-any.whl",
+     "sha256": "77253be3391b06124a0e16105bd663b6c54470af1a9ca8e1cf026f38d58ed056",
+     "bytes": 8791,
+     "file": "lazy_loader-0.6-py3-none-any.whl",
+     "to": "wheels/lazy_loader-0.6-py3-none-any.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "libusb1 3.4.0",
+     "url": "https://files.pythonhosted.org/packages/5f/08/02aecf6dad627534a5835244ece14d7f187ef430354d9b8551199934d059/libusb1-3.4.0-py3-none-win_amd64.whl",
+     "sha256": "b7dcc1f324a895af6aac708bc5513a17373f97349cc2ab8a277519c788bd18ca",
+     "bytes": 141212,
+     "file": "libusb1-3.4.0-py3-none-win_amd64.whl",
+     "to": "wheels/libusb1-3.4.0-py3-none-win_amd64.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "libusb-package 1.0.30.0",
+     "url": "https://files.pythonhosted.org/packages/60/4a/ff49bd77f33af05ca26fee29d601beb1e19ca791bb86efece82a3833885c/libusb_package-1.0.30.0-py3-none-win_amd64.whl",
+     "sha256": "90808da724c8939a333d931d0c7226372ca5fefd98e2f2f3ef79fd918aa37522",
+     "bytes": 90711,
+     "file": "libusb_package-1.0.30.0-py3-none-win_amd64.whl",
+     "to": "wheels/libusb_package-1.0.30.0-py3-none-win_amd64.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "llvmlite 0.50.0",
+     "url": "https://files.pythonhosted.org/packages/d5/17/894321d44cf94fa5cf921eff4e7ff24c7732c3d702236d40d6055b68a693/llvmlite-0.50.0-cp313-cp313-win_amd64.whl",
+     "sha256": "266a6a29be71c3e3a22960ddcedf66b4e0388e5abb6cc4991cc093d6df402ad7",
+     "bytes": 41865552,
+     "file": "llvmlite-0.50.0-cp313-cp313-win_amd64.whl",
+     "to": "wheels/llvmlite-0.50.0-cp313-cp313-win_amd64.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "luna-soc 0.3.2",
+     "url": "https://files.pythonhosted.org/packages/ac/f6/9de5a46a0bed0751daf76bf89107249c9cbeff94466923fa3d909e929cfe/luna_soc-0.3.2-py3-none-any.whl",
+     "sha256": "e60ce8ec96e293fa8266e5c347a0bf373e4c22a61d9b9cb5c58f7d479e90dfc0",
+     "bytes": 316784,
+     "file": "luna_soc-0.3.2-py3-none-any.whl",
+     "to": "wheels/luna_soc-0.3.2-py3-none-any.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "luna-usb 0.2.3",
+     "url": "https://files.pythonhosted.org/packages/53/aa/1368ad076cd09ffa7b773f6feab9897cc361facb6b0df33fcceb64b5f116/luna_usb-0.2.3-py3-none-any.whl",
+     "sha256": "9daa98063acdfb5d42edc7f1cd274b8d72f35a5734ccd8ce9cc78a8a011f9100",
+     "bytes": 341530,
+     "file": "luna_usb-0.2.3-py3-none-any.whl",
+     "to": "wheels/luna_usb-0.2.3-py3-none-any.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "MarkupSafe 3.0.4",
+     "url": "https://files.pythonhosted.org/packages/6f/36/163da64de88a13db79214ef75fa041be7fa13bdb42261cf5b7484de14bfb/markupsafe-3.0.4-cp313-cp313-win_amd64.whl",
+     "sha256": "1f1f9477e174582b0a1b583d60b66e1f2cf5d3fe12cee985e4aedf44766600e5",
+     "bytes": 14313,
+     "file": "markupsafe-3.0.4-cp313-cp313-win_amd64.whl",
+     "to": "wheels/markupsafe-3.0.4-cp313-cp313-win_amd64.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "mcp 1.30.0",
+     "url": "https://files.pythonhosted.org/packages/f5/f4/e58bc33317c92a0203664daaf00bf6f41166cc0149e5d6870a03f7cd004a/mcp-1.30.0-py3-none-any.whl",
+     "sha256": "666edb5009503e1047c9d60346a756f94b261f05cc2625f23d41c728ffc484d0",
+     "bytes": 234581,
+     "file": "mcp-1.30.0-py3-none-any.whl",
+     "to": "wheels/mcp-1.30.0-py3-none-any.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "multivolumefile 0.2.3",
+     "url": "https://files.pythonhosted.org/packages/22/31/ec5f46fd4c83185b806aa9c736e228cb780f13990a9cf4da0beb70025fcc/multivolumefile-0.2.3-py3-none-any.whl",
+     "sha256": "237f4353b60af1703087cf7725755a1f6fcaeeea48421e1896940cd1c920d678",
+     "bytes": 17037,
+     "file": "multivolumefile-0.2.3-py3-none-any.whl",
+     "to": "wheels/multivolumefile-0.2.3-py3-none-any.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "networkx 3.7",
+     "url": "https://files.pythonhosted.org/packages/7e/cd/fe58041e9011f307c490e3e17dd48cc516448f7c698a3f2d9d9d65d7e6a8/networkx-3.7-py3-none-any.whl",
+     "sha256": "e3fd2c13a7814cee3746340d8d7f8598a67f16a58bf47fb7f8793fab6efca1b0",
+     "bytes": 2142205,
+     "file": "networkx-3.7-py3-none-any.whl",
+     "to": "wheels/networkx-3.7-py3-none-any.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "numba 0.68.1",
+     "url": "https://files.pythonhosted.org/packages/da/81/4eee3a003765c3116f3360f11b7d45e71bb6bfc09118b06bc34a3a5cb859/numba-0.68.1-cp313-cp313-win_amd64.whl",
+     "sha256": "dc3f29d540be5fc60699dbac53fc04f246cbf503a4e2e8315f04b70fcd9f1ec7",
+     "bytes": 2832621,
+     "file": "numba-0.68.1-cp313-cp313-win_amd64.whl",
+     "to": "wheels/numba-0.68.1-cp313-cp313-win_amd64.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "numpy 2.5.4",
+     "url": "https://files.pythonhosted.org/packages/90/8c/140a40398a66b4471211be1affdb6ed24c486d581bd28d07b7f2fcb69540/numpy-2.5.4-cp313-cp313-win_amd64.whl",
+     "sha256": "8b4d2fd2d34e5f8c9235ee787de5631a37a28402b15cb80814df973d2be54129",
+     "bytes": 12566113,
+     "file": "numpy-2.5.4-cp313-cp313-win_amd64.whl",
+     "to": "wheels/numpy-2.5.4-cp313-cp313-win_amd64.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "onnxruntime 1.31.1",
+     "url": "https://files.pythonhosted.org/packages/59/bf/a1d282b4c753ba3e9b31f4c11abd2bc2390513dc5e3792ca3b78e42401c3/onnxruntime-1.31.1-cp313-cp313-win_amd64.whl",
+     "sha256": "0558f29d5f6ac09957390c9c5495931485ee8ae7f0ce781ccee86a0ae5c2348b",
+     "bytes": 14888304,
+     "file": "onnxruntime-1.31.1-cp313-cp313-win_amd64.whl",
+     "to": "wheels/onnxruntime-1.31.1-cp313-cp313-win_amd64.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "packaging 26.3",
+     "url": "https://files.pythonhosted.org/packages/63/34/ba1c580383c9eada3711951fef0795c80b829a078d72188184bcab9dd527/packaging-26.3-py3-none-any.whl",
+     "sha256": "d7193f7c8e4e93f444fde0262bf90af30e16fa0ad0ad44cb553c87339b23cd1c",
+     "bytes": 129956,
+     "file": "packaging-26.3-py3-none-any.whl",
+     "to": "wheels/packaging-26.3-py3-none-any.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "pillow 13.0.0",
+     "url": "https://files.pythonhosted.org/packages/d7/ed/1b16fb66a37e1b9e41370b93b2c614c7da761a5b2a41dc333f7af4639962/pillow-13.0.0-cp313-cp313-win_amd64.whl",
+     "sha256": "9dda0788a9932776a75d8bcc020076edc308ce2508b51f6739a45e3158b3fc42",
+     "bytes": 7284777,
+     "file": "pillow-13.0.0-cp313-cp313-win_amd64.whl",
+     "to": "wheels/pillow-13.0.0-cp313-cp313-win_amd64.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "platformdirs 4.14.5",
+     "url": "https://files.pythonhosted.org/packages/7c/ae/ecbbbfd0e4343a6a521d49b3c8656fb4643dee2a4f6eaf941cf3280391a8/platformdirs-4.14.5-py3-none-any.whl",
+     "sha256": "8e778c6fa421516f4d3369449f8df3b0e1b72c0e0005fe88e3ec772d0a14e750",
+     "bytes": 35402,
+     "file": "platformdirs-4.14.5-py3-none-any.whl",
+     "to": "wheels/platformdirs-4.14.5-py3-none-any.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "pooch 1.9.0",
+     "url": "https://files.pythonhosted.org/packages/2a/2d/d4bf65e47cea8ff2c794a600c4fd1273a7902f268757c531e0ee9f18aa58/pooch-1.9.0-py3-none-any.whl",
+     "sha256": "f265597baa9f760d25ceb29d0beb8186c243d6607b0f60b83ecf14078dbc703b",
+     "bytes": 67175,
+     "file": "pooch-1.9.0-py3-none-any.whl",
+     "to": "wheels/pooch-1.9.0-py3-none-any.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "prompt_toolkit 3.0.53",
+     "url": "https://files.pythonhosted.org/packages/54/6f/84908cad2d6aa5144abcf7b42709fe4fdb459bc640ec7ac5786e7693dabc/prompt_toolkit-3.0.53-py3-none-any.whl",
+     "sha256": "01c0891d7f9237d5e339f7d3e42cdae80b7534abb1c7c0e3352efba6231492f2",
+     "bytes": 392288,
+     "file": "prompt_toolkit-3.0.53-py3-none-any.whl",
+     "to": "wheels/prompt_toolkit-3.0.53-py3-none-any.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "protobuf 7.36.2",
+     "url": "https://files.pythonhosted.org/packages/8a/55/b77bda4e5e5f5971fb51b07663694690e9afdb9402136c16a522bd621cad/protobuf-7.36.2-cp310-abi3-win_amd64.whl",
+     "sha256": "a300819d441e078a5608c0d3c709796bb548136058fda017ae51d425b44fd353",
+     "bytes": 456514,
+     "file": "protobuf-7.36.2-cp310-abi3-win_amd64.whl",
+     "to": "wheels/protobuf-7.36.2-cp310-abi3-win_amd64.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "psutil 7.2.2",
+     "url": "https://files.pythonhosted.org/packages/b4/90/e2159492b5426be0c1fef7acba807a03511f97c5f86b3caeda6ad92351a7/psutil-7.2.2-cp37-abi3-win_amd64.whl",
+     "sha256": "eb7e81434c8d223ec4a219b5fc1c47d0417b12be7ea866e24fb5ad6e84b3d988",
+     "bytes": 137737,
+     "file": "psutil-7.2.2-cp37-abi3-win_amd64.whl",
+     "to": "wheels/psutil-7.2.2-cp37-abi3-win_amd64.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "py7zr 1.1.4",
+     "url": "https://files.pythonhosted.org/packages/96/bd/72bace0bf4025af8ab4bf972394fab466d4b565cdbea805281fbee9a8dbc/py7zr-1.1.4-py3-none-any.whl",
+     "sha256": "f6f868a457a6bd485b78d26e619045718bcd0b7720a6bf97d5fe86a1523423e8",
+     "bytes": 75484,
+     "file": "py7zr-1.1.4-py3-none-any.whl",
+     "to": "wheels/py7zr-1.1.4-py3-none-any.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "pybcj 1.0.8",
+     "url": "https://files.pythonhosted.org/packages/39/f4/04d46f5059af00d2fae6086a7f47ebc23e553900ca75ea2a2e276d3a436c/pybcj-1.0.8-cp313-cp313-win_amd64.whl",
+     "sha256": "e47d9c655d276200e5d08f7b550097dacc826364b44931f0fbdc0da2e4bdf448",
+     "bytes": 24956,
+     "file": "pybcj-1.0.8-cp313-cp313-win_amd64.whl",
+     "to": "wheels/pybcj-1.0.8-cp313-cp313-win_amd64.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "pyccobs 0.1.1",
+     "url": "https://files.pythonhosted.org/packages/58/ab/ce35834c697e0dee238a856e6c58112b9fd9123fb58a77576e3d654e4c57/pyccobs-0.1.1-py3-none-win_amd64.whl",
+     "sha256": "4907f8df31dd5fdf4c73c3a934c07e7eeda7ce3ff00923a7dbe8027a9ea687c4",
+     "bytes": 14530,
+     "file": "pyccobs-0.1.1-py3-none-win_amd64.whl",
+     "to": "wheels/pyccobs-0.1.1-py3-none-win_amd64.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "pycparser 3.12",
+     "url": "https://files.pythonhosted.org/packages/b6/ae/315bbeee126a769cbde43cf4908acb4b40408d8bf8bbf334dd7368d8dadf/pycparser-3.12-py3-none-any.whl",
+     "sha256": "a076f3f489b39b43ed13563a1dafe42447445bec2e294154ec5c57fcdda4c85e",
+     "bytes": 62600,
+     "file": "pycparser-3.12-py3-none-any.whl",
+     "to": "wheels/pycparser-3.12-py3-none-any.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "pycryptodomex 3.24.2",
+     "url": "https://files.pythonhosted.org/packages/21/f9/4363334c762c2463d9d403894e83922959d9392e7cfa15bb1335e790851d/pycryptodomex-3.24.2-cp37-abi3-win_amd64.whl",
+     "sha256": "6e912e3a21061bf8f4ce89223cb46f5e98a6b32420d08d770605891a2be266c6",
+     "bytes": 1825945,
+     "file": "pycryptodomex-3.24.2-cp37-abi3-win_amd64.whl",
+     "to": "wheels/pycryptodomex-3.24.2-cp37-abi3-win_amd64.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "pydantic 2.14.3",
+     "url": "https://files.pythonhosted.org/packages/72/b8/b864503789ef5c58597d2a7b4adbee62c26440ab1e682581fc6838df8947/pydantic-2.14.3-py3-none-any.whl",
+     "sha256": "3f7b347782ab7e4cf4c798496ae3a82787d9f21ec12676a9c564355eeef8daa8",
+     "bytes": 494071,
+     "file": "pydantic-2.14.3-py3-none-any.whl",
+     "to": "wheels/pydantic-2.14.3-py3-none-any.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "pydantic_core 2.50.4",
+     "url": "https://files.pythonhosted.org/packages/e7/e0/95b651213e79ffe0cbee855590bf5cfdf8e3a0d90a7fc73a080e63f7cc38/pydantic_core-2.50.4-cp313-cp313-win_amd64.whl",
+     "sha256": "4c29b8f2d6417069bb1f257e6b9113f5d64dc2f554cc200ea90b4fe2c5cdb733",
+     "bytes": 2262887,
+     "file": "pydantic_core-2.50.4-cp313-cp313-win_amd64.whl",
+     "to": "wheels/pydantic_core-2.50.4-cp313-cp313-win_amd64.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "pydantic-settings 2.16.2",
+     "url": "https://files.pythonhosted.org/packages/39/88/4131c51ff87b7cd7f82a1194d0c0a2b7ca68c72d9da04c3b7e69ab91a79f/pydantic_settings-2.16.2-py3-none-any.whl",
+     "sha256": "8d523e5c129b097686bde019bd6109bff53f4c8c3f63f1ddf9933ffa42e5ab4f",
+     "bytes": 81994,
+     "file": "pydantic_settings-2.16.2-py3-none-any.whl",
+     "to": "wheels/pydantic_settings-2.16.2-py3-none-any.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "pyftdi 0.57.2",
+     "url": "https://files.pythonhosted.org/packages/7b/de/260694fa63dab6629c6ba7c2315de64dbd766eb761198b61fba96cbe7ea4/pyftdi-0.57.2-py3-none-any.whl",
+     "sha256": "dec3acdc262594d8b1850a6aee608b861c2973f90011faf5cccae3107d3c67a4",
+     "bytes": 146319,
+     "file": "pyftdi-0.57.2-py3-none-any.whl",
+     "to": "wheels/pyftdi-0.57.2-py3-none-any.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "pyfwup 0.5.3",
+     "url": "https://files.pythonhosted.org/packages/1a/06/98111a82325108e0aa804fa11907788ed05d8916fd968ca548d1c78dce77/pyfwup-0.5.3-py3-none-any.whl",
+     "sha256": "9966cfa272828ccc0ff0303821a7d4c3933dd629c2af142bb4f6e41eedc2c69b",
+     "bytes": 19129,
+     "file": "pyfwup-0.5.3-py3-none-any.whl",
+     "to": "wheels/pyfwup-0.5.3-py3-none-any.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "Pygments 2.21.0",
+     "url": "https://files.pythonhosted.org/packages/71/46/17f022dd3e953bf20a04a028a21ec746d942f8d2af30fa0f124fa0e6a684/pygments-2.21.0-py3-none-any.whl",
+     "sha256": "2363c69b61c4a97c838da3b130dcd6468f4848992b21a82f2a63ec34377137d9",
+     "bytes": 1250147,
+     "file": "pygments-2.21.0-py3-none-any.whl",
+     "to": "wheels/pygments-2.21.0-py3-none-any.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "pygreat 2024.0.5",
+     "url": "https://files.pythonhosted.org/packages/55/58/0f2099ccd39f7d8df9d9f20f21d920f2f205f52ef5842c9ca7c93b01cd25/pygreat-2024.0.5-py3-none-any.whl",
+     "sha256": "bc62b357ad74fb0af626726e99c8fac4778e7c537e012832709c4b9723fd7aa6",
+     "bytes": 32290,
+     "file": "pygreat-2024.0.5-py3-none-any.whl",
+     "to": "wheels/pygreat-2024.0.5-py3-none-any.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "PyJWT 2.15.1",
+     "url": "https://files.pythonhosted.org/packages/50/ca/44de4e75f8aadc457f0634be3b542815078ded46dca30efb960edeecad6e/pyjwt-2.15.1-py3-none-any.whl",
+     "sha256": "42d59d631f7768a1028a64c7ff581a9bf7519804daf91fc5b6c56e30eec5e193",
+     "bytes": 33860,
+     "file": "pyjwt-2.15.1-py3-none-any.whl",
+     "to": "wheels/pyjwt-2.15.1-py3-none-any.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "PyMatting 1.1.16",
+     "url": "https://files.pythonhosted.org/packages/47/8e/2c00f3615fc906c01f5168d2caedf61811db6259b8d0c9a1b14d7c9af61a/pymatting-1.1.16-py3-none-any.whl",
+     "sha256": "6ad3f787f90d7720b60e9734c33588cb30f98a66abf7bd772fa499d3a32b466a",
+     "bytes": 56257,
+     "file": "pymatting-1.1.16-py3-none-any.whl",
+     "to": "wheels/pymatting-1.1.16-py3-none-any.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "pymodbus 3.16.2",
+     "url": "https://files.pythonhosted.org/packages/51/d4/ac60401cb41999f375887c8dee0902db0bf9d0f43dc6f8b0695483b7016c/pymodbus-3.16.2-py3-none-any.whl",
+     "sha256": "385ad145955a7af15020ee55c266f7a2c6d9af2180d45c3755a56db9a5014078",
+     "bytes": 168896,
+     "file": "pymodbus-3.16.2-py3-none-any.whl",
+     "to": "wheels/pymodbus-3.16.2-py3-none-any.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "pyppmd 1.3.1",
+     "url": "https://files.pythonhosted.org/packages/6c/6d/311d8faca142f39b4d158c94ed7eb237a197d41dd7eb67f53442a7904e04/pyppmd-1.3.1-cp313-cp313-win_amd64.whl",
+     "sha256": "df8d84ab72381058a964ba66e5e81ed52dbd0b5ad734a5ef8353452983506098",
+     "bytes": 46962,
+     "file": "pyppmd-1.3.1-cp313-cp313-win_amd64.whl",
+     "to": "wheels/pyppmd-1.3.1-cp313-cp313-win_amd64.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "PyQt6 6.12.0",
+     "url": "https://files.pythonhosted.org/packages/07/20/946437c95a099429a7634e5743868e917be039ac43d16987bbdfaa50cade/pyqt6-6.12.0-cp310-abi3-win_amd64.whl",
+     "sha256": "c764f22d101ea9885533ee8452752b929e2ad1d3d77a5c1c12ac82e5f30c99ae",
+     "bytes": 6950580,
+     "file": "pyqt6-6.12.0-cp310-abi3-win_amd64.whl",
+     "to": "wheels/pyqt6-6.12.0-cp310-abi3-win_amd64.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "PyQt6-Qt6 6.12.0",
+     "url": "https://files.pythonhosted.org/packages/31/35/1bf45d60b44c7f942d73cb6455b39974b2c6101ff068f568e4acce6f52cb/pyqt6_qt6-6.12.0-py3-none-win_amd64.whl",
+     "sha256": "a0f3e52fcd014b3d40f4aa856f8cb6843cf13720a2c2f31267f03702bc54d07b",
+     "bytes": 79706707,
+     "file": "pyqt6_qt6-6.12.0-py3-none-win_amd64.whl",
+     "to": "wheels/pyqt6_qt6-6.12.0-py3-none-win_amd64.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "PyQt6_sip 13.13.0",
+     "url": "https://files.pythonhosted.org/packages/9a/9c/ef3ffad75ef85067789d8bfd253785c2ca997e78872ba0d61250c8ff6458/pyqt6_sip-13.13.0-cp313-cp313-win_amd64.whl",
+     "sha256": "b202f08bf0d68c0bd80def5c273acd0e1fe3deee8eda9ad8244b8286bc333e0a",
+     "bytes": 53485,
+     "file": "pyqt6_sip-13.13.0-cp313-cp313-win_amd64.whl",
+     "to": "wheels/pyqt6_sip-13.13.0-cp313-cp313-win_amd64.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "pyreadline3 3.5.6",
+     "url": "https://files.pythonhosted.org/packages/f7/5e/35c856e186b74678c24927847ad9895a51f1bc02a0c6126477a6c6040064/pyreadline3-3.5.6-py3-none-any.whl",
+     "sha256": "8449b734232e42a5dcd74048e39b60db2839a4c38cf3ae2bf7707d58b5389c0d",
+     "bytes": 85243,
+     "file": "pyreadline3-3.5.6-py3-none-any.whl",
+     "to": "wheels/pyreadline3-3.5.6-py3-none-any.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "pyserial 3.5",
+     "url": "https://files.pythonhosted.org/packages/07/bc/587a445451b253b285629263eb51c2d8e9bcea4fc97826266d186f96f558/pyserial-3.5-py2.py3-none-any.whl",
+     "sha256": "c4451db6ba391ca6ca299fb3ec7bae67a5c55dde170964c7a14ceefec02f2cf0",
+     "bytes": 90585,
+     "file": "pyserial-3.5-py2.py3-none-any.whl",
+     "to": "wheels/pyserial-3.5-py2.py3-none-any.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "python-can 4.6.1",
+     "url": "https://files.pythonhosted.org/packages/58/34/e4ac153acdbcfba7f48bc73d6586a74c91cc919fcc2e29acbf81be329d1f/python_can-4.6.1-py3-none-any.whl",
+     "sha256": "17f95255868a95108dcfcb90565a684dad32d5a3ebb35afd14f739e18c84ff6c",
+     "bytes": 276996,
+     "file": "python_can-4.6.1-py3-none-any.whl",
+     "to": "wheels/python_can-4.6.1-py3-none-any.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "python-dotenv 1.2.4",
+     "url": "https://files.pythonhosted.org/packages/60/d1/38f3a3405989a89ac18390803e70c6ad7c7760da4f9b83cbeca0c44a0c72/python_dotenv-1.2.4-py3-none-any.whl",
+     "sha256": "42269a8a5b3fd54ffa6f3d84b18abed50064717576b4ecf03dc4a55d8aa04fdc",
+     "bytes": 23266,
+     "file": "python_dotenv-1.2.4-py3-none-any.whl",
+     "to": "wheels/python_dotenv-1.2.4-py3-none-any.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "python-multipart 0.0.33",
+     "url": "https://files.pythonhosted.org/packages/dd/1b/6b1b4164ec734cac911460ab599bfbe46afedd42c5c9627fe4235942c314/python_multipart-0.0.33-py3-none-any.whl",
+     "sha256": "8f16c07b36add9da6b2ee87d3efcaf0a45a6de9c3d0a5dd94e9ccf7675a7bc45",
+     "bytes": 32253,
+     "file": "python_multipart-0.0.33-py3-none-any.whl",
+     "to": "wheels/python_multipart-0.0.33-py3-none-any.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "pyusb 1.3.1",
+     "url": "https://files.pythonhosted.org/packages/28/b8/27e6312e86408a44fe16bd28ee12dd98608b39f7e7e57884a24e8f29b573/pyusb-1.3.1-py3-none-any.whl",
+     "sha256": "bf9b754557af4717fe80c2b07cc2b923a9151f5c08d17bdb5345dac09d6a0430",
+     "bytes": 58465,
+     "file": "pyusb-1.3.1-py3-none-any.whl",
+     "to": "wheels/pyusb-1.3.1-py3-none-any.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "pyvcd 0.4.2",
+     "url": "https://files.pythonhosted.org/packages/6e/0a/05da8b352ed6462fb7be2d66fb1143594ad8f4caf411d387c1844b8b149f/pyvcd-0.4.2-py3-none-any.whl",
+     "sha256": "d73a034dacac7d5bb6b842009289c8ae456d51f062fc802cd8d914768e4b331f",
+     "bytes": 24444,
+     "file": "pyvcd-0.4.2-py3-none-any.whl",
+     "to": "wheels/pyvcd-0.4.2-py3-none-any.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "PyVISA 1.16.2",
+     "url": "https://files.pythonhosted.org/packages/e4/a9/776da4f397003cca093659524c3526590522f81b642936838428c11274e6/pyvisa-1.16.2-py3-none-any.whl",
+     "sha256": "54f034adafd3e8d1858d57cdafec64e920444f4b84b31c9fd17487fbad0a197a",
+     "bytes": 181413,
+     "file": "pyvisa-1.16.2-py3-none-any.whl",
+     "to": "wheels/pyvisa-1.16.2-py3-none-any.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "PyVISA-py 0.8.1",
+     "url": "https://files.pythonhosted.org/packages/70/0b/06ccf917ce30d78d75e452d0afc89236b1d384b776c5c33d75c8cc55fbe7/pyvisa_py-0.8.1-py3-none-any.whl",
+     "sha256": "31208a2933c1793b4e829ba5f07d265b83f280668df440ee7ee6ac505dea4ee9",
+     "bytes": 82206,
+     "file": "pyvisa_py-0.8.1-py3-none-any.whl",
+     "to": "wheels/pyvisa_py-0.8.1-py3-none-any.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "pywin32 312",
+     "url": "https://files.pythonhosted.org/packages/ba/db/36a78e3403099d31d9746d13fdcde5accc43c1155f375a34d15983a479a7/pywin32-312-cp313-cp313-win_amd64.whl",
+     "sha256": "c53e878d15a1c44788082bfe712a905433473aa38f86375b7cf8b45e3acbaaf9",
+     "bytes": 6914298,
+     "file": "pywin32-312-cp313-cp313-win_amd64.whl",
+     "to": "wheels/pywin32-312-cp313-cp313-win_amd64.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "pyxdg 0.28",
+     "url": "https://files.pythonhosted.org/packages/e5/8d/cf41b66a8110670e3ad03dab9b759704eeed07fa96e90fdc0357b2ba70e2/pyxdg-0.28-py2.py3-none-any.whl",
+     "sha256": "bdaf595999a0178ecea4052b7f4195569c1ff4d344567bccdc12dfdf02d545ab",
+     "bytes": 49520,
+     "file": "pyxdg-0.28-py2.py3-none-any.whl",
+     "to": "wheels/pyxdg-0.28-py2.py3-none-any.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "referencing 0.37.0",
+     "url": "https://files.pythonhosted.org/packages/2c/58/ca301544e1fa93ed4f80d724bf5b194f6e4b945841c5bfd555878eea9fcb/referencing-0.37.0-py3-none-any.whl",
+     "sha256": "381329a9f99628c9069361716891d34ad94af76e461dcb0335825aecc7692231",
+     "bytes": 26766,
+     "file": "referencing-0.37.0-py3-none-any.whl",
+     "to": "wheels/referencing-0.37.0-py3-none-any.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "rembg 2.0.87",
+     "url": "https://files.pythonhosted.org/packages/5b/10/5380109d4e825ba934409ed6206a8986d8ba99f80283aa893de443cbb842/rembg-2.0.87-py3-none-any.whl",
+     "sha256": "928468af97067e09232505bd9c7714a5c34e0a8624382e04236faaba4734ecd6",
+     "bytes": 70625,
+     "file": "rembg-2.0.87-py3-none-any.whl",
+     "to": "wheels/rembg-2.0.87-py3-none-any.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "requests 2.34.2",
+     "url": "https://files.pythonhosted.org/packages/a0/f4/c67b0b3f1b9245e8d266f0f112c500d50e5b4e83cb6f3b71b6528104182a/requests-2.34.2-py3-none-any.whl",
+     "sha256": "2a0d60c172f83ac6ab31e4554906c0f3b3588d37b5cb939b1c061f4907e278e0",
+     "bytes": 73075,
+     "file": "requests-2.34.2-py3-none-any.whl",
+     "to": "wheels/requests-2.34.2-py3-none-any.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "rfc3986 2.0.0",
+     "url": "https://files.pythonhosted.org/packages/ff/9a/9afaade874b2fa6c752c36f1548f718b5b83af81ed9b76628329dab81c1b/rfc3986-2.0.0-py2.py3-none-any.whl",
+     "sha256": "50b1502b60e289cb37883f3dfd34532b8873c7de9f49bb546641ce9cbd256ebd",
+     "bytes": 31326,
+     "file": "rfc3986-2.0.0-py2.py3-none-any.whl",
+     "to": "wheels/rfc3986-2.0.0-py2.py3-none-any.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "rpds-py 2026.9.1",
+     "url": "https://files.pythonhosted.org/packages/31/9c/ba5a9569d719bfdd6ce863df4133ac6a1658cf1b07cc3534c31db729fbbc/rpds_py-2026.9.1-cp313-cp313-win_amd64.whl",
+     "sha256": "3e93b2cd69a9830be33e03945cd7cda940a0a8bfcfbff41d6144f0cb0d3d8bd9",
+     "bytes": 222409,
+     "file": "rpds_py-2026.9.1-cp313-cp313-win_amd64.whl",
+     "to": "wheels/rpds_py-2026.9.1-cp313-cp313-win_amd64.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "scikit-image 0.26.0",
+     "url": "https://files.pythonhosted.org/packages/8f/58/2b11b933097bc427e42b4a8b15f7de8f24f2bac1fd2779d2aea1431b2c31/scikit_image-0.26.0-cp313-cp313-win_amd64.whl",
+     "sha256": "ac529eb9dbd5954f9aaa2e3fe9a3fd9661bfe24e134c688587d811a0233127f1",
+     "bytes": 11906770,
+     "file": "scikit_image-0.26.0-cp313-cp313-win_amd64.whl",
+     "to": "wheels/scikit_image-0.26.0-cp313-cp313-win_amd64.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "scipy 1.18.1",
+     "url": "https://files.pythonhosted.org/packages/93/0e/e0348fbc0dbab65c114cf78957e7dfeb49f8e8b556b4d930cc12ff195e18/scipy-1.18.1-cp313-cp313-win_amd64.whl",
+     "sha256": "559ed65f60c1af5a03f3912605a1b5114f522c7c32fb23c3376ae8f03219fe28",
+     "bytes": 36622841,
+     "file": "scipy-1.18.1-cp313-cp313-win_amd64.whl",
+     "to": "wheels/scipy-1.18.1-cp313-cp313-win_amd64.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "setuptools 84.2.1",
+     "url": "https://files.pythonhosted.org/packages/ef/55/6dc6d6bb953bdfc52519a0059592c52b6e3b8ad51cf8256dffceb55b0610/setuptools-84.2.1-py3-none-any.whl",
+     "sha256": "ca140b45d5325a9478f880e351484f62fef15f336462e449ca0c03c873d589c2",
+     "bytes": 876263,
+     "file": "setuptools-84.2.1-py3-none-any.whl",
+     "to": "wheels/setuptools-84.2.1-py3-none-any.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "sse-starlette 3.6.0",
+     "url": "https://files.pythonhosted.org/packages/cf/49/35053078cdfcf639237e8bee6dc6f34f1b3a3cc8d01800a1e213e1660ff6/sse_starlette-3.6.0-py3-none-any.whl",
+     "sha256": "e4dfa4d237d2712cb2b4d4918eda9b457cd6b44bbecdc838af75de836565bafd",
+     "bytes": 17985,
+     "file": "sse_starlette-3.6.0-py3-none-any.whl",
+     "to": "wheels/sse_starlette-3.6.0-py3-none-any.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "starlette 1.10.0",
+     "url": "https://files.pythonhosted.org/packages/88/2e/947cfe02def9371c07cd5bf5b6b61c829e9aecb9904db02a66cfafbc1eec/starlette-1.10.0-py3-none-any.whl",
+     "sha256": "478c0ab3b4ced6e82719849c118fa406f0278a3499c1a898cd15cd31bdc38ce4",
+     "bytes": 80571,
+     "file": "starlette-1.10.0-py3-none-any.whl",
+     "to": "wheels/starlette-1.10.0-py3-none-any.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "tabulate 0.10.0",
+     "url": "https://files.pythonhosted.org/packages/99/55/db07de81b5c630da5cbf5c7df646580ca26dfaefa593667fc6f2fe016d2e/tabulate-0.10.0-py3-none-any.whl",
+     "sha256": "f0b0622e567335c8fabaaa659f1b33bcb6ddfe2e496071b743aa113f8774f2d3",
+     "bytes": 39814,
+     "file": "tabulate-0.10.0-py3-none-any.whl",
+     "to": "wheels/tabulate-0.10.0-py3-none-any.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "textparser 0.26.2",
+     "url": "https://files.pythonhosted.org/packages/7d/cc/812fe3ae07a1917bb4cfb6dec5f6fc6e8825d65b4e77cd25bc52cd59230f/textparser-0.26.2-py3-none-any.whl",
+     "sha256": "e14ec4fd58d3515d897196a71f4ccf8d354f5c5c6b87910571b4d250de073c4b",
+     "bytes": 9638,
+     "file": "textparser-0.26.2-py3-none-any.whl",
+     "to": "wheels/textparser-0.26.2-py3-none-any.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "texttable 1.7.2",
+     "url": "https://files.pythonhosted.org/packages/b9/4d/4de8896d9edcfb421e54d236b22a62be3827ca195ff649cad6fcae660f04/texttable-1.7.2-py2.py3-none-any.whl",
+     "sha256": "a381e1ed30e4d4bd24cdacabe26463b7a570c0e964fc0b35d8d9276b2fcbe252",
+     "bytes": 10862,
+     "file": "texttable-1.7.2-py2.py3-none-any.whl",
+     "to": "wheels/texttable-1.7.2-py2.py3-none-any.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "tifffile 2026.10.15",
+     "url": "https://files.pythonhosted.org/packages/5b/bc/9e7664e2d30d4e82ada1b29dbb249d2dcac1ed1114cbbf11764f670d8be7/tifffile-2026.10.15-py3-none-any.whl",
+     "sha256": "3dcf6c56731a45c1f85c81e90dad922b0a380a2d639e77f71207e010f8ef0f7b",
+     "bytes": 276988,
+     "file": "tifffile-2026.10.15-py3-none-any.whl",
+     "to": "wheels/tifffile-2026.10.15-py3-none-any.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "tomli 2.5.0",
+     "url": "https://files.pythonhosted.org/packages/dc/98/d52024bb5b0ff68b4f0d276d867f634c84a67319a7e9f6b7708a37742333/tomli-2.5.0-cp313-cp313-win_amd64.whl",
+     "sha256": "fd4dc129784e0c5335bd4e61dfcc4487499a013419e655cf2da1d091b7e0efdc",
+     "bytes": 113301,
+     "file": "tomli-2.5.0-cp313-cp313-win_amd64.whl",
+     "to": "wheels/tomli-2.5.0-cp313-cp313-win_amd64.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "tqdm 4.70.1",
+     "url": "https://files.pythonhosted.org/packages/a7/03/921a3d3c75785aca9ebfbfcabfbc3a1be12e2ab5265deb026d55a5a3f83e/tqdm-4.70.1-py3-none-any.whl",
+     "sha256": "c293e525e6fef9c20e8728fd4612df02a0aa31bb5fe91ecd93e123b1b7bffa73",
+     "bytes": 80199,
+     "file": "tqdm-4.70.1-py3-none-any.whl",
+     "to": "wheels/tqdm-4.70.1-py3-none-any.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "typing_extensions 4.16.0",
+     "url": "https://files.pythonhosted.org/packages/49/d3/b8441a820a491ddfc024b0b0cf0393375b75ea13866d9c66727e54c2fc80/typing_extensions-4.16.0-py3-none-any.whl",
+     "sha256": "481caa481374e813c1b176ada14e97f1f67a4539ce9cfeb3f350d78d6370c2e8",
+     "bytes": 45571,
+     "file": "typing_extensions-4.16.0-py3-none-any.whl",
+     "to": "wheels/typing_extensions-4.16.0-py3-none-any.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "typing-inspection 0.4.5",
+     "url": "https://files.pythonhosted.org/packages/de/0c/ea2544850a7c135e15033a5c7a8e7211136184b7ae63e2239d557c2b3019/typing_inspection-0.4.5-py3-none-any.whl",
+     "sha256": "bc210535442b39e1bf2805e0c7a17dfd6a4ace760c84c7f7d16245d23a6b1c39",
+     "bytes": 14874,
+     "file": "typing_inspection-0.4.5-py3-none-any.whl",
+     "to": "wheels/typing_inspection-0.4.5-py3-none-any.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "urh 2.10.0",
+     "url": "https://files.pythonhosted.org/packages/2d/bb/d5bd707cabb512199f2c3b63e9c5a171361476d24c6b9ad49a864e698765/urh-2.10.0-cp313-cp313-win_amd64.whl",
+     "sha256": "0743d6be3f5928cc2054da91b3f515d64550c4ea7899d76417be312623f4e2b8",
+     "bytes": 10558829,
+     "file": "urh-2.10.0-cp313-cp313-win_amd64.whl",
+     "to": "wheels/urh-2.10.0-cp313-cp313-win_amd64.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "urllib3 2.8.0",
+     "url": "https://files.pythonhosted.org/packages/92/9d/c4e665119135114480843e7ab388fa94d8480650450e6f8e26b70d323a4c/urllib3-2.8.0-py3-none-any.whl",
+     "sha256": "0cf3cae568d36aa9576b28dfb35f11328f1cb974ca7647d9475ebb86c75ac6e3",
+     "bytes": 135717,
+     "file": "urllib3-2.8.0-py3-none-any.whl",
+     "to": "wheels/urllib3-2.8.0-py3-none-any.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "usb-protocol 0.9.2",
+     "url": "https://files.pythonhosted.org/packages/47/3b/2d0e6ea7fa0f44d90cedb15330a6670c9af236f8a4bfbe52bdf9269fa912/usb_protocol-0.9.2-py3-none-any.whl",
+     "sha256": "45fc53e2b6880f0f8f1987ef68a1495610ef04bf01e07aad66aa646dfc9a3ee0",
+     "bytes": 53888,
+     "file": "usb_protocol-0.9.2-py3-none-any.whl",
+     "to": "wheels/usb_protocol-0.9.2-py3-none-any.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "uvicorn 0.54.0",
+     "url": "https://files.pythonhosted.org/packages/38/0c/b54a4fdd7f90a3af8b02ebc9ce6712c2c208b7926a2f7bad95c33ebbe943/uvicorn-0.54.0-py3-none-any.whl",
+     "sha256": "505bdb0f318731d45f1f712071fc781a8981f6847a31c902c9f5e652d4f67faf",
+     "bytes": 87427,
+     "file": "uvicorn-0.54.0-py3-none-any.whl",
+     "to": "wheels/uvicorn-0.54.0-py3-none-any.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "wcwidth 0.9.4",
+     "url": "https://files.pythonhosted.org/packages/d6/f1/c123f902bc2ff9e9c2ab66241b8872204df87cbb18ecdf035e120860fedc/wcwidth-0.9.4-cp310-abi3-win_amd64.whl",
+     "sha256": "f28d77153303450ee13ebbe888297e75cf532c754555b6cabafc9bdda16c421c",
+     "bytes": 597780,
+     "file": "wcwidth-0.9.4-cp310-abi3-win_amd64.whl",
+     "to": "wheels/wcwidth-0.9.4-cp310-abi3-win_amd64.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "wrapt 1.17.3",
+     "url": "https://files.pythonhosted.org/packages/57/54/35a84d0a4d23ea675994104e667ceff49227ce473ba6a59ba2c84f250b74/wrapt-1.17.3-cp313-cp313-win_amd64.whl",
+     "sha256": "1f0b2f40cf341ee8cc1a97d51ff50dddb9fcc73241b9143ec74b30fc4f44f6cb",
+     "bytes": 38885,
+     "file": "wrapt-1.17.3-cp313-cp313-win_amd64.whl",
+     "to": "wheels/wrapt-1.17.3-cp313-cp313-win_amd64.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "run",
+     "kind": "pip-wheels",
+     "what": "instalar os pacotes Python",
+     "from": "wheels",
+     "check": "pacotes-instalados.json",
+     "packages": [
+      {
+       "name": "amaranth",
+       "version": "0.5.10"
+      },
+      {
+       "name": "annotated-types",
+       "version": "0.8.0"
+      },
+      {
+       "name": "anyio",
+       "version": "4.16.0"
+      },
+      {
+       "name": "apollo-fpga",
+       "version": "1.1.1"
+      },
+      {
+       "name": "argparse-addons",
+       "version": "0.12.0"
+      },
+      {
+       "name": "attrs",
+       "version": "26.1.0"
+      },
+      {
+       "name": "backports.functools-lru-cache",
+       "version": "2.0.0"
+      },
+      {
+       "name": "backports.zstd",
+       "version": "1.8.0"
+      },
+      {
+       "name": "bitstruct",
+       "version": "8.24.0"
+      },
+      {
+       "name": "brotli",
+       "version": "1.2.1"
+      },
+      {
+       "name": "cantools",
+       "version": "45.1.2"
+      },
+      {
+       "name": "certifi",
+       "version": "2026.10.23"
+      },
+      {
+       "name": "cffi",
+       "version": "2.1.1"
+      },
+      {
+       "name": "charset-normalizer",
+       "version": "3.5.2"
+      },
+      {
+       "name": "click",
+       "version": "8.5.0"
+      },
+      {
+       "name": "colorama",
+       "version": "0.4.6"
+      },
+      {
+       "name": "construct",
+       "version": "2.10.70"
+      },
+      {
+       "name": "crccheck",
+       "version": "1.3.1"
+      },
+      {
+       "name": "cryptography",
+       "version": "50.0.2"
+      },
+      {
+       "name": "cynthion",
+       "version": "0.2.5"
+      },
+      {
+       "name": "Cython",
+       "version": "3.3.1"
+      },
+      {
+       "name": "deprecation",
+       "version": "2.1.0"
+      },
+      {
+       "name": "enum-tools",
+       "version": "0.13.0"
+      },
+      {
+       "name": "flatbuffers",
+       "version": "25.12.19"
+      },
+      {
+       "name": "future",
+       "version": "1.0.0"
+      },
+      {
+       "name": "fx2",
+       "version": "0.16"
+      },
+      {
+       "name": "h11",
+       "version": "0.16.0"
+      },
+      {
+       "name": "httpcore",
+       "version": "1.0.9"
+      },
+      {
+       "name": "httpx",
+       "version": "0.28.1"
+      },
+      {
+       "name": "httpx-sse",
+       "version": "0.4.3"
+      },
+      {
+       "name": "idna",
+       "version": "3.20"
+      },
+      {
+       "name": "ImageIO",
+       "version": "2.38.1"
+      },
+      {
+       "name": "importlib_resources",
+       "version": "7.1.0"
+      },
+      {
+       "name": "inflate64",
+       "version": "1.0.4"
+      },
+      {
+       "name": "Jinja2",
+       "version": "3.1.6"
+      },
+      {
+       "name": "jschon",
+       "version": "0.11.1"
+      },
+      {
+       "name": "jsonschema",
+       "version": "4.26.0"
+      },
+      {
+       "name": "jsonschema-specifications",
+       "version": "2025.9.1"
+      },
+      {
+       "name": "lazy-loader",
+       "version": "0.6"
+      },
+      {
+       "name": "libusb1",
+       "version": "3.4.0"
+      },
+      {
+       "name": "libusb-package",
+       "version": "1.0.30.0"
+      },
+      {
+       "name": "llvmlite",
+       "version": "0.50.0"
+      },
+      {
+       "name": "luna-soc",
+       "version": "0.3.2"
+      },
+      {
+       "name": "luna-usb",
+       "version": "0.2.3"
+      },
+      {
+       "name": "MarkupSafe",
+       "version": "3.0.4"
+      },
+      {
+       "name": "mcp",
+       "version": "1.30.0"
+      },
+      {
+       "name": "multivolumefile",
+       "version": "0.2.3"
+      },
+      {
+       "name": "networkx",
+       "version": "3.7"
+      },
+      {
+       "name": "numba",
+       "version": "0.68.1"
+      },
+      {
+       "name": "numpy",
+       "version": "2.5.4"
+      },
+      {
+       "name": "onnxruntime",
+       "version": "1.31.1"
+      },
+      {
+       "name": "packaging",
+       "version": "26.3"
+      },
+      {
+       "name": "pillow",
+       "version": "13.0.0"
+      },
+      {
+       "name": "platformdirs",
+       "version": "4.14.5"
+      },
+      {
+       "name": "pooch",
+       "version": "1.9.0"
+      },
+      {
+       "name": "prompt_toolkit",
+       "version": "3.0.53"
+      },
+      {
+       "name": "protobuf",
+       "version": "7.36.2"
+      },
+      {
+       "name": "psutil",
+       "version": "7.2.2"
+      },
+      {
+       "name": "py7zr",
+       "version": "1.1.4"
+      },
+      {
+       "name": "pybcj",
+       "version": "1.0.8"
+      },
+      {
+       "name": "pyccobs",
+       "version": "0.1.1"
+      },
+      {
+       "name": "pycparser",
+       "version": "3.12"
+      },
+      {
+       "name": "pycryptodomex",
+       "version": "3.24.2"
+      },
+      {
+       "name": "pydantic",
+       "version": "2.14.3"
+      },
+      {
+       "name": "pydantic_core",
+       "version": "2.50.4"
+      },
+      {
+       "name": "pydantic-settings",
+       "version": "2.16.2"
+      },
+      {
+       "name": "pyftdi",
+       "version": "0.57.2"
+      },
+      {
+       "name": "pyfwup",
+       "version": "0.5.3"
+      },
+      {
+       "name": "Pygments",
+       "version": "2.21.0"
+      },
+      {
+       "name": "pygreat",
+       "version": "2024.0.5"
+      },
+      {
+       "name": "PyJWT",
+       "version": "2.15.1"
+      },
+      {
+       "name": "PyMatting",
+       "version": "1.1.16"
+      },
+      {
+       "name": "pymodbus",
+       "version": "3.16.2"
+      },
+      {
+       "name": "pyppmd",
+       "version": "1.3.1"
+      },
+      {
+       "name": "PyQt6",
+       "version": "6.12.0"
+      },
+      {
+       "name": "PyQt6-Qt6",
+       "version": "6.12.0"
+      },
+      {
+       "name": "PyQt6_sip",
+       "version": "13.13.0"
+      },
+      {
+       "name": "pyreadline3",
+       "version": "3.5.6"
+      },
+      {
+       "name": "pyserial",
+       "version": "3.5"
+      },
+      {
+       "name": "python-can",
+       "version": "4.6.1"
+      },
+      {
+       "name": "python-dotenv",
+       "version": "1.2.4"
+      },
+      {
+       "name": "python-multipart",
+       "version": "0.0.33"
+      },
+      {
+       "name": "pyusb",
+       "version": "1.3.1"
+      },
+      {
+       "name": "pyvcd",
+       "version": "0.4.2"
+      },
+      {
+       "name": "PyVISA",
+       "version": "1.16.2"
+      },
+      {
+       "name": "PyVISA-py",
+       "version": "0.8.1"
+      },
+      {
+       "name": "pywin32",
+       "version": "312"
+      },
+      {
+       "name": "pyxdg",
+       "version": "0.28"
+      },
+      {
+       "name": "referencing",
+       "version": "0.37.0"
+      },
+      {
+       "name": "rembg",
+       "version": "2.0.87"
+      },
+      {
+       "name": "requests",
+       "version": "2.34.2"
+      },
+      {
+       "name": "rfc3986",
+       "version": "2.0.0"
+      },
+      {
+       "name": "rpds-py",
+       "version": "2026.9.1"
+      },
+      {
+       "name": "scikit-image",
+       "version": "0.26.0"
+      },
+      {
+       "name": "scipy",
+       "version": "1.18.1"
+      },
+      {
+       "name": "setuptools",
+       "version": "84.2.1"
+      },
+      {
+       "name": "sse-starlette",
+       "version": "3.6.0"
+      },
+      {
+       "name": "starlette",
+       "version": "1.10.0"
+      },
+      {
+       "name": "tabulate",
+       "version": "0.10.0"
+      },
+      {
+       "name": "textparser",
+       "version": "0.26.2"
+      },
+      {
+       "name": "texttable",
+       "version": "1.7.2"
+      },
+      {
+       "name": "tifffile",
+       "version": "2026.10.15"
+      },
+      {
+       "name": "tomli",
+       "version": "2.5.0"
+      },
+      {
+       "name": "tqdm",
+       "version": "4.70.1"
+      },
+      {
+       "name": "typing_extensions",
+       "version": "4.16.0"
+      },
+      {
+       "name": "typing-inspection",
+       "version": "0.4.5"
+      },
+      {
+       "name": "urh",
+       "version": "2.10.0"
+      },
+      {
+       "name": "urllib3",
+       "version": "2.8.0"
+      },
+      {
+       "name": "usb-protocol",
+       "version": "0.9.2"
+      },
+      {
+       "name": "uvicorn",
+       "version": "0.54.0"
+      },
+      {
+       "name": "wcwidth",
+       "version": "0.9.4"
+      },
+      {
+       "name": "wrapt",
+       "version": "1.17.3"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "CoreLSP",
+   "name": "Servidores LSP (núcleo, 7 pacotes npm)",
+   "description": "Servidores de linguagem para Python, JavaScript/TypeScript, HTML, CSS, JSON, Bash, YAML e PHP. Dão ao agente os erros reais do código, definições e referências.",
+   "group": "N",
+   "folder": "_Runtime/lsp",
+   "repo": "https://registry.npmjs.org",
+   "version": "",
+   "license": "MIT; Intelephense proprietário",
+   "installed_mb": 236,
+   "requires": [
+    "CoreNode"
+   ],
+   "present": "_Runtime/lsp/node_modules/pyright/langserver.index.js",
+   "automatic": true,
+   "pending": "",
+   "note": "npm ci com o package-lock.json que vem com a app (installer/lsp): versões e integridades fixas, sem scripts de instalação.",
+   "steps": [
+    {
+     "action": "run",
+     "kind": "npm-ci",
+     "what": "instalar os servidores LSP",
+     "dir": ".",
+     "lock_from": "installer/lsp",
+     "check": "node_modules/pyright/langserver.index.js"
+    }
+   ]
+  },
+  {
+   "key": "Ghidra",
+   "name": "Ghidra",
+   "description": "Desmontador e descompilador da NSA. Serve para analisar executáveis e firmware sem o código-fonte: ver funções, cadeias de texto e o código descompilado.",
+   "group": "A",
+   "repo": "https://github.com/NationalSecurityAgency/ghidra",
+   "version": "12.1.4",
+   "installed_mb": 2817,
+   "requires": [
+    "ClassRevive"
+   ],
+   "note": "Precisa de um JDK 21 (usa o do ClassRevive).",
+   "automatic": true,
+   "pending": "",
+   "steps": [
+    {
+     "what": "aplicação",
+     "url": "https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_12.1.4_build/ghidra_12.1.4_PUBLIC_20260921.zip",
+     "sha256": "ddac49f903da9d5bac833e5cc79395098b9c33cfd3279be5f31bd00387d2d4db",
+     "bytes": 569649598,
+     "publisher_digest": true,
+     "action": "extract",
+     "file": "ghidra_12.1.4_PUBLIC_20260921.zip",
+     "to": "app",
+     "format": "zip"
+    }
+   ],
+   "present": "Ghidra/app"
+  },
+  {
+   "key": "ImHex",
+   "name": "ImHex",
+   "description": "Editor hexadecimal com padrões e analisadores. Serve para inspecionar e editar ficheiros binários, dumps de memória e firmware byte a byte.",
+   "group": "A",
+   "repo": "https://github.com/WerWolv/ImHex",
+   "version": "1.38.1",
+   "installed_mb": 305,
+   "requires": [],
+   "note": "",
+   "automatic": true,
+   "pending": "",
+   "steps": [
+    {
+     "what": "aplicação",
+     "url": "https://github.com/WerWolv/ImHex/releases/download/v1.38.1/imhex-1.38.1-Windows-Portable-x86_64.zip",
+     "sha256": "32520e57712894bc8304c4b01553223e7dda25852326184f99dfd72a09a80187",
+     "bytes": 66578670,
+     "publisher_digest": true,
+     "action": "extract",
+     "file": "imhex-1.38.1-Windows-Portable-x86_64.zip",
+     "to": "app",
+     "format": "zip"
+    }
+   ],
+   "present": "ImHex/app"
+  },
+  {
+   "key": "ImageMagick",
+   "name": "ImageMagick",
+   "description": "Conversor e editor de imagens pela linha de comandos. Serve para redimensionar, converter de formato, recortar e compor imagens em série.",
+   "group": "A",
+   "repo": "https://github.com/ImageMagick/ImageMagick",
+   "version": "7.1.2-35",
+   "installed_mb": 260,
+   "requires": [
+    "Core7Zip"
+   ],
+   "note": "",
+   "automatic": true,
+   "pending": "",
+   "steps": [
+    {
+     "what": "aplicação",
+     "url": "https://github.com/ImageMagick/ImageMagick/releases/download/7.1.2-35/ImageMagick-7.1.2-35-portable-Q16-HDRI-x64.7z",
+     "sha256": "34db4364da26c88d6b8cc5bbc1fff22b85d00d3b399c82fe85ee4790efacbbf1",
+     "bytes": 12117825,
+     "publisher_digest": false,
+     "action": "extract",
+     "file": "ImageMagick-7.1.2-35-portable-Q16-HDRI-x64.7z",
+     "to": "app",
+     "format": "7zip",
+     "check": "app/magick.exe"
+    }
+   ],
+   "present": "ImageMagick/app/magick.exe"
+  },
+  {
+   "key": "OpenOCD",
+   "name": "OpenOCD · JTAG / SWD",
+   "description": "Depurador de microcontroladores por JTAG e SWD. Serve para ler e gravar a memória flash de placas e depurar firmware com uma sonda.",
+   "group": "A",
+   "repo": "https://github.com/xpack-dev-tools/openocd-xpack",
+   "version": "0.12.0-7",
+   "installed_mb": 11,
+   "requires": [],
+   "note": "",
+   "automatic": true,
+   "pending": "",
+   "steps": [
+    {
+     "what": "aplicação",
+     "url": "https://github.com/xpack-dev-tools/openocd-xpack/releases/download/v0.12.0-7/xpack-openocd-0.12.0-7-win32-x64.zip",
+     "sha256": "6bfd3c97135aafef8affc9af1acf34fd0e2b9ca26044506f6abd7f95b7630052",
+     "bytes": 3225998,
+     "publisher_digest": true,
+     "action": "extract",
+     "file": "xpack-openocd-0.12.0-7-win32-x64.zip",
+     "to": "app",
+     "format": "zip"
+    }
+   ],
+   "present": "OpenOCD/app"
+  },
+  {
+   "key": "RTL433",
+   "name": "rtl_433",
+   "description": "Descodificador de rádio para recetores RTL-SDR. Serve para captar e interpretar sensores sem fios a 433/868 MHz (estações meteorológicas, comandos, alarmes).",
+   "group": "A",
+   "repo": "https://github.com/merbanan/rtl_433",
+   "version": "25.12",
+   "installed_mb": 6,
+   "requires": [],
+   "note": "",
+   "automatic": true,
+   "pending": "",
+   "steps": [
+    {
+     "what": "aplicação",
+     "url": "https://github.com/merbanan/rtl_433/releases/download/25.12/rtl_433-win-x64-25.12.zip",
+     "sha256": "ed42651d2a2a94f6419f7675955bd65449d8247e27822c65c363595b715b7de6",
+     "bytes": 1806689,
+     "publisher_digest": true,
+     "action": "extract",
+     "file": "rtl_433-win-x64-25.12.zip",
+     "to": "app",
+     "format": "zip"
+    }
+   ],
+   "present": "RTL433/app/rtl_433.exe"
+  },
+  {
+   "key": "Packetry",
+   "name": "Packetry · Cynthion",
+   "description": "Analisador de tráfego USB para a placa Cynthion. Serve para capturar e ver, pacote a pacote, a conversa entre um dispositivo USB e o computador.",
+   "group": "A",
+   "repo": "https://github.com/greatscottgadgets/packetry",
+   "version": "0.5.0",
+   "installed_mb": 127,
+   "requires": [],
+   "note": "O zip traz o instalador oficial; precisa do hardware Cynthion e do driver USB.",
+   "automatic": true,
+   "pending": "",
+   "steps": [
+    {
+     "what": "aplicação",
+     "url": "https://github.com/greatscottgadgets/packetry/releases/download/v0.5.0/Packetry-Installer-for-Windows.zip",
+     "sha256": "63b4bb880b188a0cd3003f6450bca1137dbf60cd76f5f823b4ba5b11d7521e81",
+     "bytes": 15207734,
+     "publisher_digest": true,
+     "action": "extract",
+     "file": "Packetry-Installer-for-Windows.zip",
+     "to": "app/instalador",
+     "format": "zip",
+     "check": "app/instalador/packetry-0.5.0-x86_64.msi"
+    },
+    {
+     "action": "run",
+     "kind": "msi-extract",
+     "what": "desempacotar o MSI (sem instalar no sistema)",
+     "archive": "app/instalador/packetry-0.5.0-x86_64.msi",
+     "to": "app/portable",
+     "check": "app/portable/bin",
+     "inner": "PFiles/Packetry"
+    }
+   ],
+   "present": "Packetry/app/portable/bin"
+  },
+  {
+   "key": "SerialSniffer",
+   "name": "SerialSniffer",
+   "description": "Monitor de portas série. Serve para ver e registar o que passa numa porta COM entre um programa e um equipamento.",
+   "group": "A",
+   "repo": "https://github.com/DataAcquisitionTechnologies/serial-port-monitor",
+   "version": "1.2",
+   "installed_mb": 87,
+   "requires": [],
+   "note": "Para intercalar outra aplicação precisa do par de portas virtuais com0com (não incluído).",
+   "automatic": true,
+   "pending": "",
+   "steps": [
+    {
+     "what": "aplicação",
+     "url": "https://github.com/DataAcquisitionTechnologies/serial-port-monitor/releases/download/v1.2/SerialSniffer_V1.2.exe",
+     "sha256": "ed5447a548765cfbd206708fa452d2c67d20251ca5cf83f9ca2fb075d6efc932",
+     "bytes": 45447887,
+     "publisher_digest": true,
+     "action": "copy",
+     "file": "SerialSniffer_V1.2.exe",
+     "to": "app/SerialSniffer.exe"
+    }
+   ],
+   "present": "SerialSniffer/app/SerialSniffer.exe"
+  },
+  {
+   "key": "ClassRevive",
+   "name": "ClassRevive (adaptador da app)",
+   "description": "Descompilador de Java com quatro motores, incluído com um JDK 21. Serve para identificar, inspecionar e descompilar ficheiros .class, JAR e APK; o JDK é usado também pelo Ghidra e pelo REA.",
+   "group": "A",
+   "repo": "https://github.com/t1zzo/classrevive",
+   "version": "0.1.0",
+   "installed_mb": 554,
+   "requires": [],
+   "note": "Inclui o JDK 21 (Temurin), que o Ghidra, o REA e o Android RE também usam.",
+   "automatic": true,
+   "pending": "",
+   "steps": [
+    {
+     "what": "classrevive-0.1.0.zip",
+     "url": "https://github.com/t1zzo/classrevive/releases/download/v0.1.0/classrevive-0.1.0.zip",
+     "sha256": "1362edbca3110f5ee9090b718623d6f9ad2736fb039cbb4fef4da01cf51235c5",
+     "bytes": 14734617,
+     "publisher_digest": true,
+     "action": "extract",
+     "file": "classrevive-0.1.0.zip",
+     "to": "distribution",
+     "format": "zip",
+     "strip": 1,
+     "check": "distribution/bin"
+    },
+    {
+     "what": "OpenJDK21U-jdk_x64_windows_hotspot_21.0.13_9.zip",
+     "url": "https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21.0.13%2B9/OpenJDK21U-jdk_x64_windows_hotspot_21.0.13_9.zip",
+     "sha256": "a4dbaa05fca4bd89d84584e58c459bd732efebb1722af80ab13c6516832004f9",
+     "bytes": 205421281,
+     "publisher_digest": true,
+     "action": "extract",
+     "file": "OpenJDK21U-jdk_x64_windows_hotspot_21.0.13_9.zip",
+     "to": "runtime",
+     "format": "zip",
+     "check": "runtime/jdk-21.0.13+9/bin/java.exe"
+    }
+   ],
+   "present": "ClassRevive/runtime/jdk-21.0.13+9/bin/java.exe"
+  },
+  {
+   "key": "AndroidReverseEngineering",
+   "name": "Android Reverse Engineering",
+   "description": "Skill de engenharia inversa de Android, com guia e scripts (jadx, Vineflower, dex2jar). Serve para descompilar APK/XAPK/JAR/AAR e procurar os endereços HTTP que a aplicação usa.",
+   "group": "A",
+   "repo": "https://github.com/SimoneAvogadro/android-reverse-engineering-skill",
+   "version": "0c7cf89830993df7dfc178498f69952262808bea",
+   "installed_mb": 187,
+   "requires": [
+    "ClassRevive"
+   ],
+   "note": "Usa o JDK do ClassRevive. Dois dos quatro ficheiros não têm hash publicado pelo autor.",
+   "automatic": true,
+   "pending": "",
+   "steps": [
+    {
+     "what": "source-0c7cf898.zip",
+     "url": "https://codeload.github.com/SimoneAvogadro/android-reverse-engineering-skill/zip/0c7cf89830993df7dfc178498f69952262808bea",
+     "sha256": "4800fb58e33f35e998389d33e66b5e2fb5c2cd1ea4ad17c8f5841983c5c8619c",
+     "bytes": 0,
+     "publisher_digest": false,
+     "action": "source",
+     "file": "source-0c7cf898.zip",
+     "to": "source",
+     "strip": 1,
+     "check": "source/plugins",
+     "repository": "SimoneAvogadro/android-reverse-engineering-skill",
+     "commit": "0c7cf89830993df7dfc178498f69952262808bea"
+    },
+    {
+     "what": "jadx-1.5.6.zip",
+     "url": "https://github.com/skylot/jadx/releases/download/v1.5.6/jadx-1.5.6.zip",
+     "sha256": "545ea2be9c242511bc145755cf4bda2485ade42966e096f8b4d3da2a230e8974",
+     "bytes": 72646741,
+     "publisher_digest": true,
+     "action": "extract",
+     "file": "jadx-1.5.6.zip",
+     "to": "dependencies/jadx",
+     "format": "zip",
+     "check": "dependencies/jadx/bin"
+    },
+    {
+     "what": "vineflower-1.12.0.jar",
+     "url": "https://github.com/Vineflower/vineflower/releases/download/1.12.0/vineflower-1.12.0.jar",
+     "sha256": "1dfcfe974395734fa467ce620661c7623d05ba83670de0529b1fbd63ff548b9d",
+     "bytes": 1633863,
+     "publisher_digest": true,
+     "action": "copy",
+     "file": "vineflower-1.12.0.jar",
+     "to": "dependencies/vineflower/vineflower-1.12.0.jar"
+    },
+    {
+     "what": "dex-tools-v2.4.zip",
+     "url": "https://github.com/pxb1988/dex2jar/releases/download/v2.4/dex-tools-v2.4.zip",
+     "sha256": "ee7c45eb3c1d2474a6145d8d447e651a736a22d9664b6d3d3be5a5a817dda23a",
+     "bytes": 19105975,
+     "publisher_digest": false,
+     "action": "extract",
+     "file": "dex-tools-v2.4.zip",
+     "to": "dependencies/dex2jar",
+     "format": "zip",
+     "strip": 1,
+     "check": "dependencies/dex2jar/d2j-dex2jar.bat"
+    }
+   ],
+   "present": "AndroidReverseEngineering/dependencies/jadx/bin"
+  },
+  {
+   "key": "REA",
+   "name": "REA",
+   "description": "Reverse Engineer Anything: agentes de engenharia inversa em Node. Serve para analisar aplicações, JavaScript/Electron, .NET, capturas HAR e binários.",
+   "group": "A",
+   "repo": "https://github.com/morluto/rea",
+   "version": "6.8.0",
+   "installed_mb": 239,
+   "requires": [],
+   "note": "Pacote npm rea-agents 6.8.0 (npm ci com o package-lock.json que vem com a app, sem scripts) e Node próprio. As análises com Ghidra e Java usam o Ghidra e o JDK do ClassRevive, se estiverem instalados.",
+   "automatic": true,
+   "pending": "",
+   "steps": [
+    {
+     "action": "extract",
+     "format": "zip",
+     "strip": 1,
+     "what": "Node 24.22.1",
+     "url": "https://nodejs.org/dist/v24.22.1/node-v24.22.1-win-x64.zip",
+     "sha256": "d2046d28c2c3dcd211ac5145c0bf30e2047ef9dfb306693c8c6e2eccd8b95fa5",
+     "bytes": 37748064,
+     "file": "node-v24.22.1-win-x64.zip",
+     "to": "runtime/node-v24.22.1-win-x64",
+     "check": "runtime/node-v24.22.1-win-x64/node.exe",
+     "publisher_digest": false
+    },
+    {
+     "action": "run",
+     "kind": "npm-ci",
+     "what": "instalar o pacote rea-agents 6.8.0",
+     "dir": "package",
+     "lock_from": "installer/rea",
+     "omit_optional": true,
+     "check": "package/node_modules/rea-agents/scripts/rea.mjs"
+    }
+   ],
+   "present": "REA/package/node_modules/rea-agents/scripts/rea.mjs"
+  },
+  {
+   "key": "Whisper",
+   "name": "Whisper (voz para texto, local)",
+   "description": "Reconhecimento de fala a correr no teu PC (whisper.cpp). Serve para ditares as instruções ao agente pelo microfone, sem o áudio sair do computador.",
+   "group": "A",
+   "repo": "https://github.com/ggml-org/whisper.cpp",
+   "version": "1.9.5",
+   "license": "MIT",
+   "installed_mb": 215,
+   "requires": [],
+   "note": "Binário de CPU (sem placa gráfica) e modelo multilingue «small» quantizado, do repositório do autor no Hugging Face. O modelo pode ser trocado por outro ggml-*.bin posto na pasta models.",
+   "present": "Whisper/app/Release/whisper-cli.exe",
+   "automatic": true,
+   "pending": "",
+   "direct": true,
+   "steps": [
+    {
+     "what": "whisper.cpp 1.9.5 para Windows x64",
+     "url": "https://github.com/ggml-org/whisper.cpp/releases/download/b5454/whisper-bin-x64.zip",
+     "sha256": "6ba69e3482d7826214f90a6a9c84ca07782aec1e1d0c6a7c30c994fd5d816ccb",
+     "bytes": 8928640,
+     "publisher_digest": true,
+     "action": "extract",
+     "file": "whisper-bin-x64.zip",
+     "to": "app",
+     "format": "zip"
+    },
+    {
+     "what": "modelo small (q5_1), multilingue",
+     "url": "https://huggingface.co/ggerganov/whisper.cpp/resolve/5359861c739e955e79d9a303bcbc70fb988958b1/ggml-small-q5_1.bin",
+     "sha256": "ae85e4a935d7a567bd102fe55afc16bb595bdb618e11b2fc7591bc08120411bb",
+     "bytes": 190085487,
+     "publisher_digest": true,
+     "action": "copy",
+     "file": "ggml-small-q5_1.bin",
+     "to": "models/ggml-small-q5_1.bin"
+    }
+   ]
+  },
+  {
+   "key": "Piper",
+   "name": "Piper (texto para voz, local)",
+   "description": "Voz portuguesa a correr no teu PC. Serve para a conversa por voz: a app lê as respostas em voz alta sem o texto sair do computador.",
+   "group": "A",
+   "repo": "https://github.com/OHF-Voice/piper1-gpl",
+   "version": "1.8.0",
+   "license": "GPL-3.0-or-later (programa, corre à parte da app); voz «miro» CC BY-NC-ND 4.0 (uso não comercial); voz «tugão» treinada com dados CC0",
+   "installed_mb": 175,
+   "requires": [
+    "CorePackages"
+   ],
+   "note": "Pacote Python piper-tts do PyPI (só CPU), desempacotado na pasta da ferramenta e corrido com o Python das ferramentas, e duas vozes de Portugal: «miro» (masculina, do OpenVoiceOS no Hugging Face; licença só para uso não comercial) e «tugão» (do repositório de vozes do Piper). A voz escolhe-se em Configurações → Aparência. Outra voz .onnx (com o seu .onnx.json) pode ser posta na pasta voices.",
+   "present": "Piper/voices/pt_PT-miro-medium.onnx.json",
+   "automatic": true,
+   "pending": "",
+   "direct": true,
+   "steps": [
+    {
+     "what": "piper-tts 1.8.0 para Windows x64 (PyPI)",
+     "url": "https://files.pythonhosted.org/packages/12/9c/c736d1961cf9ce0655278731b9430df41892ca2ded7b09dabcb340612158/piper_tts-1.8.0-cp39-abi3-win_amd64.whl",
+     "sha256": "5da9bfdb05dfe15da3536859d422e605483ffa6d2b3ec2c5b9593bae6b5aa6a4",
+     "bytes": 34119688,
+     "publisher_digest": true,
+     "action": "extract",
+     "file": "piper_tts-1.8.0-cp39-abi3-win_amd64.whl",
+     "to": "pacote",
+     "format": "zip"
+    },
+    {
+     "what": "voz pt_PT «tugão» (média)",
+     "url": "https://huggingface.co/rhasspy/piper-voices/resolve/e9c8a39444359388adaa94255becb37a5a2b8e51/pt/pt_PT/tug%C3%A3o/medium/pt_PT-tug%C3%A3o-medium.onnx",
+     "sha256": "f90d87efaa88ba0d24018f7e74a0ea3feeddeb407bf46332322a3824e9451219",
+     "bytes": 63221984,
+     "publisher_digest": true,
+     "action": "copy",
+     "file": "pt_PT-tugao-medium.onnx",
+     "to": "voices/pt_PT-tugao-medium.onnx"
+    },
+    {
+     "what": "configuração da voz",
+     "url": "https://huggingface.co/rhasspy/piper-voices/resolve/e9c8a39444359388adaa94255becb37a5a2b8e51/pt/pt_PT/tug%C3%A3o/medium/pt_PT-tug%C3%A3o-medium.onnx.json",
+     "sha256": "511b014b3baeeb7dabc0c96b35ebdc1a039e9436f6912ec94cd85e6a7a6a533e",
+     "bytes": 6280,
+     "action": "copy",
+     "file": "pt_PT-tugao-medium.onnx.json",
+     "to": "voices/pt_PT-tugao-medium.onnx.json"
+    },
+    {
+     "what": "voz pt_PT «miro» (masculina, média)",
+     "url": "https://huggingface.co/OpenVoiceOS/pipertts_pt-PT_miro/resolve/4ac57b67764d78838a084fd16a78504244ee26fe/miro_pt-PT.onnx",
+     "sha256": "b7d03d4e5c51a321983b74fd5564f0ee986e17b2dc4e05cda834f9a14a149e7c",
+     "bytes": 63511038,
+     "publisher_digest": true,
+     "action": "copy",
+     "file": "pt_PT-miro-medium.onnx",
+     "to": "voices/pt_PT-miro-medium.onnx"
+    },
+    {
+     "what": "configuração da voz «miro»",
+     "url": "https://huggingface.co/OpenVoiceOS/pipertts_pt-PT_miro/resolve/4ac57b67764d78838a084fd16a78504244ee26fe/miro_pt-PT.onnx.json",
+     "sha256": "1cea0bbfbfe24c7a69f7029e921b4a6c9ede9527516e716a49612d10c63993d4",
+     "bytes": 4936,
+     "action": "copy",
+     "file": "pt_PT-miro-medium.onnx.json",
+     "to": "voices/pt_PT-miro-medium.onnx.json"
+    }
+   ]
+  },
+  {
+   "key": "Clangd",
+   "name": "clangd (C/C++ · LSP)",
+   "description": "Servidor de linguagem para C e C++. Serve para a app mostrar erros e avisos nos ficheiros .c/.cpp/.h e para o agente os consultar com lsp_diagnosticos.",
+   "group": "A",
+   "repo": "https://github.com/clangd/clangd",
+   "version": "23.1.0",
+   "license": "Apache-2.0 WITH LLVM-exception",
+   "installed_mb": 95,
+   "requires": [],
+   "note": "Usado diretamente pela app; não precisa de estar no PATH.",
+   "present": "Clangd/app/clangd_23.1.0/bin/clangd.exe",
+   "automatic": true,
+   "pending": "",
+   "direct": true,
+   "steps": [
+    {
+     "what": "clangd 23.1.0 para Windows",
+     "url": "https://github.com/clangd/clangd/releases/download/23.1.0/clangd-windows-23.1.0.zip",
+     "sha256": "23412a240756a162e7b98a282f36aa2a23a88db5ce16a0cbc4fef7253768c810",
+     "bytes": 29690805,
+     "publisher_digest": true,
+     "action": "extract",
+     "file": "clangd-windows-23.1.0.zip",
+     "to": "app",
+     "format": "zip"
+    }
+   ]
+  },
+  {
+   "key": "RustAnalyzer",
+   "name": "rust-analyzer (Rust · LSP)",
+   "description": "Servidor de linguagem para Rust. Serve para a app mostrar erros e avisos nos ficheiros .rs. Só é útil com o Rust (cargo) instalado no PC.",
+   "group": "A",
+   "repo": "https://github.com/rust-lang/rust-analyzer",
+   "version": "2026-11-16",
+   "license": "MIT OR Apache-2.0",
+   "installed_mb": 50,
+   "requires": [],
+   "note": "Usado diretamente pela app; não precisa de estar no PATH. Para analisar um projeto precisa do cargo, que vem com o Rust (rustup) e não é instalado pela app.",
+   "present": "RustAnalyzer/app/rust-analyzer.exe",
+   "automatic": true,
+   "pending": "",
+   "direct": true,
+   "steps": [
+    {
+     "what": "rust-analyzer 2026-11-16 para Windows x64",
+     "url": "https://github.com/rust-lang/rust-analyzer/releases/download/2026-11-16/rust-analyzer-x86_64-pc-windows-msvc.zip",
+     "sha256": "dbf0c36ec54cf727d34cc40c9994fe71b7d52e3c28a3112c3deca1aba46fbc8f",
+     "bytes": 18054633,
+     "publisher_digest": true,
+     "action": "extract",
+     "file": "rust-analyzer-x86_64-pc-windows-msvc.zip",
+     "to": "app",
+     "format": "zip"
+    }
+   ]
+  },
+  {
+   "key": "GIMP",
+   "name": "GIMP + MCP",
+   "description": "Editor de imagem completo, com ligação MCP à app. Serve para o agente editar imagens com camadas, filtros e seleções, como num editor de fotografia.",
+   "group": "B",
+   "repo": "https://github.com/gimp-mcp/gimp-mcp",
+   "version": "3.2.8",
+   "installed_mb": 993,
+   "requires": [
+    "CorePython",
+    "CorePackages"
+   ],
+   "note": "É a única ferramenta em que se EXECUTA o instalador de terceiros (o oficial do GIMP, já conferido pelo SHA-256), em modo silencioso e por utilizador: regista o GIMP na conta do Windows (entrada de desinstalação). Inclui o plugin do servidor MCP.",
+   "automatic": true,
+   "pending": "",
+   "steps": [
+    {
+     "what": "aplicação",
+     "url": "https://mirrors.ukfast.co.uk/sites/gimp.org/pub/gimp/v3.2/windows/gimp-3.2.8-setup.exe",
+     "sha256": "1d78874295661d791eaf149982e9b3564888631ea29186da5ff99e8114020a5b",
+     "bytes": 185816224,
+     "publisher_digest": true,
+     "action": "copy",
+     "file": "gimp-3.2.8-setup.exe",
+     "to": "setup/gimp-3.2.8-setup.exe",
+     "transient": true
+    },
+    {
+     "action": "run",
+     "kind": "setup-exe",
+     "what": "correr o instalador oficial do GIMP (silencioso, por utilizador)",
+     "installer": "setup/gimp-3.2.8-setup.exe",
+     "to": "app",
+     "check": "app/bin"
+    },
+    {
+     "what": "código-fonte (commit 73258653)",
+     "url": "https://codeload.github.com/gimp-mcp/gimp-mcp/zip/7325865385541a01aaf336ebc93b00332297f77f",
+     "sha256": "e4a4c1a4f34464bfb15c4ab1cde057f51c125478e8c5f9821f7cff387b3f88e2",
+     "bytes": 0,
+     "publisher_digest": false,
+     "action": "source",
+     "file": "7325865385541a01aaf336ebc93b00332297f77f.zip",
+     "to": "source",
+     "repository": "gimp-mcp/gimp-mcp",
+     "commit": "7325865385541a01aaf336ebc93b00332297f77f",
+     "check": "source/gimp-mcp-7325865385541a01aaf336ebc93b00332297f77f/gimp_mcp_server.py"
+    },
+    {
+     "action": "run",
+     "kind": "copy-file",
+     "what": "copiar o plugin MCP para o perfil do GIMP",
+     "from": "source/*/gimp-mcp-plugin.py",
+     "to": "profile/plug-ins/gimp-mcp-plugin/gimp-mcp-plugin.py",
+     "check": "profile/plug-ins/gimp-mcp-plugin/gimp-mcp-plugin.py"
+    }
+   ],
+   "present": "GIMP/app/bin",
+   "cleanup": [
+    "setup"
+   ]
+  },
+  {
+   "key": "Wireshark",
+   "name": "Wireshark / TShark / USBPcap",
+   "description": "Analisador de tráfego de rede (com o TShark para a linha de comandos). Serve para capturar e inspecionar pacotes de rede e, com o USBPcap, de USB.",
+   "group": "B",
+   "repo": "https://github.com/wireshark/wireshark",
+   "version": "4.6.9",
+   "installed_mb": 491,
+   "requires": [
+    "Core7Zip"
+   ],
+   "note": "Versão portátil de wireshark.org. A captura USB exige o driver USBPcap, que não é instalado.",
+   "automatic": true,
+   "pending": "",
+   "steps": [
+    {
+     "what": "aplicação",
+     "url": "https://www.wireshark.org/download/win64/all-versions/WiresharkPortable64_4.6.9.paf.exe",
+     "sha256": "71bcfda9eefec8088faaf0b8e6d026369ea83ae6149cd0b76ccf0b3194240db0",
+     "bytes": 108302760,
+     "publisher_digest": false,
+     "action": "extract",
+     "file": "WiresharkPortable64_4.6.9.paf.exe",
+     "to": "app",
+     "format": "7zip",
+     "check": "app/App"
+    }
+   ],
+   "present": "Wireshark/app/App"
+  },
+  {
+   "key": "Sigrok",
+   "name": "sigrok-cli + descodificadores",
+   "description": "Programa de linha de comandos para analisadores lógicos, com descodificadores de protocolos. Serve para capturar sinais digitais e descodificar I²C, SPI, UART e outros.",
+   "group": "B",
+   "repo": "https://github.com/sigrokproject/sigrok-cli",
+   "version": "0.7.2",
+   "installed_mb": 90,
+   "requires": [
+    "Core7Zip"
+   ],
+   "note": "Instalador de sigrok.org extraído sem executar. Precisa de driver WinUSB conforme o analisador lógico.",
+   "automatic": true,
+   "pending": "",
+   "steps": [
+    {
+     "what": "aplicação",
+     "url": "https://sigrok.org/download/binary/sigrok-cli/sigrok-cli-0.7.2-x86_64-installer.exe",
+     "sha256": "27ddf838c992381f3d9c52ad9d5a7ec7db382d9aea1905d44538a7c7bd368446",
+     "bytes": 38968619,
+     "publisher_digest": false,
+     "action": "extract",
+     "file": "sigrok-cli-0.7.2-x86_64-installer.exe",
+     "to": "app",
+     "format": "7zip",
+     "check": "app/sigrok-cli.exe"
+    }
+   ],
+   "present": "Sigrok/app/sigrok-cli.exe"
+  },
+  {
+   "key": "PulseView",
+   "name": "PulseView",
+   "description": "Interface gráfica do sigrok. Serve para ver no ecrã os sinais captados por um analisador lógico e descodificá-los visualmente.",
+   "group": "B",
+   "repo": "https://github.com/sigrokproject/pulseview",
+   "version": "0.4.2",
+   "installed_mb": 103,
+   "requires": [
+    "Core7Zip"
+   ],
+   "note": "Instalador de sigrok.org extraído sem executar.",
+   "automatic": true,
+   "pending": "",
+   "steps": [
+    {
+     "what": "aplicação",
+     "url": "https://sigrok.org/download/binary/pulseview/pulseview-0.4.2-64bit-static-release-installer.exe",
+     "sha256": "63e9ba060bec76bca7e87bc7e06fd5f7405bc6c74aa0afd76e9e9b7b1c9fab41",
+     "bytes": 44036858,
+     "publisher_digest": false,
+     "action": "extract",
+     "file": "pulseview-0.4.2-64bit-static-release-installer.exe",
+     "to": "app",
+     "format": "7zip",
+     "check": "app/pulseview.exe"
+    }
+   ],
+   "present": "PulseView/app/pulseview.exe"
+  },
+  {
+   "key": "Flashrom",
+   "name": "flashrom · CH341A",
+   "description": "Leitor e gravador de chips de memória flash. Serve para ler, apagar e gravar BIOS e memórias SPI com um programador como o CH341A.",
+   "group": "B",
+   "repo": "https://github.com/flashrom/flashrom",
+   "version": "MSYS2 1.8.0",
+   "installed_mb": 153,
+   "requires": [
+    "Core7Zip"
+   ],
+   "note": "Oito pacotes do MSYS2 (flashrom 1.8.0 e as bibliotecas de que precisa), descomprimidos para app/ucrt64. Precisa do driver do CH341A.",
+   "automatic": true,
+   "pending": "",
+   "steps": [
+    {
+     "action": "extract",
+     "format": "zst",
+     "merge": true,
+     "only_top": [
+      "ucrt64"
+     ],
+     "what": "flashrom-1.8.0-1",
+     "url": "https://mirror.msys2.org/mingw/ucrt64/mingw-w64-ucrt-x86_64-flashrom-1.8.0-1-any.pkg.tar.zst",
+     "sha256": "6645726f46a620f22d6f5cf950f70cd88d0168d3dd26bdf04c7e580377466f4c",
+     "bytes": 342896,
+     "file": "mingw-w64-ucrt-x86_64-flashrom-1.8.0-1-any.pkg.tar.zst",
+     "to": "app",
+     "check": "app/ucrt64/bin/flashrom.exe",
+     "publisher_digest": false
+    },
+    {
+     "action": "extract",
+     "format": "zst",
+     "merge": true,
+     "only_top": [
+      "ucrt64"
+     ],
+     "what": "libftdi-1.5-13",
+     "url": "https://mirror.msys2.org/mingw/ucrt64/mingw-w64-ucrt-x86_64-libftdi-1.5-13-any.pkg.tar.zst",
+     "sha256": "d939da4dcee7f6e9c2658b293746aeefd757c10bbe39c181deff85368aa64368",
+     "bytes": 162246,
+     "file": "mingw-w64-ucrt-x86_64-libftdi-1.5-13-any.pkg.tar.zst",
+     "to": "app",
+     "check": "app/ucrt64/bin",
+     "publisher_digest": false
+    },
+    {
+     "action": "extract",
+     "format": "zst",
+     "merge": true,
+     "only_top": [
+      "ucrt64"
+     ],
+     "what": "libgcc-16.2.0-6",
+     "url": "https://mirror.msys2.org/mingw/ucrt64/mingw-w64-ucrt-x86_64-libgcc-16.2.0-6-any.pkg.tar.zst",
+     "sha256": "80b2497f019977dd9528b1abc8621b1328a0115ab1f724047ccbb56bf323f11d",
+     "bytes": 77191,
+     "file": "mingw-w64-ucrt-x86_64-libgcc-16.2.0-6-any.pkg.tar.zst",
+     "to": "app",
+     "check": "app/ucrt64/bin",
+     "publisher_digest": false
+    },
+    {
+     "action": "extract",
+     "format": "zst",
+     "merge": true,
+     "only_top": [
+      "ucrt64"
+     ],
+     "what": "libiconv-1.19.1-1",
+     "url": "https://mirror.msys2.org/mingw/ucrt64/mingw-w64-ucrt-x86_64-libiconv-1.19.1-1-any.pkg.tar.zst",
+     "sha256": "8a45dc317a285a036bddd79e01505d67b79e44ff49fc3f6e7177a5ea98d098cf",
+     "bytes": 742799,
+     "file": "mingw-w64-ucrt-x86_64-libiconv-1.19.1-1-any.pkg.tar.zst",
+     "to": "app",
+     "check": "app/ucrt64/bin",
+     "publisher_digest": false
+    },
+    {
+     "action": "extract",
+     "format": "zst",
+     "merge": true,
+     "only_top": [
+      "ucrt64"
+     ],
+     "what": "libstdc++-16.2.0-6",
+     "url": "https://mirror.msys2.org/mingw/ucrt64/mingw-w64-ucrt-x86_64-libstdc%2B%2B-16.2.0-6-any.pkg.tar.zst",
+     "sha256": "33c5e58a85a538cf843a8672991cce591f0231d66da3b66a57629712d64be17f",
+     "bytes": 795910,
+     "file": "mingw-w64-ucrt-x86_64-libstdc++-16.2.0-6-any.pkg.tar.zst",
+     "to": "app",
+     "check": "app/ucrt64/bin",
+     "publisher_digest": false
+    },
+    {
+     "action": "extract",
+     "format": "zst",
+     "merge": true,
+     "only_top": [
+      "ucrt64"
+     ],
+     "what": "libusb-1.0.30-1",
+     "url": "https://mirror.msys2.org/mingw/ucrt64/mingw-w64-ucrt-x86_64-libusb-1.0.30-1-any.pkg.tar.zst",
+     "sha256": "20106e6ff31b4581bb111b28a68b6b79a50dc3e5fc3033944e1c4b3ff8cd812e",
+     "bytes": 174097,
+     "file": "mingw-w64-ucrt-x86_64-libusb-1.0.30-1-any.pkg.tar.zst",
+     "to": "app",
+     "check": "app/ucrt64/bin",
+     "publisher_digest": false
+    },
+    {
+     "action": "extract",
+     "format": "zst",
+     "merge": true,
+     "only_top": [
+      "ucrt64"
+     ],
+     "what": "libwinpthread-14.0.0.r598.ge3d18511f-1",
+     "url": "https://mirror.msys2.org/mingw/ucrt64/mingw-w64-ucrt-x86_64-libwinpthread-14.0.0.r598.ge3d18511f-1-any.pkg.tar.zst",
+     "sha256": "c35d6be83d141c8cfbb61f1637dd4b53aac8f5562d766aa26d0741c40bad4e4d",
+     "bytes": 34470,
+     "file": "mingw-w64-ucrt-x86_64-libwinpthread-14.0.0.r598.ge3d18511f-1-any.pkg.tar.zst",
+     "to": "app",
+     "check": "app/ucrt64/bin",
+     "publisher_digest": false
+    },
+    {
+     "action": "extract",
+     "format": "zst",
+     "merge": true,
+     "only_top": [
+      "ucrt64"
+     ],
+     "what": "openssl-3.6.5-1",
+     "url": "https://mirror.msys2.org/mingw/ucrt64/mingw-w64-ucrt-x86_64-openssl-3.6.5-1-any.pkg.tar.zst",
+     "sha256": "773e021ebad83f14b5c103db467411e8ff064663e1c7e7f730e2be72f4117064",
+     "bytes": 8297898,
+     "file": "mingw-w64-ucrt-x86_64-openssl-3.6.5-1-any.pkg.tar.zst",
+     "to": "app",
+     "check": "app/ucrt64/bin",
+     "publisher_digest": false
+    }
+   ],
+   "present": "Flashrom/app/ucrt64/bin/flashrom.exe"
+  },
+  {
+   "key": "Glasgow",
+   "name": "Glasgow",
+   "description": "Software da placa Glasgow, uma interface digital programável. Serve para falar com hardware por JTAG, SPI, I²C, UART e outros protocolos.",
+   "group": "C",
+   "repo": "https://github.com/GlasgowEmbedded/glasgow",
+   "version": "",
+   "installed_mb": 175,
+   "requires": [
+    "CorePython",
+    "CorePackages"
+   ],
+   "note": "Também há o pacote Python glasgow no ambiente partilhado. Precisa da placa e do driver. O pacote Python é construído a partir do código descarregado; a construção vai buscar a ferramenta de construção ao PyPI (esse passo não tem versão fixa).",
+   "automatic": true,
+   "pending": "",
+   "steps": [
+    {
+     "what": "código-fonte (commit cc9a083c)",
+     "url": "https://codeload.github.com/GlasgowEmbedded/glasgow/zip/cc9a083c827ba729d390c925af2af1e07ee1de97",
+     "sha256": "f243f3e04e0b111be9ded002d2ed5fd2051e5191b2ac61ab80ec989a69e71e46",
+     "bytes": 0,
+     "publisher_digest": false,
+     "action": "source",
+     "file": "cc9a083c827ba729d390c925af2af1e07ee1de97.zip",
+     "to": "source",
+     "repository": "GlasgowEmbedded/glasgow",
+     "commit": "cc9a083c827ba729d390c925af2af1e07ee1de97",
+     "check": "source/glasgow-cc9a083c827ba729d390c925af2af1e07ee1de97/software"
+    },
+    {
+     "action": "run",
+     "kind": "pip-source",
+     "what": "instalar o pacote Python glasgow a partir do código",
+     "path": "source/glasgow-*/software",
+     "check": "source/glasgow-cc9a083c827ba729d390c925af2af1e07ee1de97/software/pyproject.toml",
+     "scm_version": "0.0.0+cc9a083"
+    }
+   ],
+   "present": "_Runtime/site-packages/glasgow"
+  },
+  {
+   "key": "Lemon",
+   "name": "Lemon Serial Monitor",
+   "description": "Monitor de portas série com driver de kernel. Serve para espiar a comunicação série de outro programa sem a interromper.",
+   "group": "C",
+   "repo": "https://github.com/qingningmneg/LemonSerialMonitor",
+   "version": "0.1.1",
+   "installed_mb": 124,
+   "requires": [],
+   "note": "Driver de kernel com assinatura de teste. A app descarrega o instalador oficial para a pasta (Lemon/instalador) mas NÃO o executa: correr o instalador e aceitar o que ele muda na segurança do Windows fica a cargo do utilizador. Depois, «Configurar executável» aponta para o LemonSerialMonitor.exe instalado.",
+   "automatic": true,
+   "pending": "",
+   "steps": [
+    {
+     "what": "código-fonte (commit 139de537)",
+     "url": "https://codeload.github.com/qingningmneg/LemonSerialMonitor/zip/139de5373a28db3a9a378fa3560dafe947c60ff7",
+     "sha256": "b18dbfc4d4e4a5895899a7f17503d63645e0cf21348e5ad3afa8396b83329cfb",
+     "bytes": 0,
+     "publisher_digest": false,
+     "action": "source",
+     "file": "139de5373a28db3a9a378fa3560dafe947c60ff7.zip",
+     "to": "source",
+     "repository": "qingningmneg/LemonSerialMonitor",
+     "commit": "139de5373a28db3a9a378fa3560dafe947c60ff7"
+    },
+    {
+     "what": "instalador oficial (v0.1.1), só descarregado",
+     "url": "https://github.com/qingningmneg/LemonSerialMonitor/releases/download/v0.1.1/LemonSerialMonitor-Setup-x64.exe",
+     "sha256": "2d51c2128168e89ff405776a7ce813c30fb63885fa5ad146c321cbd0a47995f2",
+     "bytes": 124153320,
+     "publisher_digest": true,
+     "action": "copy",
+     "file": "LemonSerialMonitor-Setup-x64.exe",
+     "to": "instalador/LemonSerialMonitor-Setup-x64.exe"
+    }
+   ]
+  },
+  {
+   "key": "URH",
+   "name": "Universal Radio Hacker",
+   "description": "Universal Radio Hacker. Serve para investigar protocolos de rádio desconhecidos: gravar o sinal, desmodulá-lo, descobrir o formato e voltar a emiti-lo.",
+   "group": "C",
+   "repo": "https://github.com/jopohl/urh",
+   "version": "",
+   "installed_mb": 39,
+   "requires": [
+    "CorePackages"
+   ],
+   "note": "Projeto arquivado. Também há o pacote Python urh.",
+   "automatic": true,
+   "pending": "",
+   "steps": [
+    {
+     "what": "código-fonte (commit 1403d929)",
+     "url": "https://codeload.github.com/jopohl/urh/zip/1403d92987cc3d01d41aff64250955ce455dabd2",
+     "sha256": "10f5018e398da95f94cd0bb4d4b14ce60387389290381bccd7a87c2059a371c7",
+     "bytes": 0,
+     "publisher_digest": false,
+     "action": "source",
+     "file": "1403d92987cc3d01d41aff64250955ce455dabd2.zip",
+     "to": "source",
+     "repository": "jopohl/urh",
+     "commit": "1403d92987cc3d01d41aff64250955ce455dabd2"
+    }
+   ]
+  },
+  {
+   "key": "PortSniffer",
+   "name": "PortSniffer",
+   "description": "Driver de filtro para portas série. Serve para registar o que um programa envia e recebe por uma porta COM.",
+   "group": "C",
+   "repo": "https://github.com/enlyze/PortSniffer",
+   "version": "2.1",
+   "installed_mb": 2,
+   "requires": [],
+   "note": "Programa e driver publicados pelo autor (2022). A app só os põe na pasta: instalar o driver (PortSniffer-Tool.exe /install, com administrador) fica a cargo do utilizador.",
+   "automatic": true,
+   "pending": "",
+   "steps": [
+    {
+     "what": "código-fonte (commit acc298db)",
+     "url": "https://codeload.github.com/enlyze/PortSniffer/zip/acc298dbb4a387e03b3404c1812f60e245738d2b",
+     "sha256": "37a24e3067660824a59fbc7dcac2e102c4e5905f140f4912b8d69bb6f9bda9f5",
+     "bytes": 0,
+     "publisher_digest": false,
+     "action": "source",
+     "file": "acc298dbb4a387e03b3404c1812f60e245738d2b.zip",
+     "to": "source",
+     "repository": "enlyze/PortSniffer",
+     "commit": "acc298dbb4a387e03b3404c1812f60e245738d2b"
+    },
+    {
+     "what": "programa e driver (release 2.1, x64)",
+     "url": "https://github.com/enlyze/PortSniffer/releases/download/2.1/ENLYZE-PortSniffer-2.1-amd64.zip",
+     "sha256": "eaaccf9543b504fd08dd13be6acc1d3e25d1e4150272d4adea865f748e16ba33",
+     "bytes": 1712581,
+     "publisher_digest": false,
+     "action": "extract",
+     "file": "ENLYZE-PortSniffer-2.1-amd64.zip",
+     "to": "app",
+     "format": "zip"
+    }
+   ],
+   "present": "PortSniffer/app/PortSniffer-Tool.exe"
+  },
+  {
+   "key": "ImageMagickMCP",
+   "name": "ImageMagick MCP",
+   "description": "Servidor MCP que liga o ImageMagick à app. Serve para o agente converter e editar imagens por pedido, sem escreveres comandos.",
+   "group": "C",
+   "repo": "https://github.com/bthurlow/imagemagick-mcp",
+   "version": "0.1.0",
+   "installed_mb": 128,
+   "requires": [
+    "CoreNode",
+    "ImageMagick"
+   ],
+   "note": "Código de um commit fixo; o projeto só traz yarn.lock, por isso o package-lock.json usado é o que vem com a app (installer/imagemagick-mcp). Construção local: executa o script «build» do projeto.",
+   "automatic": true,
+   "pending": "",
+   "steps": [
+    {
+     "what": "código-fonte (commit 71ad5ec8)",
+     "url": "https://codeload.github.com/bthurlow/imagemagick-mcp/zip/71ad5ec845ce4e20c3ea21025b8caf1aa29f1615",
+     "sha256": "b66eaa816927f55d2d8fa07100f225f068ce5d643e1bead49c2a42d35abb6024",
+     "bytes": 0,
+     "publisher_digest": false,
+     "action": "source",
+     "file": "71ad5ec845ce4e20c3ea21025b8caf1aa29f1615.zip",
+     "to": "source",
+     "repository": "bthurlow/imagemagick-mcp",
+     "commit": "71ad5ec845ce4e20c3ea21025b8caf1aa29f1615",
+     "check": "source/imagemagick-mcp-71ad5ec845ce4e20c3ea21025b8caf1aa29f1615/package.json"
+    },
+    {
+     "action": "run",
+     "kind": "npm-ci",
+     "what": "instalar as dependências (npm ci com o bloqueio que vem com a app, sem scripts)",
+     "dir": "source/imagemagick-mcp-71ad5ec845ce4e20c3ea21025b8caf1aa29f1615",
+     "check": "source/imagemagick-mcp-71ad5ec845ce4e20c3ea21025b8caf1aa29f1615/node_modules",
+     "lock_from": "installer/imagemagick-mcp"
+    },
+    {
+     "action": "run",
+     "kind": "npm-run",
+     "script": "build",
+     "what": "construir o servidor (npm run build)",
+     "dir": "source/imagemagick-mcp-71ad5ec845ce4e20c3ea21025b8caf1aa29f1615",
+     "check": "source/imagemagick-mcp-71ad5ec845ce4e20c3ea21025b8caf1aa29f1615/dist/index.js"
+    }
+   ],
+   "present": "ImageMagickMCP/source/imagemagick-mcp-71ad5ec845ce4e20c3ea21025b8caf1aa29f1615/dist/index.js"
+  },
+  {
+   "key": "Pillow",
+   "name": "Pillow",
+   "description": "Biblioteca Python de imagem. Serve para o agente abrir, recortar, redimensionar e converter imagens em scripts.",
+   "group": "D",
+   "repo": "https://github.com/python-pillow/Pillow",
+   "version": "",
+   "installed_mb": 0,
+   "requires": [
+    "CorePackages"
+   ],
+   "note": "Pacote pillow.",
+   "automatic": true,
+   "pending": "",
+   "steps": [],
+   "present": "_Runtime/site-packages/PIL"
+  },
+  {
+   "key": "Rembg",
+   "name": "Remoção de fundo · rembg",
+   "description": "Remoção de fundo por inteligência artificial, a correr no teu PC. Serve para recortar o motivo de uma fotografia e ficar com fundo transparente.",
+   "group": "D",
+   "repo": "https://github.com/danielgatis/rembg",
+   "version": "2.0.87",
+   "installed_mb": 837,
+   "requires": [
+    "CorePackages"
+   ],
+   "note": "Pacote rembg 2.0.87 (núcleo) + modelo ONNX u2netp. Outros modelos que tenhas posto em models/ não fazem parte da lista.",
+   "automatic": true,
+   "pending": "",
+   "steps": [
+    {
+     "action": "copy",
+     "what": "modelo u2netp.onnx",
+     "url": "https://github.com/danielgatis/rembg/releases/download/v0.0.0/u2netp.onnx",
+     "sha256": "309c8469258dda742793dce0ebea8e6dd393174f89934733ecc8b14c76f4ddd8",
+     "bytes": 4574861,
+     "file": "u2netp.onnx",
+     "to": "models/u2netp.onnx",
+     "publisher_digest": false
+    }
+   ],
+   "present": "Rembg/models/u2netp.onnx"
+  },
+  {
+   "key": "Serial",
+   "name": "Portas série · pySerial",
+   "description": "Acesso a portas série (pySerial). Serve para o agente falar com placas, módulos e equipamentos ligados por USB-série ou COM.",
+   "group": "D",
+   "repo": "https://github.com/pyserial/pyserial",
+   "version": "",
+   "installed_mb": 0,
+   "requires": [
+    "CorePackages"
+   ],
+   "note": "Pacote pyserial.",
+   "automatic": true,
+   "pending": "",
+   "steps": [],
+   "present": "_Runtime/site-packages/serial"
+  },
+  {
+   "key": "BusPirate",
+   "name": "Bus Pirate · terminal série",
+   "description": "Terminal para o Bus Pirate. Serve para testar e explorar chips por I²C, SPI, UART e 1-Wire através dessa placa.",
+   "group": "D",
+   "repo": "https://github.com/DangerousPrototypes/BusPirate5-firmware",
+   "version": "",
+   "installed_mb": 0,
+   "requires": [
+    "CorePackages"
+   ],
+   "note": "Usa pyserial; não instala firmware.",
+   "automatic": true,
+   "pending": "",
+   "steps": [],
+   "present": "_Runtime/site-packages/serial"
+  },
+  {
+   "key": "PyFtdi",
+   "name": "FTDI · I²C / SPI / GPIO",
+   "description": "Controlo de adaptadores FTDI. Serve para usar um cabo FTDI como interface I²C, SPI ou de pinos GPIO.",
+   "group": "D",
+   "repo": "https://github.com/eblot/pyftdi",
+   "version": "",
+   "installed_mb": 0,
+   "requires": [
+    "CorePackages"
+   ],
+   "note": "Pacote pyftdi; precisa de libusb/WinUSB. O projeto não suporta oficialmente o Windows.",
+   "automatic": true,
+   "pending": "",
+   "steps": [],
+   "present": "_Runtime/site-packages/pyftdi"
+  },
+  {
+   "key": "Modbus",
+   "name": "Modbus RTU / ASCII / TCP",
+   "description": "Cliente e servidor Modbus (RTU, ASCII e TCP). Serve para ler e escrever registos de autómatos, contadores e outros equipamentos industriais.",
+   "group": "D",
+   "repo": "https://github.com/pymodbus-dev/pymodbus",
+   "version": "",
+   "installed_mb": 0,
+   "requires": [
+    "CorePackages"
+   ],
+   "note": "Pacote pymodbus.",
+   "automatic": true,
+   "pending": "",
+   "steps": [],
+   "present": "_Runtime/site-packages/pymodbus"
+  },
+  {
+   "key": "CAN",
+   "name": "CAN + cantools",
+   "description": "Barramento CAN com descodificação por ficheiros DBC (python-can e cantools). Serve para ler, enviar e interpretar mensagens de redes de automóveis e máquinas.",
+   "group": "D",
+   "repo": "https://github.com/hardbyte/python-can",
+   "version": "",
+   "installed_mb": 0,
+   "requires": [
+    "CorePackages"
+   ],
+   "note": "Pacotes python-can e cantools.",
+   "automatic": true,
+   "pending": "",
+   "steps": [],
+   "present": "_Runtime/site-packages/can"
+  },
+  {
+   "key": "VISA",
+   "name": "Osciloscópios · VISA / SCPI",
+   "description": "Controlo de instrumentos de bancada por VISA/SCPI. Serve para comandar osciloscópios, fontes e multímetros e recolher as medições.",
+   "group": "D",
+   "repo": "https://github.com/pyvisa/pyvisa-py",
+   "version": "",
+   "installed_mb": 0,
+   "requires": [
+    "CorePackages"
+   ],
+   "note": "Pacotes pyvisa/pyvisa-py.",
+   "automatic": true,
+   "pending": "",
+   "steps": [],
+   "present": "_Runtime/site-packages/pyvisa"
+  },
+  {
+   "key": "Cynthion",
+   "name": "Cynthion · software de controlo",
+   "description": "Software de controlo da placa Cynthion. Serve para configurar a placa e usá-la para analisar ou emular dispositivos USB.",
+   "group": "D",
+   "repo": "https://github.com/greatscottgadgets/cynthion",
+   "version": "",
+   "installed_mb": 0,
+   "requires": [
+    "CorePackages"
+   ],
+   "note": "Pacote cynthion; precisa do hardware e do driver USB.",
+   "automatic": true,
+   "pending": "",
+   "steps": [],
+   "present": "_Runtime/site-packages/cynthion"
+  },
+  {
+   "key": "Meshy3DAgent",
+   "name": "Meshy 3D Agent (skills)",
+   "description": "Instruções (skills) para agentes criarem modelos 3D com a plataforma Meshy. Serve para gerar um modelo 3D a partir de texto ou imagem; exige conta Meshy paga.",
+   "group": "E",
+   "repo": "https://github.com/meshy-dev/meshy-3d-agent",
+   "version": "0.9.8",
+   "license": "MIT",
+   "installed_mb": 0,
+   "requires": [],
+   "note": "Instruções (skills) para agentes gerarem modelos 3D com a plataforma Meshy. Não traz programa: usa o Meshy CLI (Node 22.12+). Exige conta Meshy paga (Pro ou superior) e gasta créditos Meshy.",
+   "automatic": true,
+   "pending": "",
+   "integrated": false,
+   "steps": [
+    {
+     "what": "código-fonte (commit 7f8e3319, 2026-11-18)",
+     "url": "https://codeload.github.com/meshy-dev/meshy-3d-agent/zip/7f8e33196db4e9e26cbaa0da4fcc14104ccda81d",
+     "sha256": "42ead2b3d2c8ca6efe8472146d94986f8c1d6175524afefaa53b5c063772272e",
+     "bytes": 336031,
+     "publisher_digest": false,
+     "action": "source",
+     "file": "7f8e33196db4e9e26cbaa0da4fcc14104ccda81d.zip",
+     "to": "source",
+     "repository": "meshy-dev/meshy-3d-agent",
+     "commit": "7f8e33196db4e9e26cbaa0da4fcc14104ccda81d"
+    }
+   ]
+  },
+  {
+   "key": "Printing3D",
+   "name": "3D Printing · 3d-print-designer (skills + modelos OpenSCAD)",
+   "description": "Skill e modelos paramétricos para impressão 3D. Serve para ir da descrição de uma peça ao modelo OpenSCAD e aos ficheiros STL/3MF prontos a imprimir.",
+   "group": "E",
+   "repo": "https://github.com/wilsonwaters/3d-printing",
+   "version": "1.0.0",
+   "license": "MIT",
+   "installed_mb": 0,
+   "requires": [],
+   "note": "Skill que vai da descrição de uma peça ao modelo OpenSCAD, imagens, STL e 3MF, mais modelos paramétricos. Precisa do OpenSCAD instalado (não incluído).",
+   "automatic": true,
+   "pending": "",
+   "integrated": false,
+   "steps": [
+    {
+     "what": "código-fonte (commit f5e18a16, 2026-10-01)",
+     "url": "https://codeload.github.com/wilsonwaters/3d-printing/zip/f5e18a16031f5a11b20f7753574ff48494891587",
+     "sha256": "510aaf4b40714857366011e46c4c23899ff47897c87fa180d92f1c0d035dee3d",
+     "bytes": 18624202,
+     "publisher_digest": false,
+     "action": "source",
+     "file": "f5e18a16031f5a11b20f7753574ff48494891587.zip",
+     "to": "source",
+     "repository": "wilsonwaters/3d-printing",
+     "commit": "f5e18a16031f5a11b20f7753574ff48494891587"
+    },
+    {
+     "what": "pacote da release 1.0.0",
+     "url": "https://github.com/wilsonwaters/3d-printing/releases/download/v1.0.0/3d-print-designer.zip",
+     "sha256": "c7c0d88a2cd5b831ce3fd3b2efc585866d39a500ca8418ce387cebd18677cdd4",
+     "bytes": 76700,
+     "publisher_digest": true,
+     "action": "extract",
+     "file": "3d-print-designer.zip",
+     "to": "app",
+     "format": "zip"
+    }
+   ]
+  },
+  {
+   "key": "Wonder3D",
+   "name": "Wonder3D (imagem → 3D)",
+   "description": "Modelo de IA que reconstrói um objeto 3D a partir de uma só imagem. Serve para obter uma malha 3D com textura a partir de uma fotografia; precisa de GPU e dos pesos do modelo.",
+   "group": "E",
+   "repo": "https://github.com/xxlong0/Wonder3D",
+   "version": "",
+   "license": "MIT",
+   "installed_mb": 0,
+   "requires": [],
+   "note": "Código de investigação (CVPR 2024). Só o código é descarregado: para funcionar precisa de placa NVIDIA com CUDA, de um ambiente PyTorch próprio e dos pesos do modelo (vários GB, no Hugging Face). Sem atividade desde 03/2025.",
+   "automatic": true,
+   "pending": "",
+   "integrated": false,
+   "steps": [
+    {
+     "what": "código-fonte (commit d894f827, 2025-02-18)",
+     "url": "https://codeload.github.com/xxlong0/Wonder3D/zip/d894f827aa8c2917761a0dad3ab40df74c7a5b24",
+     "sha256": "43e1d8d1712c149b6cf252260c7d07f33abc68629b239efc40de5487d226e6c0",
+     "bytes": 6750842,
+     "publisher_digest": false,
+     "action": "source",
+     "file": "d894f827aa8c2917761a0dad3ab40df74c7a5b24.zip",
+     "to": "source",
+     "repository": "xxlong0/Wonder3D",
+     "commit": "d894f827aa8c2917761a0dad3ab40df74c7a5b24"
+    }
+   ]
+  },
+  {
+   "key": "Hunyuan3D2",
+   "name": "Hunyuan3D 2.0 (texto/imagem → 3D)",
+   "description": "Modelo de IA da Tencent que gera modelos 3D com textura a partir de imagem ou texto. Bloqueado: a licença exclui a União Europeia.",
+   "group": "E",
+   "repo": "https://github.com/Tencent-Hunyuan/Hunyuan3D-2",
+   "version": "",
+   "license": "Tencent Hunyuan 3D 2.0 Community License",
+   "installed_mb": 0,
+   "requires": [],
+   "note": "Modelos de difusão da Tencent. Precisa de placa NVIDIA (6 a 16 GB de VRAM), ambiente PyTorch e pesos de vários GB (Hugging Face).",
+   "automatic": false,
+   "pending": "a licença exclui expressamente a União Europeia, o Reino Unido e a Coreia do Sul («THIS LICENSE AGREEMENT DOES NOT APPLY IN THE EUROPEAN UNION…»); fica por instalar até o utilizador decidir",
+   "integrated": false,
+   "steps": [
+    {
+     "what": "código-fonte (commit f8db6309, 2025-10-28)",
+     "url": "https://codeload.github.com/Tencent-Hunyuan/Hunyuan3D-2/zip/f8db63096c8282cb27354314d896feba5ba6ff8a",
+     "sha256": "1be140879646034a98941e494072ce0ab26918fdc2fb59210443d56d41bc5622",
+     "bytes": 80303566,
+     "publisher_digest": false,
+     "action": "source",
+     "file": "f8db63096c8282cb27354314d896feba5ba6ff8a.zip",
+     "to": "source",
+     "repository": "Tencent-Hunyuan/Hunyuan3D-2",
+     "commit": "f8db63096c8282cb27354314d896feba5ba6ff8a"
+    }
+   ]
+  },
+  {
+   "key": "PcbRetrace",
+   "name": "PCB ReTrace (engenharia inversa de PCB no browser)",
+   "description": "Aplicação web que corre só no browser, sem enviar dados. Serve para engenharia inversa de placas: das fotografias da placa aos componentes, às pistas e à exportação para o KiCad.",
+   "group": "E",
+   "repo": "https://github.com/dev-lab/pcb-retrace",
+   "version": "",
+   "license": "AGPL-3.0 ou licença comercial (dupla)",
+   "installed_mb": 0,
+   "requires": [],
+   "note": "Aplicação web que corre só no browser (HTML, JavaScript, WebAssembly), sem enviar dados: fotos da placa → componentes, pistas e exportação para KiCad. O código está na pasta docs/. AGPL-3.0: quem a redistribuir modificada tem de publicar o código.",
+   "automatic": true,
+   "pending": "",
+   "integrated": false,
+   "steps": [
+    {
+     "what": "código-fonte (commit f00f3d50, 2026-11-18)",
+     "url": "https://codeload.github.com/dev-lab/pcb-retrace/zip/f00f3d50f4c0f91bf90824eedfa03d62cc6c924d",
+     "sha256": "f516c3a53fda0d75a3a72a77b82ef8a1ba9ef757805621a6ce1d6dbe87e4c0a1",
+     "bytes": 23096416,
+     "publisher_digest": false,
+     "action": "source",
+     "file": "f00f3d50f4c0f91bf90824eedfa03d62cc6c924d.zip",
+     "to": "source",
+     "repository": "dev-lab/pcb-retrace",
+     "commit": "f00f3d50f4c0f91bf90824eedfa03d62cc6c924d"
+    }
+   ]
+  },
+  {
+   "key": "Svg2Shenzhen",
+   "name": "Svg2Shenzhen (Inkscape → KiCad)",
+   "description": "Extensão do Inkscape que exporta desenhos SVG para o KiCad. Serve para fazer placas de circuito e footprints a partir de um desenho vetorial; projeto descontinuado pelo autor.",
+   "group": "E",
+   "repo": "https://github.com/badgeek/svg2shenzhen",
+   "version": "0.2.18.7",
+   "license": "GPL-3.0",
+   "installed_mb": 0,
+   "requires": [],
+   "note": "Extensão do Inkscape que exporta desenhos para PCB e footprints do KiCad. Projeto descontinuado pelo autor (recomenda o Gingerbread). Precisa do Inkscape 1.0 ou superior (não incluído). O zip da extensão não tem hash publicado pelo autor.",
+   "automatic": true,
+   "pending": "",
+   "integrated": false,
+   "steps": [
+    {
+     "what": "código-fonte (commit 8ac23311, 2025-03-15)",
+     "url": "https://codeload.github.com/badgeek/svg2shenzhen/zip/8ac233113a1ac6fd9a4599e3eeb6edf478a8903f",
+     "sha256": "77020d94696e6d7dd94aa4118d7af7cd2ca3f0b2a01b1ae5da0992f57e1e5d42",
+     "bytes": 3221811,
+     "publisher_digest": false,
+     "action": "source",
+     "file": "8ac233113a1ac6fd9a4599e3eeb6edf478a8903f.zip",
+     "to": "source",
+     "repository": "badgeek/svg2shenzhen",
+     "commit": "8ac233113a1ac6fd9a4599e3eeb6edf478a8903f"
+    },
+    {
+     "what": "pacote da release 0.2.18.7",
+     "url": "https://github.com/badgeek/svg2shenzhen/releases/download/0.2.18.7-Windows-Fix/svg2shenzhen-extension-0.2.18.7.zip",
+     "sha256": "5ab058ecf908f4bb7ae2d94436857ffad533a2e0504b70d2f4d09ac004c6d60b",
+     "bytes": 1433935,
+     "publisher_digest": false,
+     "action": "extract",
+     "file": "svg2shenzhen-extension-0.2.18.7.zip",
+     "to": "app",
+     "format": "zip"
+    }
+   ]
+  },
+  {
+   "key": "KicadHappy",
+   "name": "kicad-happy (skills de revisão KiCad)",
+   "description": "Skills e scripts para agentes trabalharem com projetos KiCad. Serve para rever esquemas, placas e Gerbers, fazer pré-conformidade EMC e simulação SPICE.",
+   "group": "E",
+   "repo": "https://github.com/aklofas/kicad-happy",
+   "version": "3.0.2",
+   "license": "MIT",
+   "installed_mb": 0,
+   "requires": [],
+   "note": "Skills e scripts Python (3.10+) para rever esquemas, PCB e Gerbers do KiCad, pré-conformidade EMC e simulação SPICE. Algumas funções pedem ferramentas externas (por exemplo ngspice) e acesso à rede para folhas de dados.",
+   "automatic": true,
+   "pending": "",
+   "integrated": false,
+   "steps": [
+    {
+     "what": "código-fonte (commit 6b9767e1, 2026-11-15)",
+     "url": "https://codeload.github.com/aklofas/kicad-happy/zip/6b9767e19979cdef91631573753b1547efdbeab9",
+     "sha256": "145c80972323d525491e6d189011fc7ca0885f1b6bac01b802a6442a5c44d021",
+     "bytes": 3012635,
+     "publisher_digest": false,
+     "action": "source",
+     "file": "6b9767e19979cdef91631573753b1547efdbeab9.zip",
+     "to": "source",
+     "repository": "aklofas/kicad-happy",
+     "commit": "6b9767e19979cdef91631573753b1547efdbeab9"
+    }
+   ]
+  },
+  {
+   "key": "KitAssets",
+   "name": "Kit de assets (captura e extração)",
+   "description": "Scripts do utilizador para gravar o tráfego de uma página num ficheiro HAR e extrair de lá imagens, sons, vídeos, fontes e dados, com galeria local. Também separa sprites de atlas TexturePacker/Pixi.",
+   "group": "E",
+   "repo": "https://github.com/thornet2004/kit-assets",
+   "version": "",
+   "installed_mb": 110,
+   "requires": [
+    "CorePackages"
+   ],
+   "present": "KitAssets/source/extrair.py",
+   "note": "Projeto do utilizador (24/11/2026). «extrair.py» e «separar_sprites.py» só precisam do Python e do Pillow do núcleo. «capturar.py» usa o Playwright, instalado aqui no ambiente partilhado; o navegador é o Edge do Windows (--browser msedge), não se descarrega o Chromium.",
+   "automatic": true,
+   "pending": "",
+   "integrated": false,
+   "cleanup": [
+    "wheels"
+   ],
+   "steps": [
+    {
+     "what": "código-fonte (commit 60bb1cfa, 2026-11-24)",
+     "url": "https://codeload.github.com/thornet2004/kit-assets/zip/60bb1cfaceade0ce8b83328917a747d6c69924b8",
+     "sha256": "1b324fc67170519e6e73baed27d16d4023de17a240b0128f8b9a527e3848a1ff",
+     "bytes": 16434,
+     "publisher_digest": false,
+     "action": "source",
+     "file": "60bb1cfaceade0ce8b83328917a747d6c69924b8.zip",
+     "to": "source",
+     "strip": 1,
+     "check": "source/extrair.py",
+     "repository": "thornet2004/kit-assets",
+     "commit": "60bb1cfaceade0ce8b83328917a747d6c69924b8"
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "playwright 1.64.1",
+     "url": "https://files.pythonhosted.org/packages/96/0a/64db6851aa1852a4f76be28eea71d4e2bf9f3ce493ee2e66939426729046/playwright-1.64.1-py3-none-win_amd64.whl",
+     "sha256": "5e240a79464434c9260957b9ef59a5808e02e96e3fcabdc717fd7485260b9730",
+     "bytes": 38801836,
+     "file": "playwright-1.64.1-py3-none-win_amd64.whl",
+     "to": "wheels/playwright-1.64.1-py3-none-win_amd64.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "greenlet 3.5.6",
+     "url": "https://files.pythonhosted.org/packages/86/da/b7669b09586365654083a62bd0724cf06cb74bd5085a15cdd161271f992f/greenlet-3.5.6-cp313-cp313-win_amd64.whl",
+     "sha256": "5b602b4201b965a8354d74e232364a66ff243dd142e350d035f46169bb36e13d",
+     "bytes": 324086,
+     "file": "greenlet-3.5.6-cp313-cp313-win_amd64.whl",
+     "to": "wheels/greenlet-3.5.6-cp313-cp313-win_amd64.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "copy",
+     "transient": true,
+     "what": "pyee 14.0.0",
+     "url": "https://files.pythonhosted.org/packages/81/12/5347938b1f9a6453f0dbdfcc3e2388a1320ef9b9ec17fbefbc4ab647ea98/pyee-14.0.0-py3-none-any.whl",
+     "sha256": "3ac2d3229a9677f7de2c33d7f52fe25b638a46b19c413fea2edc8c6d0a644e4d",
+     "bytes": 15553,
+     "file": "pyee-14.0.0-py3-none-any.whl",
+     "to": "wheels/pyee-14.0.0-py3-none-any.whl",
+     "publisher_digest": true
+    },
+    {
+     "action": "run",
+     "kind": "pip-wheels",
+     "what": "instalar o Playwright no ambiente partilhado",
+     "from": "wheels",
+     "check": "pacotes-instalados.json"
+    }
+   ]
+  }
+ ]
+}

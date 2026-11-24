@@ -1,0 +1,10 @@
+{
+  "version": "0.1.0",
+  "operations": 57,
+  "source": {
+    "repository": "bthurlow/imagemagick-mcp",
+    "commit": "71ad5ec845ce4e20c3ea21025b8caf1aa29f1615",
+    "sha256": "b66eaa816927f55d2d8fa07100f225f068ce5d643e1bead49c2a42d35abb6024"
+  },
+  "build": "npm install --ignore-scripts + npm run build; package-lock.json incluído"
+}

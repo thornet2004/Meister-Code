@@ -1,0 +1,15 @@
+const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright'),assert=require('node:assert/strict'),path=require('node:path'),{pathToFileURL}=require('node:url');
+(async()=>{const browser=await chromium.launch({channel:'msedge',headless:true});try{
+ const page=await browser.newPage({viewport:{width:1200,height:900}}),errors=[];page.on('pageerror',e=>errors.push(e.message));
+ await page.addInitScript(()=>{
+  let mode='build',task=null;window.agentCalls=[];
+  const state=()=>({ok:true,providers:[],projects:[],conversations:[],preferences:{agent_profile:mode}});
+  window.pywebview={api:{get_state:async()=>state(),get_conversation:async()=>({ok:true,messages:[]}),set_preference:async(k,v)=>{mode=v;window.agentCalls.push(['mode',v]);return state();},get_agent_workspace:async id=>({ok:true,workspace:'C:/project',agent_enabled:true,tasks:task?[task]:[],task:id&&task?{...task,result:'a.py:1 evidência real',steps:[{title:'ler_codigo',body:'1 linha'}]}:null,rules:[{path:'C:/project/AGENTS.md',text:'Usar testes.'}],skills:[{id:'skill-a',name:'verify',description:'Validar o projeto',path:'C:/project/Skills/verify/SKILL.md'}]}),start_agent_task:async(p,t)=>{task={id:'task-a',title:t,profile:p,state:'running',model_id:'fixture',usage:{}};window.agentCalls.push(['start',p,t]);return {ok:true,task};},cancel_agent_task:async id=>{task.state='cancelled';window.agentCalls.push(['cancel',id]);return {ok:true,task};},get_project_skill:async id=>{window.agentCalls.push(['skill',id]);return {ok:true,skill:{text:'Instruções da skill verify.'}};}}};
+ });
+ await page.goto(pathToFileURL(path.resolve('web/index.html')).href);await page.selectOption('#sel-agent-profile','plan');await page.waitForFunction(()=>window.agentCalls.some(c=>c[0]==='mode'&&c[1]==='plan'));
+ await page.click('#btn-agent-workspace');await page.fill('#agent-task-prompt','Rever a.py');await page.selectOption('#agent-task-profile','review');await page.click('#agent-task-submit');
+ await page.waitForSelector('#agent-tasks-list [data-task-id="task-a"]');await page.getByRole('button',{name:'Ver resultado',exact:true}).click();await page.waitForFunction(()=>document.querySelector('#agent-task-detail').textContent.includes('evidência real'));
+ await page.getByRole('button',{name:'Cancelar tarefa',exact:true}).click();await page.waitForFunction(()=>document.querySelector('#agent-tasks-list').textContent.includes('Cancelada'));
+ await page.getByRole('button',{name:'Ver skill',exact:true}).click();assert.match(await page.textContent('#agent-skill-preview'),/Instruções da skill/);assert.match(await page.textContent('#agent-project-rules'),/Usar testes/);
+ await page.screenshot({path:'tests/agent-workspace-ui.png'});await page.press('#agent-task-prompt','Escape');assert(!(await page.locator('#agent-workspace-modal').isVisible()));assert.deepEqual(errors,[]);console.log('PASS: mode selection, task creation/result/cancel, AGENTS.md, skills and keyboard close.');
+}finally{await browser.close();}})().catch(e=>{console.error(e);process.exitCode=1;});

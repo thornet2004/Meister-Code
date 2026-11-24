@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "name": "rtl_433",
+  "description": "Hardware avançado. Receptor SDR compatível e driver USB.",
+  "source": "https://github.com/merbanan/rtl_433",
+  "enabled": true,
+  "approval": "each",
+  "server": {
+    "adapter": "bench",
+    "kind": "RTL433"
+  }
+}

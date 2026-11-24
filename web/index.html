@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MeisterCode</title>
+  <link rel="icon" href="assets/meistercode.ico" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <img class="logo" src="assets/meistercode.png" alt="MeisterCode" />
+      <div>
+        <h1>MeisterCode</h1>
+        <span class="subtitle">chat · imagem · vídeo · áudio</span>
+      </div>
+    </div>
+    <div class="top-actions">
+      <div class="workspace-tools" role="group" aria-label="Ferramentas do projeto">
+        <button id="btn-terminal" class="btn ghost tool-button" title="PowerShell integrado" aria-label="Abrir PowerShell" aria-expanded="false">&gt;_</button>
+        <button id="btn-browser" class="btn ghost tool-button" title="Abrir browser" aria-label="Abrir browser"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="12" r="9"/><ellipse cx="12" cy="12" rx="4" ry="9"/><path d="M3 12h18"/></svg></button>
+      </div>
+      <span id="active-pill" class="active-pill" title="">
+        <span class="muted">Projeto:</span>
+        <span id="active-name">Sem projeto</span>
+        <button id="btn-open-dir" class="btn ghost tiny" title="Abrir a pasta">Abrir</button>
+      </span>
+      <button id="btn-tools" class="btn ghost" title="Ver ferramentas instaladas e dependências">🧰 Ferramentas</button>
+      <button id="btn-code-changes" class="btn ghost" title="Rever alterações, desfazer e consultar diagnósticos">⌘ Alterações</button>
+      <button id="btn-settings" class="btn ghost">⚙️ Configurações</button>
+      <button id="btn-theme-toggle" class="btn ghost" aria-label="Alternar tema">☀️ Claro</button>
+      <button id="btn-gallery" class="btn ghost">🖼️ Galeria</button>
+      <button id="btn-new-chat" class="btn ghost">✦ Nova conversa</button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <aside class="panel side">
+      <div class="side-search"><input id="sidebar-search" placeholder="Filtrar projetos e conversas…" aria-label="Filtrar projetos e conversas" /></div>
+      <section class="side-block">
+        <div class="panel-head">
+          <h2>Projetos</h2>
+          <button id="btn-add-project" class="btn primary small">+ Novo</button>
+        </div>
+        <div id="projects-list" class="projects-list">
+          <p class="empty">Ainda não há projetos.</p>
+        </div>
+        <p class="hint">
+          Cada projeto fica numa subpasta de Projectos, com a conversa, anexos e ficheiros.
+        </p>
+      </section>
+
+      <section class="side-block">
+        <div class="panel-head">
+          <h2>Conversas</h2>
+          <button id="btn-add-conversation" class="btn primary small">+ Nova</button>
+        </div>
+        <div id="conversations-list" class="conversations-list">
+          <p class="empty">Sem conversas.</p>
+        </div>
+        <p class="hint">
+          Cada conversa fica numa subpasta de Conversas, com as mensagens, anexos e ficheiros.
+        </p>
+      </section>
+      <div id="side-resizer" class="side-resizer" title="Arrastar para redimensionar"></div>
+    </aside>
+
+    <section class="panel chat-panel">
+      <div id="drop-hint" class="drop-hint hidden">📎 Larga os ficheiros para os anexar à conversa</div>
+      <div id="chat" class="chat"></div>
+
+      <div id="error-box" class="notice error hidden"></div>
+
+      <div class="composer">
+        <div id="attachments" class="attachments"></div>
+        <div class="composer-row">
+          <button id="btn-attach" class="btn ghost icon" title="Anexar ficheiros">📎</button>
+          <input id="file-input" type="file" multiple hidden />
+          <textarea id="composer" rows="1" placeholder="Escreve uma mensagem, arrasta ou cola ficheiros…"></textarea>
+          <button id="btn-voice" class="btn ghost icon" title="Ditar por voz" aria-pressed="false">🎤</button>
+          <button id="btn-voice-chat" class="btn ghost icon" title="Conversa por voz" aria-label="Conversa por voz" aria-pressed="false">🎧</button>
+          <button id="btn-send" class="btn primary send">➤</button>
+          <button id="btn-stop" class="btn ghost send hidden" title="Parar a resposta">■</button>
+        </div>
+        <div id="slash-menu" class="slash-menu hidden" role="listbox" aria-label="Comandos"></div>
+        <div class="model-slots" aria-label="Modelos em uso">
+          <div class="model-slot"><span>💬 Conversa</span><select id="sel-chat" aria-label="Modelo de conversa" title="Modelo que conversa e interpreta os pedidos; chama os outros quando lho pedes"></select></div>
+          <div class="model-slot"><span>💻 Código</span><select id="sel-code" aria-label="Modelo de código" title="Modelo que programa quando o da conversa lhe passa o trabalho; sem escolha, programa o da conversa"></select></div>
+          <div class="model-slot"><span>🖼️ Imagem</span><select id="sel-image" aria-label="Modelo de imagem" title="Modelo que gera imagens"></select></div>
+          <div class="model-slot"><span>🎬 Vídeo</span><select id="sel-video" aria-label="Modelo de vídeo" title="Modelo que gera vídeos"></select></div>
+          <div class="model-slot"><span>🔊 Áudio</span><select id="sel-audio" aria-label="Modelo de áudio" title="Modelo que gera voz e som"></select>
+            <select id="sel-voice" class="mp-voice hidden" title="Voz do modelo de áudio" aria-label="Voz"></select></div>
+        </div>
+        <div class="model-picker">
+          <button id="agent-badge" class="agent-badge hidden" title="Agente ligado — abrir Configurações">🤖 Agente</button>
+          <select id="sel-agent-profile" aria-label="Modo do agente" title="Implementar permite editar; Planear e Rever são de leitura"><option value="build">Implementar</option><option value="plan">Planear</option><option value="review">Rever</option></select>
+          <button id="btn-agent-workspace" class="btn ghost small" title="Tarefas, regras e skills do projeto">Tarefas / Skills</button>
+        </div>
+        <p id="agent-model-override" class="hint hidden"></p>
+        <div id="context-widget" class="context-widget" title="Janela de contexto estimada">
+          <span class="context-icon" aria-hidden="true">🧠</span>
+          <div class="context-meter" aria-hidden="true">
+            <span id="context-system" class="ctx-system"></span>
+            <span id="context-memory" class="ctx-memory"></span>
+            <span id="context-summary" class="ctx-summary"></span>
+            <span id="context-messages" class="ctx-messages"></span>
+            <span id="context-tools" class="ctx-tools"></span>
+          </div>
+          <span id="context-label" class="context-label">—</span>
+          <span id="conversation-cost" class="context-cost hidden" aria-label="Custo estimado desta conversa"></span>
+          <button id="context-limit" class="btn ghost tiny" title="Definir a janela de contexto do modelo de chat">limite</button>
+          <button id="context-compact" class="btn ghost tiny" title="Compactar a conversa (/compact)">compactar</button>
+        </div>
+        <details id="task-plan" class="task-plan hidden">
+          <summary id="task-plan-summary" title="Lista de tarefas do agente neste projeto ou conversa"></summary>
+          <ul id="task-plan-list"></ul>
+          <button id="task-plan-clear" class="btn ghost tiny hidden" title="Remove da lista as tarefas já concluídas">limpar concluídas</button>
+        </details>
+        <div id="context-banner" class="notice warn hidden" role="status">
+          <span id="context-banner-text"></span>
+          <button id="context-banner-compact" class="btn ghost tiny">Compactar</button>
+          <button id="context-banner-dismiss" class="btn ghost tiny" title="Agora não">×</button>
+        </div>
+        <div id="chat-status" class="status" role="status" aria-live="polite"></div>
+      </div>
+      <section id="terminal-panel" class="terminal-panel hidden" aria-label="Consola PowerShell">
+        <div class="terminal-head"><strong>PowerShell</strong><span id="terminal-cwd"></span>
+          <button id="terminal-stop" class="btn ghost tiny danger hidden" title="Interromper o que está a correr">Parar</button>
+          <button id="terminal-clear" class="btn ghost tiny">Limpar</button>
+          <button id="terminal-close" class="btn ghost tiny" aria-label="Fechar consola">✕</button>
+        </div>
+        <pre id="terminal-output" class="terminal-output" role="log" aria-live="polite">PowerShell interativo · a saída aparece enquanto o comando corre. Se o programa pedir dados, escreve e carrega em Enter. ↑ e ↓ percorrem o histórico.
+</pre>
+        <form id="terminal-form" class="terminal-form"><span id="terminal-prompt">PS &gt;</span><input id="terminal-input" autocomplete="off" spellcheck="false" aria-label="Comando PowerShell" placeholder="Escreve um comando…" /><button id="terminal-run" class="btn ghost small" type="submit">Executar</button></form>
+      </section>
+    </section>
+    <aside id="browser-panel" class="panel browser-panel hidden" aria-label="Browser integrado">
+      <div class="browser-head"><strong id="browser-title">Nova aba</strong><button id="browser-close" class="btn ghost small" aria-label="Fechar browser">✕</button></div>
+      <form id="browser-form" class="browser-nav">
+        <button id="browser-back" type="button" class="btn ghost small" title="Voltar" disabled>←</button>
+        <button id="browser-forward" type="button" class="btn ghost small" title="Avançar" disabled>→</button>
+        <button id="browser-reload" type="button" class="btn ghost small" title="Recarregar">↻</button>
+        <input id="browser-url" aria-label="Endereço do browser" placeholder="Digite uma URL" autocomplete="off" spellcheck="false" />
+        <button type="submit" class="btn ghost small">Ir</button>
+      </form>
+      <div id="browser-status" class="browser-status hidden" role="status"></div>
+      <div id="browser-viewport" class="browser-viewport">
+        <div id="browser-welcome" class="browser-welcome"><span>◎</span><strong>Navegar no Studio</strong><p>Introduz uma URL para abrir um site aqui.</p><p>Podes também abrir a tua aplicação local.</p><button id="browser-local" class="btn ghost small">Abrir localhost:3000</button></div>
+      </div>
+    </aside>
+  </main>
+
+  <div id="remote-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-label="Acesso remoto">
+    <div class="modal">
+      <div class="modal-head"><h3>📱 Acesso remoto</h3><button id="remote-close" class="btn ghost small" aria-label="Fechar acesso remoto">✕</button></div>
+      <div class="modal-body">
+        <p class="hint">Abre a conversa no browser do telemóvel, na rede de casa ou pela tua VPN (WireGuard). Quem entrar manda no agente, que corre comandos neste PC: liga só quando precisares e não exponhas esta porta à internet. A ligação é HTTP simples; fora de casa, é a VPN que a cifra.</p>
+        <p id="remote-status" role="status">Desligado.</p>
+        <div id="remote-details" class="hidden">
+          <p class="hint">1. No telemóvel, abre um destes endereços:</p>
+          <ul id="remote-urls" class="remote-urls"></ul>
+          <p class="hint">2. Escreve este código (serve para um dispositivo; depois aparece outro):</p>
+          <p id="remote-code" class="remote-code"></p>
+          <p id="remote-devices" class="hint"></p>
+          <p class="hint">Se o telemóvel não chegar ao endereço, o Windows pode estar a bloquear: quando perguntar, permite o acesso em redes privadas.</p>
+        </div>
+      </div>
+      <div class="modal-foot"><button id="remote-stop" class="btn ghost hidden">Desligar</button><button id="remote-start" class="btn primary">Ligar acesso remoto</button></div>
+    </div>
+  </div>
+  <div id="tool-updates-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-label="Atualizar ferramentas">
+    <div class="modal wide">
+      <div class="modal-head"><h3>⬇ Atualizar ferramentas</h3><button id="tool-updates-close" class="btn ghost small" aria-label="Fechar atualização de ferramentas">✕</button></div>
+      <div class="modal-body">
+        <p class="hint">As ferramentas não vêm com a app: são descarregadas dos endereços fixos da lista (Sources_ferramentas.md), uma a uma, e só são usadas se o SHA-256 bater certo. Uma falha ou um cancelamento não estragam o que já estava instalado.</p>
+        <p id="tool-updates-summary" class="hint" role="status">A ler a lista…</p>
+        <div id="tool-updates-progress" class="tool-updates-progress hidden"><div class="tool-updates-track"><span id="tool-updates-bar"></span></div><p id="tool-updates-message" role="status"></p></div>
+        <div id="tool-updates-list" class="tools-inventory"></div>
+      </div>
+      <div class="modal-foot"><button id="tool-updates-select" class="btn ghost">Selecionar as que faltam</button><button id="tool-updates-cancel" class="btn ghost hidden">Cancelar instalação</button><button id="tool-updates-start" class="btn primary" disabled>Instalar selecionadas</button></div>
+    </div>
+  </div>
+
+  <div id="tools-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-label="Ferramentas instaladas">
+    <div class="modal wide">
+      <div class="modal-head"><h3>🧰 Ferramentas</h3><button id="tools-close" class="btn ghost small" aria-label="Fechar ferramentas">✕</button></div>
+      <div class="modal-body">
+        <p id="tools-summary" class="hint" role="status">A carregar inventário…</p>
+        <div class="tools-filters"><input id="tools-search" placeholder="Pesquisar nome, protocolo ou capacidade…" aria-label="Pesquisar ferramentas" /><select id="tools-category" aria-label="Categoria de ferramentas"><option value="">Todas as categorias</option></select><label><input id="tools-only-installed" type="checkbox" /> Só instaladas</label><button id="tools-refresh" class="btn ghost small">Atualizar</button></div>
+        <p class="hint">Instalado refere-se ao software. A ligação ao equipamento depende da porta, do modelo e dos drivers indicados. Os servidores só arrancam quando usados ou testados.</p>
+        <div id="tools-inventory" class="tools-inventory"></div>
+      </div>
+      <div class="modal-foot"><button id="tools-update" class="btn ghost" title="Instalar ou atualizar as ferramentas a partir da lista de origens">⬇ Atualizar ferramentas</button><button id="tools-folder" class="btn ghost">Abrir pasta Ferramentas</button><button id="tools-settings" class="btn primary">Configurar servidores MCP</button></div>
+    </div>
+  </div>
+
+  <div id="code-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-label="Alterações de código">
+    <div class="modal wide">
+      <div class="modal-head"><h3>Alterações e diagnósticos</h3><button id="code-close" class="btn ghost small" aria-label="Fechar alterações">✕</button></div>
+      <div class="modal-body">
+        <p id="code-workspace" class="hint"></p>
+        <p class="hint">Checkpoints das edições diretas feitas pela app, agrupadas por pedido. Comandos e ferramentas MCP não estão incluídos. O restauro mantém a conversa e recusa substituir alterações posteriores.</p>
+        <div class="top-actions"><button id="code-refresh" class="btn ghost small">Atualizar</button><span id="code-status" class="hint" role="status"></span></div>
+        <div id="code-checkpoints" class="tools-inventory"></div>
+        <div id="code-checkpoint-preview"></div>
+        <hr />
+        <h4>Diagnósticos LSP</h4>
+        <p id="code-lsp-status" class="hint"></p>
+        <form id="code-lsp-form" class="code-lsp-form"><input id="code-lsp-path" placeholder="Caminho do ficheiro, por exemplo src/app.py" aria-label="Ficheiro para diagnóstico" required /><button id="code-lsp-run" class="btn primary small" type="submit">Analisar ficheiro</button></form>
+        <div id="code-diagnostics" role="status"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="agent-workspace-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-label="Tarefas e skills">
+    <div class="modal wide">
+      <div class="modal-head"><h3>Agentes, tarefas e skills</h3><button id="agent-workspace-close" class="btn ghost small" aria-label="Fechar tarefas">✕</button></div>
+      <div class="modal-body">
+        <p id="agent-workspace-path" class="hint"></p><p id="agent-workspace-status" class="hint" role="status"></p>
+        <details><summary>Modelos por perfil</summary><p class="hint">Herdar usa o modelo selecionado na conversa. Um modelo configurado aqui tem precedência nesse perfil.</p><div id="agent-model-settings"></div></details>
+        <p class="hint">Até dois subagentes executam em paralelo, com consumo adicional de tokens. Implementar usa uma worktree Git ou cópia, executa verificações com as aprovações configuradas e devolve uma proposta para revisão. Não tem shell genérico nem MCP.</p>
+        <form id="agent-task-form"><label class="field"><span>Subagente</span><select id="agent-task-profile"><option value="explore">Explorar código</option><option value="plan">Planear implementação</option><option value="review">Rever código</option><option value="build">Implementar e verificar em área isolada</option></select></label><label class="field"><span>Tarefa</span><textarea id="agent-task-prompt" rows="3" maxlength="12000" placeholder="Descreve a tarefa…" required></textarea></label><button id="agent-task-submit" class="btn primary small" type="submit">Iniciar tarefa</button><button id="agent-workspace-refresh" class="btn ghost small" type="button">Atualizar</button></form>
+        <div id="agent-tasks-list" class="tools-inventory"></div><div id="agent-task-detail"></div>
+        <hr /><h4>Instruções AGENTS.md</h4><div id="agent-project-rules"></div>
+        <h4>Skills disponíveis</h4><p class="hint">Descobertas no projeto em .agents/skills, .opencode/skills, .claude/skills e Skills; globais na pasta Skills junto à app. Carregar uma skill não executa scripts nem altera permissões.</p><div id="agent-project-skills" class="tools-inventory"></div><pre id="agent-skill-preview" class="step-body hidden"></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Configurações (modelos + provedores) -->
+  <div id="settings-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-label="Configurações">
+    <div class="modal wide">
+      <div class="modal-head">
+        <h3>⚙️ Configurações</h3>
+        <button id="settings-close" class="btn ghost small">✕</button>
+      </div>
+      <div class="modal-body settings-body">
+        <div class="notice warn">
+          ⚠️ As chaves de API ficam em <strong>texto</strong> no ficheiro de
+          configuração (<code id="config-path">config.json</code>). Não o partilhes.
+        </div>
+
+        <section class="settings-section">
+          <div class="panel-head"><h2>Aparência</h2></div>
+          <div class="field-row">
+            <label class="field"><span>Tema</span>
+              <select id="theme-select">
+                <option value="system">Seguir o sistema</option>
+                <option value="dark">Escuro</option>
+                <option value="light">Claro</option>
+              </select>
+            </label>
+            <label class="field"><span>Densidade</span>
+              <select id="density-select">
+                <option value="comfortable">Confortável</option>
+                <option value="compact">Compacta</option>
+              </select>
+            </label>
+            <label class="field"><span>Personalidade das respostas</span>
+              <select id="personality-select" title="O tom das respostas, em texto e em voz. Não muda o rigor nem o que o agente faz.">
+                <option value="neutra">Neutra</option>
+                <option value="sociavel">Sociável</option>
+                <option value="sarcastico">Sarcástico</option>
+                <option value="bruto">Bruto</option>
+                <option value="profissional">Profissional</option>
+              </select>
+            </label>
+            <label class="field"><span>Voz (conversa por voz)</span>
+              <select id="voice-name-select" title="As vozes instaladas em Ferramentas/Piper/voices; ao mudares, ouves uma frase de exemplo"><option value="">(por instalar)</option></select>
+            </label>
+            <label class="field"><span>Tom da voz</span>
+              <select id="voice-tone-select" title="Ao mudares, ouves uma frase de exemplo">
+                <option value="normal">Natural</option>
+                <option value="grave">Grave</option>
+                <option value="muito_grave">Muito grave</option>
+                <option value="profunda">Profunda</option>
+              </select>
+            </label>
+          </div>
+          <label class="check"><input type="checkbox" id="auto-compact" /> <span>Compactar automaticamente acima de 90% do contexto</span></label>
+        </section>
+
+        <section class="settings-section">
+          <div class="panel-head"><h2>Servidores MCP</h2><div class="top-actions"><button id="mcp-demo" class="btn ghost small">Demonstração local</button><button id="mcp-add" class="btn primary small">+ Servidor</button></div></div>
+          <p class="hint">Adiciona um serviço e escolhe iniciar sessão no browser. Depois da autorização, a app trata da ligação e da renovação dos tokens quando suportada pelo serviço. Também podes configurar tokens manualmente.</p>
+          <div id="mcp-oauth-progress" class="notice hidden"><span id="mcp-oauth-message"></span><button id="mcp-oauth-cancel" class="btn ghost tiny">Cancelar ligação</button></div>
+          <div id="mcp-servers" class="mcp-servers">A carregar…</div>
+        </section>
+
+        <section class="settings-section">
+          <div class="panel-head">
+            <h2>Integrações MCP</h2>
+            <label class="preset-filter"><span>Área</span>
+              <select id="presets-profile">
+                <option value="all">Todas</option>
+                <option value="coding">Programação</option>
+                <option value="research">Pesquisa</option>
+                <option value="work">Trabalho</option>
+              </select>
+            </label>
+          </div>
+          <p class="hint">Fetch vem pronto a usar. Brave, PostgreSQL, MySQL e Discord estão incluídos: indica as credenciais uma vez e escolhe as permissões. Outros serviços usam OAuth ou componentes Node.js. O filtro de área é apenas de apresentação; não altera servidores já adicionados.</p>
+          <div id="mcp-presets" class="mcp-servers">A carregar…</div>
+        </section>
+
+        <section class="settings-section">
+          <div class="panel-head"><h2>Ferramentas disponíveis para o modelo</h2><span id="tools-count" class="badge"></span></div>
+          <p class="hint">Esta lista é enviada ao modelo em cada pedido. Liga/Testa um servidor MCP para listar as ferramentas dele. O browser integrado funciona autonomamente, sem confirmações. Ficheiros, comandos e escritas SQL mantêm as aprovações configuradas.</p>
+          <div id="tools-list" class="tools-list"><p class="hint">A carregar…</p></div>
+        </section>
+
+        <section class="settings-section">
+          <div class="panel-head">
+            <h2>Agente (ficheiros e comandos)</h2>
+            <label class="switch">
+              <input type="checkbox" id="ag-enabled" />
+              <span class="switch-track"><span class="switch-dot"></span></span>
+            </label>
+          </div>
+          <p class="hint">
+            Com o agente ligado, o modelo de chat pode <b>ler/escrever ficheiros</b>
+            e <b>executar comandos</b> para cumprir pedidos de programação, tal
+            como o Claude Code. Requer um modelo de chat com suporte a ferramentas.
+          </p>
+          <div class="ag-grid">
+            <label class="field">
+              <span>Âmbito — onde pode mexer</span>
+              <select id="ag-scope">
+                <option value="project">Ficheiros limitados ao projeto; comandos em todo o computador</option>
+                <option value="computer">Projeto + todo o computador (poderoso)</option>
+              </select>
+            </label>
+            <label class="field">
+              <span>Aprovação de ações</span>
+              <select id="ag-approval">
+                <option value="each">Confirmar cada ação</option>
+                <option value="writes">Confirmar só escrita/comandos (1× por tipo)</option>
+                <option value="auto">Correr tudo sem perguntar (yolo)</option>
+              </select>
+            </label>
+          </div>
+          <label class="check">
+            <input type="checkbox" id="ag-dangerous" checked />
+            <span>Confirmar sempre comandos perigosos (formatar discos, apagar pastas fora do projeto, desligar proteções, descarregar e executar…), mesmo sem confirmação nas outras ações</span>
+          </label>
+          <p id="ag-warn" class="hint ag-warn hidden">
+            ⚠️ Atenção: neste modo o agente pode alterar ficheiros e correr comandos
+            fora da pasta do projeto / sem confirmação. Usa com cuidado.
+          </p>
+        </section>
+
+        <section class="settings-section" id="source-section">
+          <div class="panel-head"><h2>Onde correm os modelos</h2></div>
+          <div class="source-switch" role="radiogroup" aria-label="Onde correm os modelos">
+            <label class="source-option"><input type="radio" name="model-source" id="source-online" value="online" />
+              <span><b>Provedores online</b><small>OpenRouter e companhia. Pagas por mensagem; os pedidos saem para a internet.</small></span></label>
+            <label class="source-option"><input type="radio" name="model-source" id="source-local" value="local" />
+              <span><b>Provedor local — a minha rig</b><small>O teu modelo, nas tuas placas. Sem custo por mensagem; nada sai da tua rede.</small></span></label>
+          </div>
+          <p class="hint" id="source-hint"></p>
+        </section>
+
+        <section class="settings-section" id="rig-section">
+          <div class="panel-head"><h2>Provedor local — a minha rig</h2></div>
+          <div class="field-row">
+            <label class="field"><span>Endereço da rig</span>
+              <input id="rig-address" type="text" placeholder="http://192.168.0.10:8080" autocomplete="off" spellcheck="false" />
+            </label>
+            <label class="field"><span>Chave</span>
+              <input id="rig-key" type="password" autocomplete="off" />
+            </label>
+            <label class="field narrow"><span>Pensamento</span>
+              <select id="rig-effort" title="Quanto o modelo raciocina antes de responder. Leve: respostas mais rápidas. Pesado: mais cuidado em tarefas difíceis, mais espera.">
+                <option value="leve">Leve</option>
+                <option value="moderado">Moderado</option>
+                <option value="pesado">Pesado</option>
+              </select>
+            </label>
+          </div>
+          <label class="check"><input type="checkbox" id="rig-whisper" /> <span>Transcrever a minha voz na rig (muito mais rápido; se a rig falhar, usa o Whisper deste PC)</span></label>
+          <div class="field-row">
+            <button id="rig-save" class="btn primary small">Ligar à rig</button>
+            <span id="rig-status" class="hint"></span>
+          </div>
+        </section>
+
+        <section class="settings-section" id="online-section">
+          <div class="panel-head">
+            <h2>Provedores online</h2>
+            <button id="btn-add-provider" class="btn primary small">+ Provedor</button>
+          </div>
+          <p class="hint">
+            Adiciona vários provedores e, em cada um, vários modelos de cada tipo
+            (chat/código, imagem, vídeo, áudio). São partilhados por todos os
+            projetos. Para <b>escolher quais ficam ativos</b>, usa a barra de
+            modelos por cima da conversa.
+          </p>
+          <div id="providers-list" class="providers-list">
+            <p class="empty">Ainda não há provedores.</p>
+          </div>
+        </section>
+      </div>
+      <div class="modal-foot">
+        <button id="settings-done" class="btn primary">Concluído</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal genérico (formulários curtos) -->
+  <div id="modal" class="modal-overlay hidden">
+    <div class="modal">
+      <div class="modal-head">
+        <h3 id="modal-title">Título</h3>
+        <button id="modal-close" class="btn ghost small">✕</button>
+      </div>
+      <div id="modal-body" class="modal-body"></div>
+      <div class="modal-foot">
+        <button id="modal-cancel" class="btn ghost">Cancelar</button>
+        <button id="modal-ok" class="btn primary">Guardar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Galeria -->
+  <div id="gallery-modal" class="modal-overlay hidden">
+    <div class="modal wide">
+      <div class="modal-head">
+        <h3>Galeria (histórico do projeto)</h3>
+        <button id="gallery-close" class="btn ghost small">✕</button>
+      </div>
+      <div id="gallery" class="gallery modal-body">
+        <p class="empty">Sem ficheiros ainda.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cartão de aprovação do agente -->
+  <div id="approval-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-label="Aprovação do agente">
+    <div class="modal approval">
+      <div class="modal-head">
+        <h3>🔐 O agente pede autorização</h3>
+      </div>
+      <div class="modal-body">
+        <div class="approval-summary"><span id="approval-cat" class="badge"></span> <span id="approval-summary"></span></div>
+        <pre id="approval-detail" class="approval-detail"></pre>
+        <p class="hint">Permites esta ação? Nada acontece sem o teu OK.</p>
+      </div>
+      <div class="modal-foot">
+        <button id="approval-deny" class="btn ghost">Recusar</button>
+        <button id="approval-session" class="btn ghost">Permitir nesta sessão</button>
+        <button id="approval-allow" class="btn primary">Permitir</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="lightbox" class="lightbox hidden">
+    <img id="lightbox-img" alt="" />
+  </div>
+
+  <div id="palette" class="palette-overlay hidden" role="dialog" aria-modal="true" aria-label="Paleta de comandos">
+    <div class="palette-box">
+      <input id="palette-input" placeholder="Escreve um comando ou pesquisa…" autocomplete="off" aria-label="Comando ou pesquisa" />
+      <div id="palette-list" class="palette-list" role="listbox"></div>
+      <div class="palette-footer">↑↓ navegar · Enter executar · Esc fechar</div>
+    </div>
+  </div>
+
+  <div id="toasts" class="toasts" aria-live="polite"></div>
+
+  <script src="vendor/marked.min.js"></script>
+  <script src="vendor/purify.min.js"></script>
+  <script src="vendor/highlight.min.js"></script>
+  <link id="hljs-theme" rel="stylesheet" href="vendor/highlight-dark.min.css" />
+  <script src="mcp-settings.js"></script>
+  <script src="app-state.js"></script>
+  <script src="app-utils.js"></script>
+  <script src="app-sidebar.js"></script>
+  <script src="app-settings.js"></script>
+  <script src="app-palette.js"></script>
+  <script src="app-conversation.js"></script>
+  <script src="app-attachments.js"></script>
+  <script src="app.js"></script>
+  <script src="tools-inventory.js"></script>
+  <script src="tool-updates.js"></script>
+  <script src="code-changes.js"></script>
+  <script src="agent-workspace.js"></script>
+  <script src="workspace-operations.js"></script>
+  <script src="project-validation.js"></script>
+  <script src="project-context.js"></script>
+  <script src="semantic-search.js"></script>
+  <script src="task-recovery.js"></script>
+  <script src="project-hooks.js"></script>
+  <script src="system-settings.js"></script>
+  <script src="voice-input.js"></script>
+  <script src="voice-chat.js"></script>
+  <script src="remote-control.js"></script>
+</body>
+</html>

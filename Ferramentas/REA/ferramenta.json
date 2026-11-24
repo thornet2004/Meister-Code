@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "managed_by": "studio-rea-installer",
+  "name": "REA",
+  "package_version": "6.8.0",
+  "description": "Reverse Engineer Anything: analisar aplicações, JavaScript/Electron, .NET, capturas HAR e binários. Pesquisa as operações para descobrir capacidades e pré-requisitos. Análise nativa profunda exige um motor externo compatível.",
+  "source": "https://github.com/morluto/rea",
+  "enabled": true,
+  "approval": "each",
+  "server": {
+    "transport": "stdio",
+    "command": "${tool_dir}/runtime/node-v24.22.1-win-x64/node.exe",
+    "args": [
+      "${tool_dir}/package/node_modules/rea-agents/scripts/rea.mjs",
+      "mcp"
+    ],
+    "cwd": "${workspace}",
+    "env": {
+      "REA_MCP_INPUT_SCHEMA_PROFILE": "compact",
+      "REA_MCP_OUTPUT_SCHEMA_PROFILE": "off",
+      "GHIDRA_INSTALL_DIR": "${app_dir}/Ferramentas/Ghidra/app/ghidra_12.1.4_PUBLIC",
+      "JAVA_HOME": "${app_dir}/Ferramentas/ClassRevive/runtime/jdk-21.0.13+9"
+    }
+  }
+}

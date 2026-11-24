@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "name": "Universal Radio Hacker",
+  "description": "Drivers opcionais. Projeto arquivado; SDR e backend compatível.",
+  "source": "https://github.com/jopohl/urh",
+  "enabled": true,
+  "approval": "each",
+  "server": {
+    "adapter": "bench",
+    "kind": "URH"
+  }
+}

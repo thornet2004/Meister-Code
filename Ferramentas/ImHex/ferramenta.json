@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "name": "ImHex",
+  "description": "Firmware. ",
+  "source": "https://github.com/WerWolv/ImHex",
+  "enabled": true,
+  "approval": "each",
+  "server": {
+    "adapter": "bench",
+    "kind": "ImHex"
+  }
+}

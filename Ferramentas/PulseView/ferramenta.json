@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "name": "PulseView",
+  "description": "Eletrónica. Driver compatível do analisador lógico.",
+  "source": "https://github.com/sigrokproject/pulseview",
+  "enabled": true,
+  "approval": "each",
+  "server": {
+    "adapter": "bench",
+    "kind": "PulseView"
+  }
+}

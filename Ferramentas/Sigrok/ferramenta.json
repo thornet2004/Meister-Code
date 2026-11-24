@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "name": "sigrok-cli + descodificadores",
+  "description": "Eletrónica. Driver compatível do analisador lógico (WinUSB, conforme equipamento).",
+  "source": "https://github.com/sigrokproject/sigrok-cli",
+  "enabled": true,
+  "approval": "each",
+  "server": {
+    "adapter": "bench",
+    "kind": "Sigrok"
+  }
+}

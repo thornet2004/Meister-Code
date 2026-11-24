@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "name": "SerialSniffer",
+  "description": "Eletrónica. Para intercalar outra aplicação: par COM virtual com0com e configuração das portas.",
+  "source": "https://github.com/DataAcquisitionTechnologies/serial-port-monitor",
+  "enabled": true,
+  "approval": "each",
+  "server": {
+    "adapter": "bench",
+    "kind": "SerialSniffer"
+  }
+}

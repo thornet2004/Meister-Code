@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "name": "Cynthion · software de controlo",
+  "description": "Hardware avançado. Hardware Cynthion e driver USB; não atualiza firmware automaticamente.",
+  "source": "https://github.com/greatscottgadgets/cynthion",
+  "enabled": true,
+  "approval": "each",
+  "server": {
+    "adapter": "bench",
+    "kind": "Cynthion"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "name": "flashrom · CH341A",
+  "description": "Firmware. Executável Windows compatível + driver CH341A; confirmar tensão e pinagem antes de escrever.",
+  "source": "https://github.com/flashrom/flashrom",
+  "enabled": true,
+  "approval": "each",
+  "server": {
+    "adapter": "bench",
+    "kind": "Flashrom"
+  }
+}

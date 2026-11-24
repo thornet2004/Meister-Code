@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "name": "GIMP + MCP",
+  "description": "Servidor MCP original para GIMP: camadas, filtros, seleção, texto, documentos e pré-visualizações. Abrir a aplicação e iniciar Tools → MCP → Start MCP Server.",
+  "source": "https://github.com/gimp-mcp/gimp-mcp",
+  "enabled": true,
+  "approval": "each",
+  "server": {
+    "transport": "stdio",
+    "command": "${python}",
+    "args": [
+      "-u",
+      "${app_dir}/bench_launcher.py",
+      "${app_dir}/Ferramentas/_Runtime/site-packages",
+      "${tool_dir}/source/gimp-mcp-7325865385541a01aaf336ebc93b00332297f77f/gimp_mcp_server.py"
+    ],
+    "cwd": "${workspace}",
+    "env": {
+      "PYTHONPATH": "${app_dir}/Ferramentas/_Runtime/site-packages",
+      "PYTHONIOENCODING": "utf-8"
+    }
+  },
+  "package_version": "3.2.8 / MCP 7325865"
+}

@@ -1,0 +1,11 @@
+pywebview>=5.0
+requests>=2.31
+mcp==1.30.0
+pg8000==1.31.6
+PyMySQL==1.2.3
+# Opcional (recomendado): ao apagar a pasta de um projeto, enviá-la para a
+# Reciclagem. Sem isto, a app mantém os ficheiros e apresenta o erro.
+send2trash>=1.8
+# Opcional: guardar a chave de API no cofre do SO.
+# Descomenta se quiseres usar a opção "keyring" na app.
+# keyring>=24.0

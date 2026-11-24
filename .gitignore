@@ -1,0 +1,48 @@
+__pycache__/
+.ruff_cache/
+*.py[cod]
+*.log
+
+# Ambientes e componentes de build/instalação local
+.build-deps/
+.mcp-test-deps/
+.integrations/
+Ferramentas/**/node_modules/
+Ferramentas/**/runtime/
+Ferramentas/**/downloads/
+Ferramentas/**/distribution/
+Ferramentas/**/dependencies/
+Ferramentas/**/jobs/
+Ferramentas/**/app/
+Ferramentas/**/source/
+Ferramentas/**/models/
+Ferramentas/**/profile/
+Ferramentas/_Runtime/
+build/
+dist/
+
+# Dados do utilizador e artefactos de teste
+Conversas/
+Projectos/
+imagens-geradas/
+tests/exe-data-*/
+tests/tmp*/
+tests/*-result.json
+tests/*-ui.png
+tests/meistercode-*.png
+tests/meister-icon-*
+tests/provider-picker-*.png
+tests/workspace-tools.png
+tests/mcp-settings.png
+tests/folder-tools-settings.png
+tests/tools-inventory-live.json
+config.before-managed-storage.json
+
+# registos e restos do instalador das ferramentas
+Ferramentas/**/instalado.json
+Ferramentas/**/setup/
+Ferramentas/**/.instalar-*/
+Ferramentas/ferramentas-extra.json
+
+# Cópia pública (repositório próprio)
+publico/

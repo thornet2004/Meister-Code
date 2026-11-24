@@ -1,0 +1,866 @@
+{
+ "add_mcp_demo": {
+  "defaults": [],
+  "params": []
+ },
+ "add_model": {
+  "defaults": [],
+  "params": [
+   "provider_id",
+   "model"
+  ]
+ },
+ "add_provider": {
+  "defaults": [],
+  "params": [
+   "data"
+  ]
+ },
+ "apply_agent_proposal": {
+  "defaults": [],
+  "params": [
+   "task_id"
+  ]
+ },
+ "branch_conversation": {
+  "defaults": [],
+  "params": [
+   "index"
+  ]
+ },
+ "browser_action": {
+  "defaults": [],
+  "params": [
+   "action"
+  ]
+ },
+ "browser_layout": {
+  "defaults": [],
+  "params": [
+   "rect"
+  ]
+ },
+ "browser_state": {
+  "defaults": [],
+  "params": []
+ },
+ "cancel_agent_task": {
+  "defaults": [],
+  "params": [
+   "task_id"
+  ]
+ },
+ "cancel_chat": {
+  "defaults": [],
+  "params": []
+ },
+ "cancel_command_job": {
+  "defaults": [],
+  "params": [
+   "job_id"
+  ]
+ },
+ "cancel_mcp_oauth": {
+  "defaults": [],
+  "params": [
+   "server_id"
+  ]
+ },
+ "cancel_project_validation": {
+  "defaults": [],
+  "params": [
+   "run_id"
+  ]
+ },
+ "cancel_provider_diagnostics": {
+  "defaults": [],
+  "params": [
+   "run_id"
+  ]
+ },
+ "cancel_semantic_index": {
+  "defaults": [],
+  "params": []
+ },
+ "cancel_tool_updates": {
+  "defaults": [],
+  "params": []
+ },
+ "chat": {
+  "defaults": [
+   "None"
+  ],
+  "params": [
+   "user_text",
+   "attachments"
+  ]
+ },
+ "check_app_update": {
+  "defaults": [],
+  "params": [
+   "manifest_url"
+  ]
+ },
+ "choose_project_folder": {
+  "defaults": [],
+  "params": []
+ },
+ "clear_semantic_index": {
+  "defaults": [],
+  "params": []
+ },
+ "compact_context": {
+  "defaults": [
+   "''"
+  ],
+  "params": [
+   "instruction"
+  ]
+ },
+ "configure_bench_executable": {
+  "defaults": [
+   "''"
+  ],
+  "params": [
+   "key",
+   "executable"
+  ]
+ },
+ "create_conversation": {
+  "defaults": [
+   "''"
+  ],
+  "params": [
+   "title"
+  ]
+ },
+ "create_project": {
+  "defaults": [
+   "''"
+  ],
+  "params": [
+   "name",
+   "path"
+  ]
+ },
+ "delete_conversation": {
+  "defaults": [
+   "False"
+  ],
+  "params": [
+   "conv_id",
+   "delete_files"
+  ]
+ },
+ "delete_project": {
+  "defaults": [
+   "False"
+  ],
+  "params": [
+   "project_id",
+   "delete_files"
+  ]
+ },
+ "disconnect_mcp_oauth": {
+  "defaults": [],
+  "params": [
+   "server_id"
+  ]
+ },
+ "discover_provider_models": {
+  "defaults": [],
+  "params": [
+   "provider_id"
+  ]
+ },
+ "download_app_update": {
+  "defaults": [],
+  "params": []
+ },
+ "edit_resend": {
+  "defaults": [],
+  "params": [
+   "index",
+   "text"
+  ]
+ },
+ "generate": {
+  "defaults": [
+   "None"
+  ],
+  "params": [
+   "capability",
+   "prompt",
+   "params"
+  ]
+ },
+ "get_agent_recovery": {
+  "defaults": [],
+  "params": [
+   "task_id"
+  ]
+ },
+ "get_agent_workspace": {
+  "defaults": [
+   "''"
+  ],
+  "params": [
+   "task_id"
+  ]
+ },
+ "get_chat_recovery": {
+  "defaults": [
+   "''"
+  ],
+  "params": [
+   "run_id"
+  ]
+ },
+ "get_code_changes": {
+  "defaults": [
+   "''"
+  ],
+  "params": [
+   "checkpoint_id"
+  ]
+ },
+ "get_code_diagnostics": {
+  "defaults": [],
+  "params": [
+   "caminho"
+  ]
+ },
+ "get_command_jobs": {
+  "defaults": [
+   "''"
+  ],
+  "params": [
+   "job_id"
+  ]
+ },
+ "get_context_usage": {
+  "defaults": [],
+  "params": []
+ },
+ "get_conversation": {
+  "defaults": [],
+  "params": []
+ },
+ "get_execution_limits": {
+  "defaults": [],
+  "params": []
+ },
+ "get_folder_tools": {
+  "defaults": [],
+  "params": []
+ },
+ "get_git_workspace": {
+  "defaults": [],
+  "params": []
+ },
+ "get_history": {
+  "defaults": [
+   "200"
+  ],
+  "params": [
+   "limit"
+  ]
+ },
+ "get_image": {
+  "defaults": [],
+  "params": [
+   "path"
+  ]
+ },
+ "get_mcp_presets": {
+  "defaults": [],
+  "params": []
+ },
+ "get_mcp_servers": {
+  "defaults": [],
+  "params": []
+ },
+ "get_media": {
+  "defaults": [],
+  "params": [
+   "path"
+  ]
+ },
+ "get_project_context": {
+  "defaults": [
+   "''",
+   "False"
+  ],
+  "params": [
+   "query",
+   "refresh"
+  ]
+ },
+ "get_project_hooks": {
+  "defaults": [],
+  "params": []
+ },
+ "get_project_skill": {
+  "defaults": [],
+  "params": [
+   "skill_id"
+  ]
+ },
+ "get_project_validation": {
+  "defaults": [
+   "''"
+  ],
+  "params": [
+   "run_id"
+  ]
+ },
+ "get_provider_diagnostics": {
+  "defaults": [
+   "''"
+  ],
+  "params": [
+   "run_id"
+  ]
+ },
+ "get_remote_control": {
+  "defaults": [],
+  "params": []
+ },
+ "get_semantic_search": {
+  "defaults": [],
+  "params": []
+ },
+ "get_state": {
+  "defaults": [],
+  "params": []
+ },
+ "get_system_diagnostics": {
+  "defaults": [],
+  "params": []
+ },
+ "get_tool_catalog": {
+  "defaults": [],
+  "params": []
+ },
+ "get_tool_updates": {
+  "defaults": [],
+  "params": []
+ },
+ "get_tools_inventory": {
+  "defaults": [],
+  "params": []
+ },
+ "get_voice_input": {
+  "defaults": [],
+  "params": []
+ },
+ "git_workspace_action": {
+  "defaults": [],
+  "params": [
+   "operation",
+   "options"
+  ]
+ },
+ "install_mcp_component": {
+  "defaults": [
+   "False"
+  ],
+  "params": [
+   "kind",
+   "authorize"
+  ]
+ },
+ "launch_app_update": {
+  "defaults": [],
+  "params": []
+ },
+ "mcp_component_status": {
+  "defaults": [],
+  "params": [
+   "kind"
+  ]
+ },
+ "mcp_oauth_status": {
+  "defaults": [],
+  "params": [
+   "server_id"
+  ]
+ },
+ "navigate_project_code": {
+  "defaults": [
+   "1",
+   "1"
+  ],
+  "params": [
+   "path",
+   "action",
+   "line",
+   "column"
+  ]
+ },
+ "new_conversation": {
+  "defaults": [],
+  "params": []
+ },
+ "open_bench_app": {
+  "defaults": [],
+  "params": [
+   "key"
+  ]
+ },
+ "open_bench_folder": {
+  "defaults": [],
+  "params": [
+   "key"
+  ]
+ },
+ "open_browser": {
+  "defaults": [
+   "''"
+  ],
+  "params": [
+   "url"
+  ]
+ },
+ "open_output_dir": {
+  "defaults": [],
+  "params": []
+ },
+ "open_project_folder": {
+  "defaults": [],
+  "params": [
+   "project_id"
+  ]
+ },
+ "open_tools_folder": {
+  "defaults": [
+   "''"
+  ],
+  "params": [
+   "tool_id"
+  ]
+ },
+ "ping": {
+  "defaults": [],
+  "params": []
+ },
+ "read_git_conflict": {
+  "defaults": [],
+  "params": [
+   "filename"
+  ]
+ },
+ "regenerate": {
+  "defaults": [],
+  "params": []
+ },
+ "remove_mcp_server": {
+  "defaults": [],
+  "params": [
+   "server_id"
+  ]
+ },
+ "remove_model": {
+  "defaults": [],
+  "params": [
+   "provider_id",
+   "model_id"
+  ]
+ },
+ "remove_provider": {
+  "defaults": [],
+  "params": [
+   "provider_id"
+  ]
+ },
+ "rename_conversation": {
+  "defaults": [],
+  "params": [
+   "conv_id",
+   "title"
+  ]
+ },
+ "rename_project": {
+  "defaults": [],
+  "params": [
+   "project_id",
+   "name"
+  ]
+ },
+ "resolve_agent_recovery": {
+  "defaults": [],
+  "params": [
+   "task_id",
+   "action_id",
+   "outcome",
+   "note"
+  ]
+ },
+ "resolve_chat_recovery": {
+  "defaults": [],
+  "params": [
+   "run_id",
+   "action_id",
+   "outcome",
+   "note"
+  ]
+ },
+ "respond_approval": {
+  "defaults": [],
+  "params": [
+   "req_id",
+   "decision"
+  ]
+ },
+ "restore_code_checkpoint": {
+  "defaults": [
+   "False"
+  ],
+  "params": [
+   "checkpoint_id",
+   "redo"
+  ]
+ },
+ "restore_compaction": {
+  "defaults": [],
+  "params": []
+ },
+ "resume_agent_task": {
+  "defaults": [
+   "''",
+   "False"
+  ],
+  "params": [
+   "task_id",
+   "instruction",
+   "use_current_model"
+  ]
+ },
+ "resume_chat_turn": {
+  "defaults": [
+   "''",
+   "False"
+  ],
+  "params": [
+   "run_id",
+   "instruction",
+   "use_current_model"
+  ]
+ },
+ "review_agent_proposal": {
+  "defaults": [],
+  "params": [
+   "task_id"
+  ]
+ },
+ "save_git_conflict": {
+  "defaults": [],
+  "params": [
+   "filename",
+   "content",
+   "sha256"
+  ]
+ },
+ "save_mcp_preset": {
+  "defaults": [
+   "None"
+  ],
+  "params": [
+   "kind",
+   "data"
+  ]
+ },
+ "save_mcp_server": {
+  "defaults": [],
+  "params": [
+   "data"
+  ]
+ },
+ "save_project_hooks": {
+  "defaults": [
+   "True"
+  ],
+  "params": [
+   "text",
+   "enabled"
+  ]
+ },
+ "search_messages": {
+  "defaults": [
+   "30"
+  ],
+  "params": [
+   "query",
+   "limit"
+  ]
+ },
+ "search_semantic": {
+  "defaults": [
+   "8"
+  ],
+  "params": [
+   "query",
+   "limit"
+  ]
+ },
+ "set_active_conversation": {
+  "defaults": [],
+  "params": [
+   "conv_id"
+  ]
+ },
+ "set_active_project": {
+  "defaults": [],
+  "params": [
+   "project_id"
+  ]
+ },
+ "set_agent_model": {
+  "defaults": [
+   "''",
+   "''"
+  ],
+  "params": [
+   "profile",
+   "provider_id",
+   "model_id"
+  ]
+ },
+ "set_agent_settings": {
+  "defaults": [],
+  "params": [
+   "data"
+  ]
+ },
+ "set_context_window": {
+  "defaults": [],
+  "params": [
+   "tokens"
+  ]
+ },
+ "set_execution_limits": {
+  "defaults": [],
+  "params": [
+   "values"
+  ]
+ },
+ "set_folder_tool": {
+  "defaults": [
+   "None",
+   "None"
+  ],
+  "params": [
+   "tool_id",
+   "enabled",
+   "approval"
+  ]
+ },
+ "set_model": {
+  "defaults": [],
+  "params": [
+   "slot",
+   "provider_id",
+   "model_id"
+  ]
+ },
+ "set_model_voice": {
+  "defaults": [
+   "''"
+  ],
+  "params": [
+   "provider_id",
+   "model_id",
+   "voice"
+  ]
+ },
+ "set_output_dir": {
+  "defaults": [],
+  "params": [
+   "path"
+  ]
+ },
+ "set_pinned": {
+  "defaults": [
+   "True"
+  ],
+  "params": [
+   "kind",
+   "item_id",
+   "pinned"
+  ]
+ },
+ "set_preference": {
+  "defaults": [],
+  "params": [
+   "key",
+   "value"
+  ]
+ },
+ "set_rig": {
+  "defaults": [],
+  "params": [
+   "data"
+  ]
+ },
+ "set_semantic_search": {
+  "defaults": [],
+  "params": [
+   "data"
+  ]
+ },
+ "speak_text": {
+  "defaults": [],
+  "params": [
+   "text"
+  ]
+ },
+ "start_agent_task": {
+  "defaults": [],
+  "params": [
+   "profile",
+   "task"
+  ]
+ },
+ "start_command_job": {
+  "defaults": [
+   "''",
+   "3600"
+  ],
+  "params": [
+   "command",
+   "cwd",
+   "timeout"
+  ]
+ },
+ "start_mcp_oauth": {
+  "defaults": [],
+  "params": [
+   "server_id"
+  ]
+ },
+ "start_project_validation": {
+  "defaults": [
+   "None",
+   "False"
+  ],
+  "params": [
+   "ids",
+   "prepare"
+  ]
+ },
+ "start_provider_diagnostics": {
+  "defaults": [
+   "3",
+   "256"
+  ],
+  "params": [
+   "provider_id",
+   "model_id",
+   "rounds",
+   "max_tokens"
+  ]
+ },
+ "start_remote_control": {
+  "defaults": [],
+  "params": []
+ },
+ "start_semantic_index": {
+  "defaults": [],
+  "params": []
+ },
+ "start_tool_updates": {
+  "defaults": [],
+  "params": [
+   "keys"
+  ]
+ },
+ "stop_remote_control": {
+  "defaults": [],
+  "params": []
+ },
+ "sync_provider_models": {
+  "defaults": [
+   "False"
+  ],
+  "params": [
+   "provider_id",
+   "force"
+  ]
+ },
+ "terminal_execute": {
+  "defaults": [],
+  "params": [
+   "command"
+  ]
+ },
+ "terminal_read": {
+  "defaults": [
+   "0"
+  ],
+  "params": [
+   "cursor"
+  ]
+ },
+ "terminal_send": {
+  "defaults": [],
+  "params": [
+   "text"
+  ]
+ },
+ "terminal_stop": {
+  "defaults": [],
+  "params": []
+ },
+ "test_folder_tool": {
+  "defaults": [],
+  "params": [
+   "tool_id"
+  ]
+ },
+ "test_mcp_server": {
+  "defaults": [],
+  "params": [
+   "server_id"
+  ]
+ },
+ "transcribe_voice": {
+  "defaults": [
+   "'pt'",
+   "False"
+  ],
+  "params": [
+   "audio",
+   "language",
+   "fast"
+  ]
+ },
+ "update_context_record": {
+  "defaults": [
+   "''",
+   "''",
+   "'open'"
+  ],
+  "params": [
+   "kind",
+   "text",
+   "item_id",
+   "state"
+  ]
+ },
+ "update_provider": {
+  "defaults": [],
+  "params": [
+   "provider_id",
+   "data"
+  ]
+ },
+ "validate_agent_proposal": {
+  "defaults": [
+   "False"
+  ],
+  "params": [
+   "task_id",
+   "prepare"
+  ]
+ }
+}
