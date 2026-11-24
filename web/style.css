@@ -485,6 +485,7 @@ select { cursor: pointer; }
 .agent-steps > summary { cursor: pointer; padding: 9px 13px; font-size: 12.5px; color: var(--text-dim); list-style: none; user-select: none; }
 .agent-steps > summary::-webkit-details-marker { display: none; }
 .agent-steps[open] > summary { border-bottom: 1px solid var(--border-soft); }
+.agent-steps.has-bad > summary { color: var(--text); }
 .step { padding: 9px 13px; border-top: 1px solid var(--border-soft); }
 .step:first-of-type { border-top: none; }
 .step-title { font-size: 12.5px; font-family: "Cascadia Code", Consolas, monospace; word-break: break-word; }

@@ -27,6 +27,9 @@ const assert=require('node:assert/strict');
     await page.goto(pathToFileURL(path.resolve('web/index.html')).href);
     await page.waitForSelector('.msg-stopped');
     assert.equal(await page.locator('.msg-stopped').count(),1,'só a última resposta mostra o aviso');
+    // o relatório de ações fica recolhido mesmo com um passo falhado (a conversa acaba na palavra do agente)
+    assert.equal(await page.locator('.agent-steps').first().evaluate(node=>node.open),false,'o relatório de ações não abre sozinho');
+    assert.match(await page.locator('.agent-steps').first().locator('summary').innerText(),/1 com erro/,'o resumo diz quantas falharam');
     const last=page.locator('.msg.assistant').last();
     assert.match(await last.locator('.msg-stopped').innerText(),/O pedido parou antes de terminar: O modelo terminou sem escrever uma resposta final\. Queres que continue\?/);
     // o aviso fica no fim, por baixo das ações — é aí que a pessoa está a olhar

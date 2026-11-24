@@ -256,6 +256,9 @@ class Api(SystemApi, McpApi, WorkspaceApi, ProvidersApi, OperationsApi, ContextA
                 try:value=voice_input.server_address(value)
                 except voice_input.VoiceError as exc:return _err(str(exc))
             if key=='voice_name' and (not isinstance(value,str) or len(value)>120 or any(c in value for c in '/\\:*?"<>|')):return _err('Voz inválida.')
+            if key=='agent_name':
+                if not isinstance(value,str) or len(value)>40:return _err('Nome do agente inválido (até 40 caracteres).')
+                value=value.strip()
             if key=='personality' and value not in ('neutra','sociavel','sarcastico','bruto','profissional'):return _err('Personalidade inválida.')
             if key=='voice_tone' and value not in ('normal','grave','muito_grave','profunda'):return _err('Tom de voz inválido.')
             if key=='picker_type' and value not in ('chat','code','image','video','audio'):return _err('Tipo de modelo inválido.')

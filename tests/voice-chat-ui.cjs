@@ -125,6 +125,25 @@ const assert = require('node:assert/strict'), path = require('node:path'), {path
     assert.equal(await mode(), 'listening');
     await page.evaluate(() => { window.voice.slow = false; });
 
+    // --- só responde quando é chamado pelo nome (Configurações → «Nome na conversa por voz») ---
+    await page.evaluate(() => { state.preferences = Object.assign(state.preferences || {}, { agent_name: 'Zé' }); });
+    // alguém a falar à volta, sem o nome: ouve-se, mas não se envia nada
+    await page.evaluate(() => { window.voice.replies = [{ ok: true, text: 'o jantar está pronto' }]; });
+    let kept = await page.evaluate(() => window.voice.chats.length);
+    let heardBefore = await page.evaluate(() => window.voice.heard.length);
+    await speak(900);
+    await page.waitForFunction((n) => window.voice.heard.length > n, heardBefore, { timeout: 20000 });
+    await page.waitForFunction(() => document.querySelector('#btn-voice-chat').dataset.mode === 'listening', null, { timeout: 20000 });
+    assert.equal(await page.evaluate(() => window.voice.chats.length), kept, 'sem o nome, o que se ouve é ignorado');
+    // chamado pelo nome (sem acento nem vírgula): responde, e a mensagem vai sem o nome
+    await page.evaluate(() => { window.voice.replies = [{ ok: true, text: 'ze que horas sao' }]; });
+    kept = await page.evaluate(() => window.voice.chats.length);
+    await speak(900);
+    await page.waitForFunction((n) => window.voice.chats.length === n + 1, kept, { timeout: 20000 });
+    assert.equal(await page.evaluate(() => window.voice.chats.at(-1)), 'que horas sao', 'o nome é tirado antes de enviar');
+    await page.waitForFunction(() => document.querySelector('#btn-voice-chat').dataset.mode === 'listening', null, { timeout: 20000 });
+    await page.evaluate(() => { state.preferences.agent_name = ''; });
+
     // desligar: liberta o microfone e o modelo deixa de estar em modo voz
     await button.click();
     await page.waitForFunction(() => document.querySelector('#btn-voice-chat').getAttribute('aria-pressed') === 'false');

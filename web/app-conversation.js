@@ -402,10 +402,13 @@ function renderSteps(steps) {
   det.className = "agent-steps";
   const sum = document.createElement("summary");
   const nOk = steps.filter((s) => s.ok).length;
+  const nBad = steps.length - nOk;
   const totalMs = steps.reduce((total, step) => total + (Number(step.duration_ms) || 0), 0);
-  sum.textContent = `🔧 ${steps.length} ação(ões) do agente · ${nOk} ok` + (totalMs ? ` · ${totalMs} ms` : "");
+  sum.textContent = `🔧 ${steps.length} ação(ões) do agente · ${nOk} ok` + (nBad ? ` · ${nBad} com erro` : "") + (totalMs ? ` · ${totalMs} ms` : "");
   det.appendChild(sum);
-  det.open = steps.some((step) => !step.ok);
+  // Fica recolhido para a conversa acabar na última palavra do agente (pedido do user, 24/11/2026); abre-se num clique.
+  det.open = false;
+  if (nBad) det.classList.add("has-bad");
   const icons = { mcp: "🔌", browser: "🌐", tool: "🧰", cmd: "⌨️", write: "✎", read: "👁", list: "📁", error: "⚠️", tasks: "📋" };
   for (const s of steps) {
     const row = document.createElement("div");

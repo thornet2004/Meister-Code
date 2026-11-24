@@ -3,6 +3,9 @@
 // envia a mensagem e lê a resposta em voz alta frase a frase (Piper local). Falar por cima interrompe a resposta:
 // primeiro a voz só pára para te ouvir; se disseste alguma coisa que se perceba, a resposta em curso é cancelada e a tua
 // frase segue como mensagem nova; se foi ruído (ou o eco das colunas), a resposta continua de onde ia.
+// Se houver um nome definido (Configurações → Aparência → «Nome na conversa por voz»), o agente só responde quando é
+// chamado por ele no início da frase («Zé, verifica isto»); o resto do que ouve é ignorado, para não se baralhar com
+// outras pessoas a falar à volta. Sem nome, responde a tudo (como antes).
 // Nada sai do PC além do texto que já ia para o modelo de chat. Tudo dentro de uma função: não acrescenta nomes globais.
 (() => {
   const button = document.querySelector('#btn-voice-chat');
@@ -184,6 +187,23 @@
     paint(current || waiting > 0 ? 'speaking' : chatBusy || turns > 0 ? 'thinking' : 'listening');
   }
 
+  // Tira acentos e pontuação para comparar o que se ouviu com o nome, à prova dos tremidos da transcrição.
+  const bare = (word) => word.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]/g, "");
+  function addressed(text) {
+    const name = ((state.preferences && state.preferences.agent_name) || "").trim();
+    if (!name) return text;
+    const wanted = name.split(/\s+/).map(bare).filter(Boolean);
+    if (!wanted.length) return text;
+    const tokens = text.trim().split(/\s+/), low = tokens.map(bare);
+    for (let start = 0; start < Math.min(2, tokens.length); start++) {
+      if (wanted.every((w, k) => low[start + k] === w)) {
+        const rest = tokens.slice(start + wanted.length).join(" ").replace(/^[\s,.:;!?…-]+/, "").trim();
+        return rest || null;
+      }
+    }
+    return null;
+  }
+
   async function finishUtterance() {
     const frames = taken, said = spoken;
     taken = []; spoken = 0; quiet = 0;
@@ -201,6 +221,9 @@
       if (!result.ok && !/Não percebi|Não ouvi|demasiado curta|Já há uma transcrição/.test(result.error || '')) showError(result.error);
       return carryOn();
     }
+    // Só se há um nome definido e foste tu a chamar por ele: senão, ignora-se (se estava a falar, continua de onde ia).
+    const command = addressed(result.text);
+    if (command === null) return carryOn();
     if (interrupting) {   // interrompeste mesmo: cala-se, cancela o que estava a gerar e responde ao que disseste
       interrupting = false; muted = true;
       stopSpeech();
@@ -210,7 +233,7 @@
     if (mode === 'off') return;
     if (chatBusy) { muted = false; showError('A resposta anterior ainda não parou; repete quando terminar.'); return paint('thinking'); }
     muted = false;
-    composer.value = (composer.value.trim() ? composer.value.trim() + ' ' : '') + result.text;
+    composer.value = (composer.value.trim() ? composer.value.trim() + ' ' : '') + command;
     turns++;
     paint('thinking');
     try { await send(); } finally { turns--; feed('', true); settle(); }

@@ -219,6 +219,8 @@ def default_config() -> dict:
             "theme": "system",
             "density": "comfortable",
             "auto_compact": False,
+            # Nome por que o agente responde na conversa por voz; vazio = responde a tudo o que ouve.
+            "agent_name": "",
             "agent_profile": "build",
             "agent_models": {},
             # Filtro de apresentação das integrações MCP (não altera servidores).
@@ -322,6 +324,8 @@ def load_config() -> dict:
         if cfg["preferences"].get("density") not in ("comfortable", "compact"):
             cfg["preferences"]["density"] = "comfortable"
         cfg["preferences"]["auto_compact"] = bool(cfg["preferences"].get("auto_compact", False))
+        name = cfg["preferences"].get("agent_name", "")
+        cfg["preferences"]["agent_name"] = name.strip()[:40] if isinstance(name, str) else ""
         # Limites por pedido guardados com o valor antigo por omissão (200 mil tokens) passam para o novo (4 milhões):
         # pedido do user, 24/11/2026 — não quer ter de o mudar à mão em cada instalação.
         saved_limits = cfg["preferences"].get("execution_limits")

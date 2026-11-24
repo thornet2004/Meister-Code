@@ -265,6 +265,15 @@ class ContextTests(unittest.TestCase):
         self.assertEqual(self.app.set_preference('picker_type', 'image')['preferences']['picker_type'], 'image')
         self.assertEqual(self.app.get_state()['preferences']['picker_type'], 'image')
 
+    def test_agent_name_for_voice_is_trimmed_and_limited(self):
+        """Nome por que o agente responde na conversa por voz (pedido do user, 24/11/2026)."""
+        self.assertEqual(self.app.get_state()['preferences']['agent_name'], '', 'por omissão vazio: responde a tudo')
+        self.assertEqual(self.app.set_preference('agent_name', '  Zé  ')['preferences']['agent_name'], 'Zé', 'os espaços à volta saem')
+        self.assertEqual(self.app.get_state()['preferences']['agent_name'], 'Zé')
+        self.assertFalse(self.app.set_preference('agent_name', 'z' * 41)['ok'], 'nome demasiado longo é recusado')
+        self.assertFalse(self.app.set_preference('agent_name', 123)['ok'])
+        self.assertEqual(self.app.set_preference('agent_name', '')['preferences']['agent_name'], '', 'pode voltar a vazio')
+
     def test_regenerate_edit_and_branch(self):
         self._chat_model()
         conv = [
