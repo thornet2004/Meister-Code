@@ -39,6 +39,7 @@ COMPACT_PROMPT_CHARS = 12000
 
 # Memória enviada ao modelo (para não estourar a janela de contexto)
 HISTORY_WINDOW_MSGS = 40   # nº de mensagens recentes enviadas na íntegra
+VOICE_WINDOW_MSGS = 6      # na conversa por voz, só as últimas trocas (prompt pequeno = rig rápida)
 VISION_RECENT_MSGS = 6     # só estas (as mais recentes) incluem imagens reais
 RECAP_MAX_CHARS = 3000     # tamanho do resumo local das mensagens antigas
 
@@ -350,10 +351,14 @@ def _build_model_messages(conv: list[dict], agent_ctx: dict | None = None, tools
         context='\n\n'.join(agent_ctx.get(k,'') for k in ('_continuity','_code_context') if agent_ctx.get(k))
         if context:msgs.append({'role':'user','content':context})
 
+    # Na conversa por voz, só as últimas trocas vão na íntegra e sem os passos do agente: o prompt tem de ser pequeno
+    # para a rig responder depressa (visto a 24/11/2026: processa ~600 tokens/s, e um histórico grande custava 20 s+).
+    voice = bool(agent_ctx and agent_ctx.get('voice'))
+    window = VOICE_WINDOW_MSGS if voice else HISTORY_WINDOW_MSGS
     n = len(conv)
-    if n > HISTORY_WINDOW_MSGS:
-        older = conv[: n - HISTORY_WINDOW_MSGS]
-        recent = conv[n - HISTORY_WINDOW_MSGS:]
+    if n > window:
+        older = conv[: n - window]
+        recent = conv[n - window:]
         recap = _recap_text(older)
         if recap:
             msgs.append({
@@ -369,7 +374,7 @@ def _build_model_messages(conv: list[dict], agent_ctx: dict | None = None, tools
     total = len(recent)
     for idx, m in enumerate(recent):
         allow_images = (total - idx) <= VISION_RECENT_MSGS
-        built = _msg_for_model(m, allow_images, include_steps=(total - idx) <= 10, include_image_data=include_image_data)
+        built = _msg_for_model(m, allow_images, include_steps=(not voice) and (total - idx) <= 10, include_image_data=include_image_data)
         if built is not None:
             msgs.append(built)
             if m.get('role')=='assistant' and allow_images:

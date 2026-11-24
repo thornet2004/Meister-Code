@@ -40,6 +40,23 @@ class ProjectBrainTests(unittest.TestCase):
         (self.root / 'progresso.md').write_bytes(b'\xff\xfe estado antigo')
         self.assertIn('estado antigo', project_guidance.progress(self.root), 'um ficheiro mal codificado não parte o pedido')
 
+    def test_voice_turn_sends_a_small_history_without_agent_steps(self):
+        """Visto a 24/11/2026: a conversa por voz demorava uma eternidade porque ia o histórico quase todo (a rig processa
+        o prompt a ~600 tokens/s). No modo voz só vão as últimas trocas e sem os passos do agente."""
+        conv = []
+        for i in range(20):
+            conv.append(dict(role='user', text='pergunta %d ' % i + 'palavra ' * 150))
+            conv.append(dict(role='assistant', text='resposta %d ' % i + 'palavra ' * 150, steps=[dict(kind='checkpoint', title='CheckpointExterno', body='diff enorme ' * 60, ok=True)]))
+        full = chat_messages._build_model_messages(conv, dict(on=True), tools=None, include_image_data=False)
+        voice = chat_messages._build_model_messages(conv, dict(on=True, voice=True), tools=None, include_image_data=False)
+        self.assertLess(len(voice), len(full), 'por voz vão menos mensagens')
+        size = lambda msgs: sum(len(m.get('content') or '') for m in msgs if isinstance(m.get('content'), str))
+        self.assertLess(size(voice), size(full) // 2, 'o prompt de voz é bem mais pequeno')
+        joined = '\n'.join(m.get('content') or '' for m in voice if isinstance(m.get('content'), str))
+        self.assertNotIn('diff enorme ' * 60, joined, 'os corpos dos passos do agente não vão no prompt de voz')
+        self.assertIn('pergunta 19', joined, 'a última pergunta vai na íntegra')
+        self.assertNotIn('pergunta 0', joined, 'as antigas ficam de fora da janela')
+
 
 if __name__ == '__main__':
     unittest.main()

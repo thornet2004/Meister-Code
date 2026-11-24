@@ -274,6 +274,15 @@ class ContextTests(unittest.TestCase):
         self.assertFalse(self.app.set_preference('agent_name', 123)['ok'])
         self.assertEqual(self.app.set_preference('agent_name', '')['preferences']['agent_name'], '', 'pode voltar a vazio')
 
+    def test_voice_listen_seconds_is_bounded(self):
+        """Segundos de escuta depois da chamada pelo nome (pedido do user, 24/11/2026: a janela era curta demais)."""
+        self.assertEqual(self.app.get_state()['preferences']['voice_listen_seconds'], 8, 'por omissão 8 segundos')
+        self.assertEqual(self.app.set_preference('voice_listen_seconds', 12)['preferences']['voice_listen_seconds'], 12)
+        self.assertEqual(self.app.get_state()['preferences']['voice_listen_seconds'], 12)
+        self.assertFalse(self.app.set_preference('voice_listen_seconds', 1)['ok'], 'menos de 2 é recusado')
+        self.assertFalse(self.app.set_preference('voice_listen_seconds', 31)['ok'], 'mais de 30 é recusado')
+        self.assertFalse(self.app.set_preference('voice_listen_seconds', 'muito')['ok'], 'texto é recusado')
+
     def test_regenerate_edit_and_branch(self):
         self._chat_model()
         conv = [

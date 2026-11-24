@@ -194,7 +194,13 @@ class ChatApi:
             else:
                 code_model = None
             handoff = False
-            self._attach_project_context(agent_ctx,meta_dir,user_text,True)
+            # Na conversa por voz, não se injeta o código do projeto no prompt (visto a 24/11/2026: o agente demorava uma
+            # eternidade a responder). Esse bloco (~3 mil tokens) ia logo a seguir às instruções e mudava a cada pergunta, o
+            # que obrigava a rig a reprocessar todo o histórico em cada turno. Sem ele, o modelo responde depressa e continua
+            # a poder ler ficheiros com as ferramentas quando lho pedires.
+            voice = bool(agent_ctx.get('voice'))
+            self._attach_project_context(agent_ctx,meta_dir,user_text,not voice)
+            if voice:agent_ctx.pop('_code_context',None);agent_ctx.pop('_continuity',None)
             model_messages = _build_model_messages(conv, agent_ctx, tools)
             # um modelo só de texto recusa o pedido inteiro se a conversa levar imagens (por exemplo as geradas antes)
             vision = _accepts_images(provider, model)

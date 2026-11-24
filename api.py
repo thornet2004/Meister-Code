@@ -259,6 +259,10 @@ class Api(SystemApi, McpApi, WorkspaceApi, ProvidersApi, OperationsApi, ContextA
             if key=='agent_name':
                 if not isinstance(value,str) or len(value)>40:return _err('Nome do agente inválido (até 40 caracteres).')
                 value=value.strip()
+            if key=='voice_listen_seconds':
+                try:value=int(value)
+                except (TypeError,ValueError):return _err('Tempo de escuta inválido (2 a 30 segundos).')
+                if not 2<=value<=30:return _err('Tempo de escuta inválido (2 a 30 segundos).')
             if key=='personality' and value not in ('neutra','sociavel','sarcastico','bruto','profissional'):return _err('Personalidade inválida.')
             if key=='voice_tone' and value not in ('normal','grave','muito_grave','profunda'):return _err('Tom de voz inválido.')
             if key=='picker_type' and value not in ('chat','code','image','video','audio'):return _err('Tipo de modelo inválido.')

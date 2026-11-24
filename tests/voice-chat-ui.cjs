@@ -142,6 +142,18 @@ const assert = require('node:assert/strict'), path = require('node:path'), {path
     await page.waitForFunction((n) => window.voice.chats.length === n + 1, kept, { timeout: 20000 });
     assert.equal(await page.evaluate(() => window.voice.chats.at(-1)), 'que horas sao', 'o nome é tirado antes de enviar');
     await page.waitForFunction(() => document.querySelector('#btn-voice-chat').dataset.mode === 'listening', null, { timeout: 20000 });
+    // chamado só pelo nome e com pausa: fica à escuta e a frase seguinte (já sem o nome) conta como pergunta
+    await page.evaluate(() => { state.preferences.voice_listen_seconds = 8; window.voice.replies = [{ ok: true, text: 'ze' }, { ok: true, text: 'estou a ouvir musica' }]; });
+    kept = await page.evaluate(() => window.voice.chats.length);
+    heardBefore = await page.evaluate(() => window.voice.heard.length);
+    await speak(900);   // só «Zé»
+    await page.waitForFunction((n) => window.voice.heard.length > n, heardBefore, { timeout: 20000 });
+    await page.waitForFunction(() => document.querySelector('#chat-status').textContent.includes('Diz a tua pergunta'), null, { timeout: 20000 });
+    assert.equal(await page.evaluate(() => window.voice.chats.length), kept, 'só o nome não envia nada; fica à escuta');
+    await speak(900);   // a pergunta, sem repetir o nome
+    await page.waitForFunction((n) => window.voice.chats.length === n + 1, kept, { timeout: 20000 });
+    assert.equal(await page.evaluate(() => window.voice.chats.at(-1)), 'estou a ouvir musica', 'dentro da janela de escuta, a pergunta é enviada sem o nome');
+    await page.waitForFunction(() => document.querySelector('#btn-voice-chat').dataset.mode === 'listening', null, { timeout: 20000 });
     await page.evaluate(() => { state.preferences.agent_name = ''; });
 
     // desligar: liberta o microfone e o modelo deixa de estar em modo voz
@@ -166,7 +178,7 @@ const assert = require('node:assert/strict'), path = require('node:path'), {path
     await page.selectOption('#voice-tone-select', 'profunda');
     await page.waitForFunction(() => window.voice.prefs.at(-1)[0] === 'voice_tone');
     assert.deepEqual(errors, []);
-    console.log('PASS: voice chat — missing voice, hands-free turn, fast transcription, sentence-by-sentence speech without code, noise does not cancel the answer, a real interruption cancels and answers, stop, voice and tone pickers');
+    console.log('PASS: voice chat — missing voice, hands-free turn, fast transcription, sentence-by-sentence speech without code, noise does not cancel the answer, a real interruption cancels and answers, wake word, listening window after the name, stop, voice and tone pickers');
   } finally {
     await browser.close();
   }

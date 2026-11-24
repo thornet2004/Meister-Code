@@ -5,7 +5,9 @@
 // frase segue como mensagem nova; se foi ruído (ou o eco das colunas), a resposta continua de onde ia.
 // Se houver um nome definido (Configurações → Aparência → «Nome na conversa por voz»), o agente só responde quando é
 // chamado por ele no início da frase («Zé, verifica isto»); o resto do que ouve é ignorado, para não se baralhar com
-// outras pessoas a falar à volta. Sem nome, responde a tudo (como antes).
+// outras pessoas a falar à volta. Sem nome, responde a tudo (como antes). Se só disseres o nome e fizeres uma pausa,
+// fica à escuta uns segundos (Configurações → «Escuta após o nome») à espera da pergunta — a frase seguinte conta como
+// pergunta sem teres de repetir o nome.
 // Nada sai do PC além do texto que já ia para o modelo de chat. Tudo dentro de uma função: não acrescenta nomes globais.
 (() => {
   const button = document.querySelector('#btn-voice-chat');
@@ -30,8 +32,12 @@
   let pending = '', inCode = false;
   let synth = Promise.resolve(), player = Promise.resolve(), waiting = 0, current = null, turns = 0, warned = false;
   let held = false, interrupting = false, muted = false, resumers = [];
+  let awakeUntil = 0;   // enquanto > agora, a próxima frase conta como pergunta mesmo sem o nome (chamaste há pouco)
+  let follow = false;   // esta frase começou dentro da janela de escuta? (decidido quando a fala começa)
 
   const language = () => { try { return localStorage.getItem('voiceLanguage') || 'pt'; } catch (e) { return 'pt'; } };
+  // Segundos que o agente fica à escuta depois de ser chamado pelo nome (Configurações → «Escuta após o nome»).
+  const listenWindowMs = () => { const s = Number(state.preferences && state.preferences.voice_listen_seconds); return (s >= 2 ? s : 8) * 1000; };
 
   function paint(next) {
     mode = next;
@@ -171,6 +177,7 @@
       const needed = mode === 'listening' ? 2 : 3;   // interromper pede um pouco mais de certeza
       if (loudRun >= needed) {
         if (mode !== 'listening') { interrupting = true; hold(); }
+        follow = awakeUntil > 0 && Date.now() < awakeUntil;   // chamaste pelo nome há pouco e esta fala está dentro da janela
         taken = recent.slice(); recent = []; quiet = 0; spoken = loudRun * frameSeconds; loudRun = 0;
         paint('hearing');
       }
@@ -189,18 +196,23 @@
 
   // Tira acentos e pontuação para comparar o que se ouviu com o nome, à prova dos tremidos da transcrição.
   const bare = (word) => word.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]/g, "");
+  // Decide o que fazer com o que se ouviu: {send} para enviar como mensagem, {wait} para abrir a janela de escuta
+  // (chamaste só pelo nome), ou null para ignorar (não é contigo).
   function addressed(text) {
     const name = ((state.preferences && state.preferences.agent_name) || "").trim();
-    if (!name) return text;
+    if (!name) return { send: text };
     const wanted = name.split(/\s+/).map(bare).filter(Boolean);
-    if (!wanted.length) return text;
+    if (!wanted.length) return { send: text };
     const tokens = text.trim().split(/\s+/), low = tokens.map(bare);
     for (let start = 0; start < Math.min(2, tokens.length); start++) {
       if (wanted.every((w, k) => low[start + k] === w)) {
         const rest = tokens.slice(start + wanted.length).join(" ").replace(/^[\s,.:;!?…-]+/, "").trim();
-        return rest || null;
+        if (rest) return { send: rest };            // nome e pergunta na mesma frase
+        awakeUntil = Date.now() + listenWindowMs();  // só disseste o nome: fica à escuta da pergunta
+        return { wait: true };
       }
     }
+    if (follow) return { send: text };   // já tinhas chamado pelo nome há pouco: esta frase é a pergunta
     return null;
   }
 
@@ -221,9 +233,24 @@
       if (!result.ok && !/Não percebi|Não ouvi|demasiado curta|Já há uma transcrição/.test(result.error || '')) showError(result.error);
       return carryOn();
     }
-    // Só se há um nome definido e foste tu a chamar por ele: senão, ignora-se (se estava a falar, continua de onde ia).
-    const command = addressed(result.text);
-    if (command === null) return carryOn();
+    // Só se há um nome definido e foste tu a chamar por ele (ou dentro da janela de escuta): senão, ignora-se.
+    const decided = addressed(result.text);
+    if (!decided) return carryOn();
+    if (decided.wait) {   // chamaste só pelo nome: cala-se se estava a falar e fica à escuta da pergunta
+      if (interrupting) {
+        interrupting = false; muted = true;
+        stopSpeech();
+        if (chatBusy && el.btnStop) el.btnStop.click();
+        for (let i = 0; chatBusy && i < 150; i++) await new Promise((resolve) => setTimeout(resolve, 100));
+        muted = false;
+      }
+      if (mode === 'off') return;
+      paint('listening');
+      el.status.textContent = 'Sim? Diz a tua pergunta…';
+      return;
+    }
+    const command = decided.send;
+    awakeUntil = 0; follow = false;   // janela de escuta consumida (se estava aberta)
     if (interrupting) {   // interrompeste mesmo: cala-se, cancela o que estava a gerar e responde ao que disseste
       interrupting = false; muted = true;
       stopSpeech();
@@ -262,7 +289,7 @@
     node.onaudioprocess = (event) => onFrame(new Float32Array(event.inputBuffer.getChannelData(0)));
     source.connect(node); node.connect(mute); mute.connect(context.destination);
     mic = { stream, context, node, source };
-    noise = 0.004; loudRun = 0; recent = []; taken = []; warned = false; interrupting = false; muted = false;
+    noise = 0.004; loudRun = 0; recent = []; taken = []; warned = false; interrupting = false; muted = false; awakeUntil = 0; follow = false;
     call('set_preference', 'voice_reply', true);   // o modelo passa a responder curto e sem formatação
     paint('listening');
   }

@@ -221,6 +221,8 @@ def default_config() -> dict:
             "auto_compact": False,
             # Nome por que o agente responde na conversa por voz; vazio = responde a tudo o que ouve.
             "agent_name": "",
+            # Segundos que o agente fica à escuta depois de ser chamado pelo nome, à espera da pergunta.
+            "voice_listen_seconds": 8,
             "agent_profile": "build",
             "agent_models": {},
             # Filtro de apresentação das integrações MCP (não altera servidores).
@@ -326,6 +328,11 @@ def load_config() -> dict:
         cfg["preferences"]["auto_compact"] = bool(cfg["preferences"].get("auto_compact", False))
         name = cfg["preferences"].get("agent_name", "")
         cfg["preferences"]["agent_name"] = name.strip()[:40] if isinstance(name, str) else ""
+        try:
+            secs = int(cfg["preferences"].get("voice_listen_seconds", 8))
+        except (TypeError, ValueError):
+            secs = 8
+        cfg["preferences"]["voice_listen_seconds"] = min(30, max(2, secs))
         # Limites por pedido guardados com o valor antigo por omissão (200 mil tokens) passam para o novo (4 milhões):
         # pedido do user, 24/11/2026 — não quer ter de o mudar à mão em cada instalação.
         saved_limits = cfg["preferences"].get("execution_limits")

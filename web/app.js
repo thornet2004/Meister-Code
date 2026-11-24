@@ -135,6 +135,12 @@ function bindEvents() {
       if (!result.ok) { showError(result.error); return; }
       field.value = result.preferences?.agent_name ?? field.value.trim();
       state.preferences = result.preferences || state.preferences; }; }
+  { const field = $("#voice-listen-input");
+    if (field) field.onchange = async () => {
+      const result = await call("set_preference", "voice_listen_seconds", parseInt(field.value, 10));
+      if (!result.ok) { showError(result.error); field.value = state.preferences?.voice_listen_seconds ?? 8; return; }
+      field.value = result.preferences?.voice_listen_seconds ?? field.value;
+      state.preferences = result.preferences || state.preferences; }; }
   $("#personality-select").onchange = async () => {
     const result = await call("set_preference", "personality", $("#personality-select").value);
     if (!result.ok) return showError(result.error);
@@ -356,4 +362,6 @@ function applyTheme() {
   if (autoCompact) autoCompact.checked = !!preferences.auto_compact;
   const agentName = $("#agent-name-input");
   if (agentName && document.activeElement !== agentName) agentName.value = preferences.agent_name || "";
+  const voiceListen = $("#voice-listen-input");
+  if (voiceListen && document.activeElement !== voiceListen) voiceListen.value = preferences.voice_listen_seconds || 8;
 }

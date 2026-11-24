@@ -230,6 +230,29 @@ class RigBridgeTests(unittest.TestCase):
         self.assertTrue(answer['ok'], answer)
         self.assertEqual(seen, [True, False])
 
+    def test_voice_turn_leaves_out_the_code_context_to_answer_fast(self):
+        """Visto a 24/11/2026: na conversa por voz o agente demorava uma eternidade — o código do projeto ia no prompt a
+        cada pergunta e obrigava a rig a reprocessar tudo. No modo voz esse bloco não é enviado."""
+        seen = []
+
+        def adapter(provider, model, messages, tools=None, params=None):
+            seen.append('\n'.join(m.get('content') for m in messages if isinstance(m.get('content'), str)))
+            return {'content': 'Olá.', 'tool_calls': []}
+
+        def fake_attach(ctx, meta, query, refresh=False):
+            ctx['_continuity'] = ''
+            ctx['_code_context'] = 'MARCA_CONTEXTO_DE_CODIGO'
+            return refresh
+
+        with patch('providers.get_chat_adapter', return_value=adapter), patch.object(self.app, '_attach_project_context', side_effect=fake_attach):
+            self.app._voice_reply = True
+            self.assertTrue(self.app.chat('que horas são')['ok'])
+            self.assertNotIn('MARCA_CONTEXTO_DE_CODIGO', seen[-1], 'por voz, o código do projeto não vai no prompt')
+            self.app._voice_reply = False
+            self.assertTrue(self.app.chat('e agora')['ok'])
+            self.assertIn('MARCA_CONTEXTO_DE_CODIGO', seen[-1], 'em texto, continua a ir')
+        self.app._voice_reply = False
+
     def test_the_code_model_is_chosen_apart_and_the_chat_model_hands_the_work_over(self):
         """Pedido do user (24/11/2026): um campo «Código» à parte do da conversa; quem conversa interpreta e passa o trabalho."""
         import api_helpers
