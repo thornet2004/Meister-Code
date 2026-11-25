@@ -184,6 +184,12 @@
    "text"
   ]
  },
+ "forget_note": {
+  "defaults": [],
+  "params": [
+   "note_id"
+  ]
+ },
  "generate": {
   "defaults": [
    "None"
@@ -284,6 +290,16 @@
   "defaults": [],
   "params": [
    "path"
+  ]
+ },
+ "get_notes": {
+  "defaults": [
+   "''",
+   "50"
+  ],
+  "params": [
+   "query",
+   "limit"
   ]
  },
  "get_project_context": {
@@ -450,6 +466,12 @@
    "filename"
   ]
  },
+ "read_note": {
+  "defaults": [],
+  "params": [
+   "note_id"
+  ]
+ },
  "regenerate": {
   "defaults": [],
   "params": []
@@ -574,6 +596,23 @@
   "defaults": [],
   "params": [
    "data"
+  ]
+ },
+ "save_note": {
+  "defaults": [
+   "''",
+   "''",
+   "''",
+   "''",
+   "None"
+  ],
+  "params": [
+   "titulo",
+   "texto",
+   "etiquetas",
+   "tipo",
+   "ref",
+   "note_id"
   ]
  },
  "save_project_hooks": {

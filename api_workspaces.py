@@ -248,7 +248,12 @@ class WorkspaceApi:
                 self._tasks.detach_context(folder)
                 self._commands.detach_context(folder)
                 self._validations.detach_context(folder)
-                disposed = _dispose_folder(str(folder))
+                try:
+                    disposed = _dispose_folder(str(folder))
+                except Exception:  # a Reciclagem recusou (ex.: pasta em Program Files) e o user pediu para apagar do disco: apaga mesmo — é dado da app, já validado como subpasta de Conversas
+                    import shutil
+                    shutil.rmtree(folder)
+                    disposed = "permanent"
             before = len(cfg.get("conversations", []))
             cfg["conversations"] = [c for c in cfg.get("conversations", []) if c.get("id") != conv_id]
             if len(cfg["conversations"]) == before:

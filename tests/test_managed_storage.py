@@ -49,29 +49,39 @@ class ManagedStorageTests(unittest.TestCase):
         replacement = self.app.create_project("O meu projeto")
         self.assertNotEqual(replacement["active_project_id"], project["id"])
 
-    def test_remove_from_disk_and_failed_recycle_keeps_entry(self):
+    def test_remove_from_disk_recycle_and_conversation_permanent_fallback(self):
         def recycle(path):
             source = Path(path).resolve()
             self.assertIn(self.app_root, source.parents)
             source.rename(source.with_name(source.name + "-recycled"))
             return "trash"
 
-        for kind in ("conversation", "project"):
-            state = getattr(self.app, "create_" + kind)("Teste")
-            key = "conversations" if kind == "conversation" else "projects"
-            active = state["active_conversation_id" if kind == "conversation" else "active_project_id"]
-            entry = next(x for x in state[key] if x["id"] == active)
-            folder = Path(entry["path"])
-            with patch("api_workspaces._dispose_folder", side_effect=OSError("Recycle failure")):
-                result = getattr(self.app, "delete_" + kind)(active, True)
-            self.assertFalse(result["ok"])
-            self.assertTrue(folder.exists())
-            self.assertIn(active, [x["id"] for x in config.load_config()[key]])
-            with patch("api_workspaces._dispose_folder", side_effect=recycle):
-                result = getattr(self.app, "delete_" + kind)(active, True)
-            self.assertTrue(result["ok"], result)
-            self.assertEqual(result["deleted_files"], "trash")
-            self.assertFalse(folder.exists())
+        # Projeto: se a Reciclagem falhar, NADA é apagado (protege o código do utilizador).
+        state = self.app.create_project("Teste")
+        active = state["active_project_id"]
+        folder = Path(next(x for x in state["projects"] if x["id"] == active)["path"])
+        with patch("api_workspaces._dispose_folder", side_effect=OSError("Recycle failure")):
+            result = self.app.delete_project(active, True)
+        self.assertFalse(result["ok"])
+        self.assertTrue(folder.exists())
+        self.assertIn(active, [x["id"] for x in config.load_config()["projects"]])
+        with patch("api_workspaces._dispose_folder", side_effect=recycle):
+            result = self.app.delete_project(active, True)
+        self.assertTrue(result["ok"], result)
+        self.assertEqual(result["deleted_files"], "trash")
+        self.assertFalse(folder.exists())
+
+        # Conversa: se a Reciclagem falhar, o utilizador pediu para apagar do disco -> apaga mesmo (é dado da app).
+        state = self.app.create_conversation("Teste")
+        active = state["active_conversation_id"]
+        folder = Path(next(x for x in state["conversations"] if x["id"] == active)["path"])
+        self.assertTrue(folder.exists())
+        with patch("api_workspaces._dispose_folder", side_effect=OSError("Recycle failure")):
+            result = self.app.delete_conversation(active, True)
+        self.assertTrue(result["ok"], result)
+        self.assertEqual(result["deleted_files"], "permanent")
+        self.assertFalse(folder.exists())
+        self.assertNotIn(active, [x["id"] for x in config.load_config()["conversations"]])
 
     def test_migration_preserves_original_and_rebases_paths(self):
         old = self.settings / "conversations" / "old-conv"

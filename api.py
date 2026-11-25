@@ -37,6 +37,7 @@ uma por tema, de que `Api` herda:
   - `api_mcp.McpApi`               MCP, ferramentas numa pasta, presets
   - `api_system.SystemApi`         diagnóstico, atualizações, browser, bancada
   - `api_semantic.SemanticApi`     pesquisa de código por significado (embeddings)
+  - `api_knowledge.KnowledgeApi`   base de conhecimento por projeto (notas do agente/utilizador)
 Funções sem estado: `api_helpers.py` e `chat_messages.py`. Os métodos públicos
 (sem `_`) são o contrato com a interface: ver `tests/test_bridge_contract.py`.
 """
@@ -74,6 +75,7 @@ from api_agent import AgentApi
 from api_code import CodeApi
 from api_chat import ChatApi
 from api_mcp import McpApi
+from api_knowledge import KnowledgeApi
 from api_semantic import SemanticApi
 from api_providers import ProvidersApi
 from api_system import SystemApi
@@ -97,7 +99,7 @@ from api_helpers import _agent_cwd, _resolve_agent_model, _resolve_in_scope  # n
 from chat_messages import _build_model_messages, _load_conversation, _save_attachments, _save_conversation  # noqa: F401,E402
 
 
-class Api(SystemApi, McpApi, WorkspaceApi, ProvidersApi, OperationsApi, ContextApi, MediaApi, AgentApi, CodeApi, ChatApi, SemanticApi):
+class Api(SystemApi, McpApi, WorkspaceApi, ProvidersApi, OperationsApi, ContextApi, MediaApi, AgentApi, CodeApi, ChatApi, SemanticApi, KnowledgeApi):
     def __init__(self):
         self._terminal = PowerShellSession()
         self._shell = InteractiveShell()

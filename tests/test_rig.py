@@ -451,7 +451,7 @@ class RigBridgeTests(unittest.TestCase):
             again = self.app.set_rig(dict(enabled=True, effort='leve', whisper=True))  # mudar o esforço já em modo local
         self.assertNotIn('rig_error', state)
         self.assertEqual(seen[0], {'Authorization': 'Bearer chave-rig'}, 'chave vazia mantém a guardada')
-        self.assertEqual(state['rig'], dict(enabled=True, address='http://192.168.0.10:8081', has_key=True, effort='pesado', whisper=True, gateway=False, model='qwen3.8-27b', models=['qwen3.8-27b'], context=32768))
+        self.assertEqual(state['rig'], dict(enabled=True, address='http://192.168.0.10:8081', has_key=True, admin=False, effort='pesado', whisper=True, gateway=False, model='qwen3.8-27b', models=['qwen3.8-27b'], context=32768))
         mine = next(p for p in state['providers'] if p['rig'])
         self.assertEqual((mine['name'], mine['kind'], mine['models'][0]['id'], mine['models'][0]['defaults'], mine['models'][0]['categories']),
                          ('Meister Chat', 'openai-compatible', 'qwen3.8-27b', {'context_window': 32768}, ['code']))

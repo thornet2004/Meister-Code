@@ -27,6 +27,11 @@ LOCAL_TOOLS = {
         tool("memoria_relacionar", "Cria uma relação entre duas entidades já guardadas na memória.", {"origem":{"type":"string"},"destino":{"type":"string"},"relacao":{"type":"string"}}, ["origem","destino","relacao"]),
         tool("memoria_consultar", "Pesquisa entidades, observações e relações persistentes. Sem pesquisa devolve o grafo recente.", {"pesquisa":{"type":"string"}}),
         tool("memoria_esquecer", "Remove uma entidade e as suas relações da memória quando o utilizador pedir para esquecer.", {"nome":{"type":"string"}}, ["nome"]),
+        tool("conhecimento_guardar", "Guarda ou atualiza uma nota na base de conhecimento do projeto (factos, anotações, pedaços). Idempotente pelo título; passa 'id' para atualizar uma nota concreta. Para projetos grandes, incluindo o que vier de ferramentas externas (ex.: disassembler): grava aqui o que descobres para consultares depois sem encher o contexto.",
+             {"titulo":{"type":"string"},"texto":{"type":"string"},"etiquetas":{"type":"string"},"tipo":{"type":"string"},"ref":{"type":"string"},"id":{"type":"integer"}}, ["titulo"]),
+        tool("conhecimento_procurar", "Pesquisa a base de conhecimento do projeto por texto. Sem consulta devolve as notas mais recentes. Devolve id, título, etiquetas e um excerto de cada.", {"consulta":{"type":"string"},"limite":{"type":"integer"}}),
+        tool("conhecimento_ler", "Lê uma nota completa da base de conhecimento pelo seu id.", {"id":{"type":"integer"}}, ["id"]),
+        tool("conhecimento_apagar", "Apaga uma nota da base de conhecimento pelo seu id.", {"id":{"type":"integer"}}, ["id"]),
     ]
 }
 

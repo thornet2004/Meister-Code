@@ -150,7 +150,10 @@ _AGENT_SYSTEM = (
     "as ferramentas de leitura/escrita direta. Pasta de trabalho atual: {cwd}. "
     "Pastas do utilizador neste computador (usa estes caminhos exatos, não os adivinhes): {folders}. "
     "Só dizes que gravaste, criaste ou alteraste um ficheiro depois de chamares a ferramenta e de ela o confirmar; "
-    "nessa altura indica o caminho completo que a ferramenta devolveu. Se a ferramenta falhar ou não a tiveres, di-lo."
+    "nessa altura indica o caminho completo que a ferramenta devolveu. Se a ferramenta falhar ou não a tiveres, di-lo. "
+    "Para procurar na internet, NUNCA inventes nem adivinhes endereços: se tiveres a ferramenta web_search, usa-a; senão usa o "
+    "browser (browser_abrir) com um URL de pesquisa de um motor de busca — por exemplo «https://duckduckgo.com/html/?q=» seguido "
+    "dos termos — lê a página de resultados e só depois abres os links reais que aparecerem; confirma que a página abriu antes de citar o que lá está."
 )
 
 # Sem isto o modelo só diz «não consigo gravar» e o utilizador fica sem saber porquê.

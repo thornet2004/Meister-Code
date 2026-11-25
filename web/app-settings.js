@@ -181,8 +181,10 @@ function renderRig() {
   if (!box.dataset.saving && !box.dataset.failed) $("#rig-status").textContent = rig.enabled
     ? ((rig.models || []).length > 1 ? `Em uso · ${rig.models.length} modelos: ${rig.models.join(", ")}` : `Em uso · ${rig.model || "modelo"}${rig.context ? " · contexto " + formatTokens(rig.context) : ""}`)
     : rigDraft ? "Escreve o endereço e a chave da rig; a app liga-se sozinha." : "";
+  $("#rig-admin").classList.toggle("hidden", !(rig.enabled && rig.admin && rig.address));   // só aparece se a chave for de administrador
   if (box.dataset.bound) return;
   box.dataset.bound = "1";
+  $("#rig-admin").onclick = () => { const current = state.rig || {}; if (current.address) call("open_browser", current.address + "/admin"); };
   $("#source-online").onchange = () => { rigDraft = false; delete box.dataset.failed; if ((state.rig || {}).enabled) saveRig(false); else renderRig(); };
   $("#source-local").onchange = () => {
     if ($("#rig-address").value.trim() || (state.rig || {}).address) return saveRig(true);

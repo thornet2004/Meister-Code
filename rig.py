@@ -101,6 +101,17 @@ def gateway(address: str, key: str = ''):
     return models
 
 
+def is_admin(address: str, key: str = '') -> bool:
+    """A chave é de administrador (dono ou amigo-admin) na rig? Lido do «admin» do /v1/models do porteiro."""
+    import requests
+    try:
+        response = requests.get(address + '/v1/models', headers={'Authorization': 'Bearer ' + key} if key else {}, timeout=TIMEOUT)
+        data = response.json() if response.status_code == 200 else {}
+        return bool(isinstance(data, dict) and data.get('admin'))
+    except (requests.RequestException, ValueError):
+        return False
+
+
 def probe_all(address: str, key: str = '') -> list:
     """Todos os modelos que a rig tem a correr: o da porta indicada (obrigatório) e os das portas seguintes.
     Cada um vem com ``model``, ``context`` e ``base`` (o endereço do servidor que o serve)."""
@@ -160,6 +171,7 @@ def state(cfg: dict) -> dict:
     except RigError:
         pass
     return dict(enabled=bool(provider.get('enabled')), address=address, has_key=bool((provider.get('api_key') or '').strip()),
+                admin=bool(provider.get('admin')),
                 effort=provider.get('effort') if provider.get('effort') in EFFORTS else 'leve',
                 whisper=bool(provider.get('enabled') and cfg.get('preferences', {}).get('voice_server')), gateway=bool(provider.get('gateway')),
                 model=models[0].get('id', '') if models else '', models=[m.get('id', '') for m in models],

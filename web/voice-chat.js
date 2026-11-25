@@ -33,7 +33,7 @@
   let synth = Promise.resolve(), player = Promise.resolve(), waiting = 0, current = null, turns = 0, warned = false;
   let held = false, interrupting = false, muted = false, resumers = [];
   let awakeUntil = 0;   // enquanto > agora, a próxima frase conta como pergunta mesmo sem o nome (chamaste há pouco)
-  let follow = false;   // esta frase começou dentro da janela de escuta? (decidido quando a fala começa)
+  let transcribing = false, queued = null;   // uma transcrição de cada vez; a frase seguinte espera em vez de se perder
 
   const language = () => { try { return localStorage.getItem('voiceLanguage') || 'pt'; } catch (e) { return 'pt'; } };
   // Segundos que o agente fica à escuta depois de ser chamado pelo nome (Configurações → «Escuta após o nome»).
@@ -162,7 +162,7 @@
   }
 
   function onFrame(frame) {
-    if (mode === 'off' || mode === 'understanding') return;
+    if (mode === 'off') return;   // durante a transcrição (understanding) continua a ouvir, para não perder a frase a seguir ao nome
     let sum = 0;
     for (let i = 0; i < frame.length; i++) sum += frame[i] * frame[i];
     const level = Math.sqrt(sum / frame.length);
@@ -176,8 +176,7 @@
       loudRun = loud ? loudRun + 1 : 0;
       const needed = mode === 'listening' ? 2 : 3;   // interromper pede um pouco mais de certeza
       if (loudRun >= needed) {
-        if (mode !== 'listening') { interrupting = true; hold(); }
-        follow = awakeUntil > 0 && Date.now() < awakeUntil;   // chamaste pelo nome há pouco e esta fala está dentro da janela
+        if (mode !== 'listening' && mode !== 'understanding') { interrupting = true; hold(); }   // a falar durante uma transcrição não é interrupção, é a frase a seguir ao nome
         taken = recent.slice(); recent = []; quiet = 0; spoken = loudRun * frameSeconds; loudRun = 0;
         paint('hearing');
       }
@@ -212,14 +211,20 @@
         return { wait: true };
       }
     }
-    if (follow) return { send: text };   // já tinhas chamado pelo nome há pouco: esta frase é a pergunta
+    if (awakeUntil > 0 && Date.now() < awakeUntil) return { send: text };   // chamaste pelo nome há pouco e isto está dentro da janela de escuta
     return null;
   }
 
-  async function finishUtterance() {
-    const frames = taken, said = spoken;
-    taken = []; spoken = 0; quiet = 0;
-    if (said < MIN_SPEECH) return carryOn();
+  // Uma transcrição de cada vez (o servidor não aceita duas). A frase ouvida enquanto outra transcreve fica em «queued» e
+  // transcreve-se logo a seguir — assim a pergunta dita depois do nome não se perde no tempo da transcrição. O tratamento
+  // (responder/interromper) corre à parte, para não travar a interrupção da resposta.
+  async function finishUtterance(preset) {
+    let frames, said;
+    if (preset) { frames = preset; said = Infinity; }
+    else { frames = taken; said = spoken; taken = []; spoken = 0; quiet = 0; }
+    if (said < MIN_SPEECH) { if (!transcribing) carryOn(); return; }
+    if (transcribing) { queued = frames; return; }
+    transcribing = true;
     paint('understanding');
     const all = new Float32Array(frames.reduce((sum, frame) => sum + frame.length, 0));
     let at = 0;
@@ -227,6 +232,8 @@
     let result;
     try { result = await call('transcribe_voice', wavBase64(resample(all, mic ? mic.context.sampleRate : RATE)), language(), true); }
     catch (error) { result = { ok: false, error: String(error && error.message || error) }; }
+    transcribing = false;
+    if (queued && mode !== 'off') { const next = queued; queued = null; finishUtterance(next); }   // a frase ouvida durante a transcrição trata-se já
     if (mode === 'off') return;
     if (!result.ok || !result.text) {
       // ruído ou fala que não se percebeu: volta a escutar sem incomodar (os erros a sério mostram-se)
@@ -250,7 +257,7 @@
       return;
     }
     const command = decided.send;
-    awakeUntil = 0; follow = false;   // janela de escuta consumida (se estava aberta)
+    awakeUntil = 0;   // janela de escuta consumida (se estava aberta)
     if (interrupting) {   // interrompeste mesmo: cala-se, cancela o que estava a gerar e responde ao que disseste
       interrupting = false; muted = true;
       stopSpeech();
@@ -261,6 +268,7 @@
     if (chatBusy) { muted = false; showError('A resposta anterior ainda não parou; repete quando terminar.'); return paint('thinking'); }
     muted = false;
     composer.value = (composer.value.trim() ? composer.value.trim() + ' ' : '') + command;
+    say('Percebido. ' + command);   // confirma logo e repete o pedido, antes de o modelo começar (útil quando estás longe do PC)
     turns++;
     paint('thinking');
     try { await send(); } finally { turns--; feed('', true); settle(); }
@@ -289,7 +297,7 @@
     node.onaudioprocess = (event) => onFrame(new Float32Array(event.inputBuffer.getChannelData(0)));
     source.connect(node); node.connect(mute); mute.connect(context.destination);
     mic = { stream, context, node, source };
-    noise = 0.004; loudRun = 0; recent = []; taken = []; warned = false; interrupting = false; muted = false; awakeUntil = 0; follow = false;
+    noise = 0.004; loudRun = 0; recent = []; taken = []; warned = false; interrupting = false; muted = false; awakeUntil = 0; transcribing = false; queued = null;
     call('set_preference', 'voice_reply', true);   // o modelo passa a responder curto e sem formatação
     paint('listening');
   }

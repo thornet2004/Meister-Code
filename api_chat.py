@@ -28,6 +28,7 @@ from coding_tools import Checkpoints, digest as file_digest
 from command_jobs import listing as list_commands, load as load_command
 from execution_limits import ExecutionLimits
 import usage_cost
+from knowledge_store import KnowledgeStore
 from local_tools import GraphMemory, git_query, scoped_path, sqlite_run
 from pathlib import Path
 from task_recovery import Journal, RESUMABLE, listing as list_turn_recovery, location as recovery_location
@@ -748,6 +749,28 @@ class ChatApi:
                 if write and not self._approve("database", "Alterar base SQLite", str(path)+"\n"+args.get("sql", ""), agent_ctx):
                     raise RuntimeError("Escrita SQLite recusada pelo utilizador.")
                 result = sqlite_run(path,args.get("sql", ""),args.get("parametros"),write=write,limit=args.get("limite",100),schema=name=="sqlite_schema")
+            elif name.startswith("conhecimento_"):
+                store = KnowledgeStore(meta_dir)
+                embed = signature = None
+                try:  # embeddings só quando a pesquisa por significado está ligada e configurada; senão, FTS
+                    embed, signature = self._semantic_embedder(config.load_config())
+                except Exception:
+                    embed = signature = None
+                if name == "conhecimento_guardar":
+                    vector = None
+                    if embed:
+                        try: vector = embed([((args.get("titulo") or "")+"\n"+(args.get("texto") or ""))[:2000]])[0]
+                        except Exception: vector = None
+                    result = store.save(args.get("titulo"),args.get("texto",""),args.get("etiquetas",""),args.get("tipo",""),args.get("ref",""),args.get("id"),vector=vector,signature=signature or "")
+                elif name == "conhecimento_procurar":
+                    consulta = args.get("consulta","")
+                    qv = None
+                    if embed and (consulta or "").strip():
+                        try: qv = embed([consulta[:2000]])[0]
+                        except Exception: qv = None
+                    result = store.search(consulta,args.get("limite",20),query_vector=qv,signature=signature or "")
+                elif name == "conhecimento_ler": result = store.read(args.get("id"))
+                else: result = store.forget(args.get("id"))
             else:
                 memory = GraphMemory(meta_dir)
                 if name == "memoria_guardar": result = memory.save(args.get("nome"),args.get("tipo","facto"),args.get("observacoes",[]))

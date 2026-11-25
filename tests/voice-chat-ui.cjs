@@ -85,10 +85,10 @@ const assert = require('node:assert/strict'), path = require('node:path'), {path
     assert.ok(heard.size > 2000, 'chegou áudio');
     assert.equal(await page.evaluate(() => window.voice.chats[0]), 'Que horas são?', 'a frase é enviada sem carregar em nada');
 
-    // a resposta é dita frase a frase, pela ordem, e o bloco de código não é lido
-    await page.waitForFunction(() => window.voice.said.length >= 3, null, {timeout: 20000});
-    const said = await page.evaluate(() => window.voice.said.slice(0, 3));
-    assert.deepEqual(said, ['São três da tarde.', 'Queres que eu veja mais alguma coisa?', 'Diz-me quando quiseres']);
+    // confirma logo e repete o pedido, e a seguir a resposta é dita frase a frase, pela ordem, sem ler o bloco de código
+    await page.waitForFunction(() => window.voice.said.length >= 4, null, {timeout: 20000});
+    const said = await page.evaluate(() => window.voice.said.slice(0, 4));
+    assert.deepEqual(said, ['Percebido. Que horas são?', 'São três da tarde.', 'Queres que eu veja mais alguma coisa?', 'Diz-me quando quiseres']);
 
     // --- falar por cima da resposta ---
     const mode = () => page.evaluate(() => document.querySelector('#btn-voice-chat').dataset.mode);

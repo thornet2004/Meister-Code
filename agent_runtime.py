@@ -11,7 +11,7 @@ PROFILES={
  'plan':dict(label='Planear',readonly=True,prompt='Analisa o projeto e produz um plano executável. Não alteres ficheiros nem executes comandos. Identifica ficheiros relevantes, decisões e validações.'),
  'review':dict(label='Rever',readonly=True,prompt='Revê código e identifica problemas concretos com caminhos, linhas, impacto e sugestões. Não alteres ficheiros nem executes comandos. Se não encontrares problemas, diz o que verificaste e as limitações.'),
 }
-READ_TOOLS={'listar_pasta','ler_ficheiro','ler_codigo','pesquisar_ficheiros','pesquisar_conteudo','git_consultar','lsp_diagnosticos','memoria_consultar','skills_listar','skill_carregar','agente_delegar','agentes_tarefas','agente_resultado','projeto_verificacoes','indice_actualizar','codigo_contexto','codigo_semantico','codigo_simbolos','lsp_navegar','contexto_consultar'}
+READ_TOOLS={'listar_pasta','ler_ficheiro','ler_codigo','pesquisar_ficheiros','pesquisar_conteudo','git_consultar','lsp_diagnosticos','memoria_consultar','skills_listar','skill_carregar','agente_delegar','agentes_tarefas','agente_resultado','projeto_verificacoes','indice_actualizar','codigo_contexto','codigo_semantico','codigo_simbolos','lsp_navegar','contexto_consultar','conhecimento_procurar','conhecimento_ler'}
 READ_TOOLS|={'processos_listar','processo_resultado'}
 CHILD_TOOLS=READ_TOOLS-{'agente_delegar'}
 TASK_PROFILES={'explore':('Explorar','Pesquisa os ficheiros relevantes e devolve factos com caminhos e linhas. Não alteres ficheiros nem executes comandos.'),'plan':('Planear',PROFILES['plan']['prompt']),'review':('Rever',PROFILES['review']['prompt'])}
