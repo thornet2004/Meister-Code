@@ -24,7 +24,8 @@
     if (data.running && !(data.urls || []).length) { const item = document.createElement('li'); item.textContent = `http://<endereço deste PC>:${data.port}/`; urls.append(item); }
     $id('remote-code').textContent = data.locked ? `bloqueado ${data.locked} s (demasiadas tentativas)` : data.code || '';
     const devices = data.devices || [];
-    $id('remote-devices').textContent = devices.length ? 'Dispositivos ligados: ' + devices.map((device) => `${device.address} (desde as ${device.since})`).join(', ') + '.' : 'Nenhum dispositivo ligado.';
+    $id('remote-devices').textContent = devices.length ? 'Dispositivos lembrados: ' + devices.map((device) => `${device.address} (desde as ${device.since})`).join(', ') + '.' : 'Nenhum dispositivo lembrado.';
+    $id('remote-forget').classList.toggle('hidden', !devices.length);
   }
 
   async function refresh() {
@@ -48,6 +49,10 @@
   };
   $id('remote-start').onclick = guard(async () => { render(await checked('start_remote_control')); });
   $id('remote-stop').onclick = guard(async () => { render(await checked('stop_remote_control')); });
+  $id('remote-forget').onclick = guard(async () => {
+    if (!confirm('Esquecer os dispositivos emparelhados? Cada um terá de voltar a emparelhar com o código.')) return;
+    render(await checked('forget_remote_devices'));
+  });
   $id('remote-close').onclick = close;
   modal.addEventListener('click', (event) => { if (event.target === modal) close(); });
   document.addEventListener('keydown', (event) => { if (event.key === 'Escape' && !modal.classList.contains('hidden')) close(); });

@@ -191,7 +191,8 @@ class ProvidersApi:
                                                defaults={'context_window': item['context']} if item['context'] else {},
                                                **({'accepts_images': item['vision']} if 'vision' in item else {})) for item in found]
                     provider['enabled'] = True
-                    provider['admin'] = rig.is_admin(address, key)  # a chave é de administrador? (mostra o botão de administração na app)
+                    # a chave é de administrador? (mostra o botão de administração) e qual o endereço LOCAL da rig (salta para o /admin pela VPN)
+                    provider['admin'], provider['rig_lan'] = rig.admin_info(address, key)
             preferences = cfg.setdefault('preferences', {})
             if provider['enabled']:
                 # Modo local: a conversa e os subagentes passam todos para a rig. O que estava escolhido nos

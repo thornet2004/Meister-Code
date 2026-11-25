@@ -4,8 +4,10 @@ O ensaio com a ``Api`` verdadeira, a janela e um modelo de ensaio está em ``tes
 a página do telemóvel é ensaiada por ``tests/remote-control-ui.cjs``.
 """
 import json
+import tempfile
 import time
 import unittest
+from pathlib import Path
 from unittest.mock import patch
 
 import requests
@@ -44,13 +46,13 @@ class Base(unittest.TestCase):
 
 
 class PairingTests(Base):
-    def test_off_until_started_and_gone_when_stopped(self):
+    def test_off_until_started_then_remembered_across_restart(self):
         _api, idle = build()
         self.assertEqual((idle.status()['running'], idle.status()['code'], idle.status()['urls']), (False, '', []))
         session = self.paired()
         self.assertEqual(session.get(self.base + '/api/state', timeout=10).status_code, 200)
         self.remote.stop()
-        self.assertEqual(self.remote.status()['devices'], [])
+        self.assertEqual(len(self.remote.status()['devices']), 1, 'desligar fecha a porta mas não esquece o telemóvel')
         try:  # a porta fechou; uma ligação que tivesse ficado aberta só responde «desligado»
             self.assertEqual(session.get(self.base + '/api/state', timeout=3).status_code, 503)
         except requests.ConnectionError:
@@ -59,7 +61,35 @@ class PairingTests(Base):
             requests.get(self.base + '/api/state', timeout=3)
         again = self.remote.start(0, '127.0.0.1')
         self.assertNotEqual(again['code'], '')
-        self.assertEqual(requests.get('http://127.0.0.1:%d/api/state' % again['port'], cookies=session.cookies, timeout=10).status_code, 401, 'as sessões antigas não sobrevivem a desligar')
+        self.assertEqual(requests.get('http://127.0.0.1:%d/api/state' % again['port'], cookies=session.cookies, timeout=10).status_code, 200, 'o dispositivo lembrado volta a entrar sem código')
+
+    def test_devices_survive_a_new_process(self):
+        store = Path(tempfile.mkdtemp()) / 'remote_devices.json'
+        _api_a, remote_a = build(store_path=store)
+        info = remote_a.start(0, '127.0.0.1')
+        base = 'http://127.0.0.1:%d' % info['port']
+        session = requests.Session()
+        self.assertEqual(session.post(base + '/api/pair', data=json.dumps(dict(code=remote_a.code)), headers=HEADERS, timeout=10).status_code, 200)
+        remote_a.stop()
+        _api_b, remote_b = build(store_path=store)  # a app fecha e volta a abrir: lê o disco
+        info_b = remote_b.start(0, '127.0.0.1')
+        self.addCleanup(remote_b.stop)
+        self.assertEqual(len(remote_b.status()['devices']), 1, 'a instância nova leu o dispositivo do disco')
+        got = requests.get('http://127.0.0.1:%d/api/state' % info_b['port'], cookies=session.cookies, timeout=10)
+        self.assertEqual(got.status_code, 200, 'o cookie antigo continua a valer depois de reiniciar a app')
+
+    def test_forget_devices_requires_pairing_again(self):
+        session = self.paired()
+        self.assertEqual(session.get(self.base + '/api/state', timeout=10).status_code, 200)
+        self.remote.forget_devices()
+        self.assertEqual(self.remote.status()['devices'], [])
+        self.assertEqual(session.get(self.base + '/api/state', timeout=10).status_code, 401, 'depois de esquecer, pede o código outra vez')
+
+    def test_cookie_lasts_a_year(self):
+        raw = self.post(requests.Session(), '/api/pair', dict(code=self.remote.code)).headers['Set-Cookie']
+        self.assertIn('Max-Age=%d' % remote_control.TOKEN_TTL, raw)
+        self.assertIn('HttpOnly', raw)
+        self.assertIn('SameSite=Strict', raw)
 
     def test_everything_but_the_page_needs_a_paired_device(self):
         anonymous = requests.Session()

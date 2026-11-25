@@ -303,9 +303,16 @@ class SystemApi:
             return _err(str(exc))
 
     def stop_remote_control(self) -> dict:
-        """Desliga o acesso remoto e esquece todos os dispositivos emparelhados."""
+        """Desliga o acesso remoto (fecha a porta). Os dispositivos emparelhados ficam lembrados; usa ``forget_remote_devices`` para os cortar."""
         try:
             return _ok(**self._remote_server().stop())
+        except Exception as exc:
+            return _err(str(exc))
+
+    def forget_remote_devices(self) -> dict:
+        """Esquece todos os dispositivos emparelhados: cada um terá de voltar a emparelhar com o código (pedido do utilizador)."""
+        try:
+            return _ok(**self._remote_server().forget_devices())
         except Exception as exc:
             return _err(str(exc))
 

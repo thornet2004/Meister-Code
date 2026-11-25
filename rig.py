@@ -101,15 +101,23 @@ def gateway(address: str, key: str = ''):
     return models
 
 
-def is_admin(address: str, key: str = '') -> bool:
-    """A chave é de administrador (dono ou amigo-admin) na rig? Lido do «admin» do /v1/models do porteiro."""
+def admin_info(address: str, key: str = '') -> tuple:
+    """(é admin?, endereço local da rig) lidos do /v1/models do porteiro. O endereço local («rig_lan») só vem à
+    chave de admin e serve para a app saltar para o /admin pela VPN; vazio quando não há ou a chave não é admin."""
     import requests
     try:
         response = requests.get(address + '/v1/models', headers={'Authorization': 'Bearer ' + key} if key else {}, timeout=TIMEOUT)
         data = response.json() if response.status_code == 200 else {}
-        return bool(isinstance(data, dict) and data.get('admin'))
+        if not isinstance(data, dict):
+            return False, ''
+        return bool(data.get('admin')), str(data.get('rig_lan') or '')
     except (requests.RequestException, ValueError):
-        return False
+        return False, ''
+
+
+def is_admin(address: str, key: str = '') -> bool:
+    """A chave é de administrador (dono ou amigo-admin) na rig? Lido do «admin» do /v1/models do porteiro."""
+    return admin_info(address, key)[0]
 
 
 def probe_all(address: str, key: str = '') -> list:
@@ -171,7 +179,7 @@ def state(cfg: dict) -> dict:
     except RigError:
         pass
     return dict(enabled=bool(provider.get('enabled')), address=address, has_key=bool((provider.get('api_key') or '').strip()),
-                admin=bool(provider.get('admin')),
+                admin=bool(provider.get('admin')), rig_lan=str(provider.get('rig_lan') or ''),
                 effort=provider.get('effort') if provider.get('effort') in EFFORTS else 'leve',
                 whisper=bool(provider.get('enabled') and cfg.get('preferences', {}).get('voice_server')), gateway=bool(provider.get('gateway')),
                 model=models[0].get('id', '') if models else '', models=[m.get('id', '') for m in models],

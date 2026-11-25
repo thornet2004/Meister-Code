@@ -4,10 +4,15 @@ Serve uma página web (``web/remote/index.html``) que mostra a conversa ativa, d
 acompanhar a resposta, responder aos cartões de aprovação e mudar de conversa ou de projeto.
 
 Segurança (o agente corre comandos neste PC, por isso quem entrar aqui manda nele):
-- desligado por omissão; só existe enquanto o utilizador o ligar, e morre com a app;
+- o servidor fica desligado por omissão e só existe enquanto o utilizador o ligar; a porta fecha
+  quando ele desliga ou a app fecha;
 - emparelhamento por código de uso único mostrado na janela da app; cinco códigos errados trocam o
   código e bloqueiam novas tentativas durante um minuto;
-- a sessão é um cookie aleatório (HttpOnly, SameSite=Strict); os pedidos que alteram exigem um
+- a sessão é um cookie aleatório (HttpOnly, SameSite=Strict), guardado no telemóvel por um ano; os
+  dispositivos emparelhados ficam LEMBRADOS neste PC (só a impressão digital do token, em
+  ``remote_devices.json``) para não pedirem o código de cada vez — sobrevivem a desligar/ligar e a
+  fechar a app, até o utilizador carregar em «Esquecer dispositivos»;
+- os pedidos que alteram exigem um
   cabeçalho próprio e a mesma origem, para uma página de terceiros não os conseguir fazer;
 - só os endereços listados em ``_GET`` e ``_POST`` existem: não é a ponte inteira da app;
 - é HTTP simples, pensado para a rede de casa ou para uma VPN (WireGuard), que é quem cifra o tráfego.
@@ -15,8 +20,10 @@ Segurança (o agente corre comandos neste PC, por isso quem entrar aqui manda ne
 """
 from __future__ import annotations
 
+import hashlib
 import hmac
 import json
+import os
 import secrets
 import socket
 import threading
@@ -32,6 +39,7 @@ MAX_TEXT = 20000
 MAX_SESSIONS = 5
 MAX_FAILURES = 5
 LOCK_SECONDS = 60
+TOKEN_TTL = 365 * 24 * 3600  # validade do cookie no telemóvel: um ano
 EVENT_LIMIT = 400
 POLL_SECONDS = 25
 HEADER = 'X-MeisterCode'
@@ -100,16 +108,20 @@ def _slim_message(message: dict) -> dict:
 class RemoteControl:
     """Liga e desliga o servidor e faz de ponte, limitada, entre o telemóvel e a ``Api``."""
 
-    def __init__(self, api, page_dir):
+    def __init__(self, api, page_dir, store_path=None):
         self.api = api
         self.page_dir = Path(page_dir)
+        if store_path is None:
+            import config
+            store_path = config.config_dir() / 'remote_devices.json'
+        self.store_path = Path(store_path)
         self.hub = Hub()
         self.lock = threading.RLock()
         self.server = None
         self.thread = None
         self.port = 0
         self.code = ''
-        self.sessions = {}      # token -> dict(since, address, name)
+        self.sessions = self._load_devices()  # impressão digital do token -> dict(since, address)
         self.failures = 0
         self.locked_until = 0.0
         self.busy = False       # resposta pedida pelo telemóvel
@@ -143,8 +155,7 @@ class RemoteControl:
                 raise OSError('Não foi possível abrir uma porta para o acesso remoto.')
             server.daemon_threads = True
             self.server, self.port = server, server.server_address[1]
-            self._new_code()
-            self.sessions.clear()
+            self._new_code()  # código fresco para dispositivos NOVOS; os já lembrados entram pelo cookie
             self.failures, self.locked_until = 0, 0.0
             self.thread = threading.Thread(target=server.serve_forever, kwargs=dict(poll_interval=0.2), daemon=True)
             self.thread.start()
@@ -153,8 +164,7 @@ class RemoteControl:
     def stop(self) -> dict:
         with self.lock:
             server, self.server = self.server, None
-            self.sessions.clear()
-            self.code = ''
+            self.code = ''  # os dispositivos lembrados ficam; só a porta fecha
         if server is not None:
             server.shutdown()
             server.server_close()
@@ -163,9 +173,46 @@ class RemoteControl:
 
     close = stop
 
+    def forget_devices(self) -> dict:
+        """Esquece todos os dispositivos lembrados: cada um terá de voltar a emparelhar com o código."""
+        with self.lock:
+            self.sessions.clear()
+            if self.running():
+                self._new_code()
+        self._save_devices()
+        self._tell_desktop()
+        return self.status()
+
     def _new_code(self):
         raw = ''.join(secrets.choice(CODE_ALPHABET) for _ in range(8))
         self.code = raw[:4] + '-' + raw[4:]
+
+    # ------------------------------------------------------------------ dispositivos lembrados (disco)
+    @staticmethod
+    def _hash(token: str) -> str:
+        return hashlib.sha256((token or '').encode('utf-8')).hexdigest()
+
+    def _load_devices(self) -> dict:
+        try:
+            data = json.loads(self.store_path.read_text(encoding='utf-8'))
+        except (OSError, ValueError):
+            return {}
+        if not isinstance(data, dict):
+            return {}
+        out = {}
+        for key, record in data.items():
+            if isinstance(key, str) and isinstance(record, dict):
+                out[key] = dict(address=str(record.get('address', '')), since=str(record.get('since', '')))
+        return out
+
+    def _save_devices(self):
+        try:
+            self.store_path.parent.mkdir(parents=True, exist_ok=True)
+            temporary = self.store_path.with_suffix('.tmp')
+            temporary.write_text(json.dumps(self.sessions, ensure_ascii=False), encoding='utf-8')
+            os.replace(temporary, self.store_path)
+        except OSError:
+            pass  # não poder gravar não deve derrubar o acesso remoto
 
     # ------------------------------------------------------------------ emparelhamento e sessões
     def pair(self, code, address: str):
@@ -184,15 +231,19 @@ class RemoteControl:
             if len(self.sessions) >= MAX_SESSIONS:
                 return None, 'Já há %d dispositivos ligados. Desliga e volta a ligar o acesso remoto na app.' % MAX_SESSIONS
             token = secrets.token_urlsafe(32)
-            self.sessions[token] = dict(address=address, since=time.strftime('%H:%M'))
+            self.sessions[self._hash(token)] = dict(address=address, since=time.strftime('%H:%M'))
             self.failures = 0
             self._new_code()  # uso único: outro dispositivo precisa do código seguinte
+            self._save_devices()  # fica lembrado para não voltar a pedir o código
         self._tell_desktop()
         return token, ''
 
     def authorised(self, token) -> bool:
+        if not token:
+            return False
+        target = self._hash(token)
         with self.lock:
-            return bool(token) and any(hmac.compare_digest(token, known) for known in self.sessions)
+            return any(hmac.compare_digest(target, known) for known in self.sessions)
 
     def _tell_desktop(self):
         self.api._stream_js('window.remoteControlChanged && window.remoteControlChanged()')
@@ -406,7 +457,7 @@ def _handler(remote: RemoteControl):
                 token, error = remote.pair(body.get('code'), self.client_address[0])
                 if not token:
                     return self._json(dict(ok=False, error=error), 403)
-                return self._json(dict(ok=True), extra=[('Set-Cookie', '%s=%s; Path=/; HttpOnly; SameSite=Strict' % (COOKIE, token))])
+                return self._json(dict(ok=True), extra=[('Set-Cookie', '%s=%s; Path=/; Max-Age=%d; HttpOnly; SameSite=Strict' % (COOKIE, token, TOKEN_TTL))])
             if not remote.authorised(self._token()):
                 return self._json(dict(ok=False, error='Emparelha primeiro este dispositivo.', pair=True), 401)
             self._json(post[path](body))

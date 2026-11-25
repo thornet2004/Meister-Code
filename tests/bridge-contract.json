@@ -190,6 +190,10 @@
    "note_id"
   ]
  },
+ "forget_remote_devices": {
+  "defaults": [],
+  "params": []
+ },
  "generate": {
   "defaults": [
    "None"

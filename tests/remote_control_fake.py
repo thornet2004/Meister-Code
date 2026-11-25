@@ -5,6 +5,7 @@ Usada por ``test_remote_control.py`` e, como programa, por ``remote-control-ui.c
 """
 import json
 import sys
+import tempfile
 import threading
 import time
 from pathlib import Path
@@ -95,9 +96,11 @@ class FakeApi:
         return dict(ok=True)
 
 
-def build(delay=0.0):
+def build(delay=0.0, store_path=None):
     api = FakeApi(delay)
-    remote = remote_control.RemoteControl(api, PAGE)
+    if store_path is None:  # isolado: cada rig de ensaio com o seu ficheiro, fora do APPDATA do utilizador
+        store_path = Path(tempfile.mkdtemp()) / 'remote_devices.json'
+    remote = remote_control.RemoteControl(api, PAGE, store_path=store_path)
     api.remote = remote
     return api, remote
 

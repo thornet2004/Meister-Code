@@ -184,7 +184,13 @@ function renderRig() {
   $("#rig-admin").classList.toggle("hidden", !(rig.enabled && rig.admin && rig.address));   // só aparece se a chave for de administrador
   if (box.dataset.bound) return;
   box.dataset.bound = "1";
-  $("#rig-admin").onclick = () => { const current = state.rig || {}; if (current.address) call("open_browser", current.address + "/admin"); };
+  $("#rig-admin").onclick = () => {
+    const current = state.rig || {};
+    // salta para o endereço LOCAL da rig (pela VPN); o /admin está trancado à rede local, por isso só abre lá
+    const lan = (current.rig_lan || "").trim();
+    const base = lan ? (/^https?:\/\//i.test(lan) ? lan : "http://" + lan) : current.address;
+    if (base) call("open_browser", base.replace(/\/+$/, "") + "/admin");
+  };
   $("#source-online").onchange = () => { rigDraft = false; delete box.dataset.failed; if ((state.rig || {}).enabled) saveRig(false); else renderRig(); };
   $("#source-local").onchange = () => {
     if ($("#rig-address").value.trim() || (state.rig || {}).address) return saveRig(true);
