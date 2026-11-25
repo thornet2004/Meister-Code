@@ -206,6 +206,20 @@ window.showBrowserForAgent = async function () {
   syncBrowserBounds();
 };
 
+// Abre o painel do browser já num endereço (ex.: o botão «Administração da rig»).
+window.openBrowserAt = async function (url) {
+  if (!url) return;
+  if (!browserOpen) await openBrowser();
+  if (!browserOpen) return;
+  const result = await call("open_browser", url);
+  if (!result.ok) { showError(result.error); return; }
+  browserNavigated = true;
+  $("#browser-welcome").classList.add("hidden");
+  $("#browser-url").value = url;
+  syncBrowserBounds();
+  refreshBrowserState();
+};
+
 async function refreshBrowserState() {
   if (!browserOpen || browserStateBusy) return;
   browserStateBusy = true;
