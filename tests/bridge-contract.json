@@ -452,6 +452,10 @@
    "project_id"
   ]
  },
+ "open_rig_admin": {
+  "defaults": [],
+  "params": []
+ },
  "open_tools_folder": {
   "defaults": [
    "''"

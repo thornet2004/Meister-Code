@@ -96,6 +96,37 @@ class SystemApi:
         except Exception as exc:
             return _err(_fmt_exc(exc))
 
+    def open_rig_admin(self) -> dict:
+        """Abre a página de administração da rig (/admin) no browser integrado, já com a sessão iniciada:
+        injeta a chave de admin que a app tem guardada (nunca vai para o frontend nem para o endereço)."""
+        try:
+            import rig
+            provider = rig.find(config.load_config()) or {}
+            if not provider.get('admin'):
+                return _err('Esta chave não é de administrador.')
+            lan = (provider.get('rig_lan') or '').strip()
+            if not lan:
+                return _err('A rig não indicou o seu endereço local para a administração.')
+            key = (provider.get('api_key') or '').strip()
+            base = lan if re.match(r'^https?://', lan, re.I) else 'http://' + lan
+            url = base.rstrip('/') + '/admin'
+            if self._browser is None:
+                from embedded_browser import EmbeddedBrowser
+                self._browser = EmbeddedBrowser(self._window)
+            self._browser.open(url)
+            if key:
+                # entra sozinho: preenche o campo da chave e submete o formulário da própria página
+                script = ("(function(){var o=document.getElementById('owner');"
+                          "if(o){o.value=%s;var f=document.getElementById('login-form');"
+                          "if(f&&f.requestSubmit)f.requestSubmit();}return true;})()" % json.dumps(key))
+                try:
+                    self._browser.run_after_load(script)
+                except Exception:
+                    pass  # se a auto-entrada falhar, o utilizador ainda pode escrever a chave à mão
+            return _ok(url=url)
+        except Exception as exc:
+            return _err(_fmt_exc(exc))
+
     def browser_layout(self, rect: dict) -> dict:
         try:
             if self._browser:

@@ -109,6 +109,20 @@ class EmbeddedBrowser:
                     "loading": self.loading, "error": self.error}
         return self._ui(run)
 
+    def run_after_load(self, script, timeout=20):
+        """Espera a página acabar de carregar e corre um script nela (ex.: semear a chave de admin)."""
+        deadline = time.monotonic() + timeout
+        while time.monotonic() < deadline:
+            ready = self._ui(lambda: self.control is not None and self.control.CoreWebView2 is not None)
+            if ready and not self.loading:
+                break
+            if self.error:
+                raise RuntimeError(self.error)
+            time.sleep(0.1)
+        else:
+            raise TimeoutError("A página demorou demasiado a carregar.")
+        return self._script(script)
+
     def _script(self, script):
         task = self._ui(lambda: self.control.CoreWebView2.ExecuteScriptAsync(script))
         if not task.Wait(10000):

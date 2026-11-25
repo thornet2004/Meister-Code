@@ -185,13 +185,9 @@ function renderRig() {
   if (box.dataset.bound) return;
   box.dataset.bound = "1";
   $("#rig-admin").onclick = () => {
-    const current = state.rig || {};
-    // salta para o endereço LOCAL da rig (pela VPN); o /admin está trancado à rede local, por isso só abre lá
-    const lan = (current.rig_lan || "").trim();
-    const base = lan ? (/^https?:\/\//i.test(lan) ? lan : "http://" + lan) : current.address;
-    if (!base) return;
+    // abre a administração da rig (endereço LOCAL, pela VPN) já autenticada: a chave é injetada no backend.
     closeSettings();  // as Definições são um modal: fecha-as para o painel do browser ficar visível
-    window.openBrowserAt(base.replace(/\/+$/, "") + "/admin");
+    window.openRigAdmin();
   };
   $("#source-online").onchange = () => { rigDraft = false; delete box.dataset.failed; if ((state.rig || {}).enabled) saveRig(false); else renderRig(); };
   $("#source-local").onchange = () => {

@@ -220,6 +220,19 @@ window.openBrowserAt = async function (url) {
   refreshBrowserState();
 };
 
+// Abre a administração da rig já com a sessão iniciada (a chave é injetada no backend, nunca passa por aqui).
+window.openRigAdmin = async function () {
+  if (!browserOpen) await openBrowser();
+  if (!browserOpen) return;
+  const result = await call("open_rig_admin");
+  if (!result.ok) { showError(result.error); return; }
+  browserNavigated = true;
+  $("#browser-welcome").classList.add("hidden");
+  if (result.url) $("#browser-url").value = result.url;
+  syncBrowserBounds();
+  refreshBrowserState();
+};
+
 async function refreshBrowserState() {
   if (!browserOpen || browserStateBusy) return;
   browserStateBusy = true;
