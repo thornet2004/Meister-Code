@@ -79,13 +79,13 @@ def main() -> int:
                 saved = json.loads((tools / tool_installer.EXTRA_NAME).read_text(encoding='utf-8'))['tools']
                 assert [item['key'] for item in saved] == [source['chave'], binary['chave']] and all(len(item['steps'][0]['sha256']) == 64 for item in saved)
                 rows = {row['key']: row for row in app.get_tool_updates()['tools']}
-                assert len(rows) == 46 and all(rows[item['key']]['status'] == 'installed' and rows[item['key']]['extra'] for item in saved)
+                assert len(rows) == 49 and all(rows[item['key']]['status'] == 'installed' and rows[item['key']]['extra'] for item in saved)  # 47 do manifesto + 2 extras
                 # uma segunda leitura do mesmo commit tem de dar o mesmo SHA-256 (o zip do GitHub é estável)
                 import hashlib
                 import requests
                 second = hashlib.sha256(requests.get(saved[0]['steps'][0]['url'], timeout=60).content).hexdigest()
                 assert second == saved[0]['steps'][0]['sha256'], 'o zip do commit mudou entre dois downloads'
-                print('lista extra: 2 entradas com commit/release e SHA-256; painel com 46; segundo download com o mesmo SHA-256')
+                print('lista extra: 2 entradas com commit/release e SHA-256; painel com 49; segundo download com o mesmo SHA-256')
             finally:
                 installer = getattr(app, '_tool_installer', None)
                 if installer:

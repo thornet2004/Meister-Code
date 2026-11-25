@@ -574,7 +574,7 @@ class BridgeTests(unittest.TestCase):
         listing = self.app.get_tool_updates()
         self.assertTrue(listing['ok'], listing)
         self.assertEqual(self.requests, [], 'listar não contacta a rede')
-        self.assertEqual(len(listing["tools"]), 46)
+        self.assertEqual(len(listing["tools"]), 47)
         self.assertEqual(listing['root'], str(self.root / 'app' / 'Ferramentas'))
         self.assertEqual(listing['job']['state'], 'idle')
         self.assertGreater(listing['free_bytes'], 0)
@@ -616,7 +616,7 @@ class RealManifestTests(unittest.TestCase):
     def test_shipped_manifest_is_valid_and_complete(self):
         manifest = load_manifest()
         tools = {item['key']: item for item in manifest['tools']}
-        self.assertEqual(len(tools), 46)
+        self.assertEqual(len(tools), 47)
         self.assertEqual([key for key, item in tools.items() if item['group'] == 'N'], ['Core7Zip', 'CoreNode', 'CorePython', 'CorePackages', 'CoreLSP'])
         for key, item in tools.items():
             self.assertTrue(item['repo'].startswith('https://'), key)

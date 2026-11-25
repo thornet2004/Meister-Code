@@ -289,7 +289,7 @@ class AgentToolTests(unittest.TestCase):
 
     def test_listing_gives_every_tool_with_its_description(self):
         result, steps = self.call(acao='listar')
-        self.assertEqual(len(result['ferramentas']), 46)
+        self.assertEqual(len(result['ferramentas']), 47)
         self.assertTrue(all(len(row['descricao']) >= 30 for row in result['ferramentas']))
         ghidra = next(row for row in result['ferramentas'] if row['chave'] == 'Ghidra')
         self.assertEqual((ghidra['estado'], ghidra['pasta']), ('por instalar', str(self.tools / 'Ghidra')))
@@ -342,7 +342,7 @@ class AgentToolTests(unittest.TestCase):
         row = next(item for item in listing['tools'] if item['key'] == 'WidgetTool')
         self.assertEqual((row['status'], row['group'], row['extra'], row['description']), ('installed', 'U', True, 'Mostra widgets. Serve para ensaiar a instalação.'))
         self.assertIn('U', listing['groups'])
-        self.assertEqual(len(listing['tools']), 47)
+        self.assertEqual(len(listing['tools']), 48)  # 47 do manifesto + 1 extra (WidgetTool)
         # pedir outra vez o mesmo repositório não duplica: aponta para a chave
         with self.approve():
             again, _steps = self.call(acao='instalar', url='https://github.com/acme/Widget-Tool.git')

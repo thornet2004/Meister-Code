@@ -1919,6 +1919,38 @@
    "present": "ImHex/app"
   },
   {
+   "key": "hashcat",
+   "name": "hashcat",
+   "description": "Recuperação de palavras-passe por dicionário e força bruta, acelerada por GPU. Serve para auditar a força de senhas e recuperar hashes em testes de segurança e perícia forense (senhas tuas ou com autorização).",
+   "group": "A",
+   "repo": "https://github.com/hashcat/hashcat",
+   "version": "8.0.0",
+   "installed_mb": 99,
+   "requires": [
+    "Core7Zip"
+   ],
+   "license": "MIT",
+   "direct": true,
+   "note": "Usa a GPU (OpenCL/CUDA) se houver drivers; sem GPU corre em CPU. É uma ferramenta de auditoria: usa-a só em hashes teus ou com autorização expressa.",
+   "automatic": true,
+   "pending": "",
+   "steps": [
+    {
+     "what": "aplicação (release 8.0.0)",
+     "url": "https://github.com/hashcat/hashcat/releases/download/v8.0.0/hashcat-8.0.0.7z",
+     "sha256": "9fa86e1bfd5dd898d3c83aa38a67b08db1ba5d2f5252dffa2af44a8c62585f49",
+     "bytes": 20350217,
+     "publisher_digest": false,
+     "action": "extract",
+     "file": "hashcat-8.0.0.7z",
+     "to": "app",
+     "format": "7zip",
+     "strip": 1
+    }
+   ],
+   "present": "hashcat/app/hashcat.exe"
+  },
+  {
    "key": "ImageMagick",
    "name": "ImageMagick",
    "description": "Conversor e editor de imagens pela linha de comandos. Serve para redimensionar, converter de formato, recortar e compor imagens em série.",

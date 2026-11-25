@@ -6,14 +6,14 @@ O pacote de distribuição não leva as ferramentas; a app instala-as a partir d
 
 ## Resumo
 
-- 46 entradas (núcleo incluído), cerca de 9573 MB depois de instaladas e 2376 MB de downloads.
-- **45 instalam-se sozinhas** pelo instalador da app; 1 têm o motivo indicado («Por fazer»).
+- 47 entradas (núcleo incluído), cerca de 9672 MB depois de instaladas e 2396 MB de downloads.
+- **46 instalam-se sozinhas** pelo instalador da app; 1 têm o motivo indicado («Por fazer»).
 - Todas têm o repositório ou a origem indicados. Nem todos os downloads vêm do GitHub: cada endereço está escrito por extenso.
 
 | Grupo | O que é | Entradas | Instaladas ocupam |
 |---|---|---|---|
 | N | Núcleo partilhado: é instalado primeiro, as ferramentas dependem dele | 5 | 1200 MB |
-| A | Arquivo portátil com SHA-256 fixo | 14 | 5128 MB |
+| A | Arquivo portátil com SHA-256 fixo | 15 | 5227 MB |
 | B | Binário do site oficial do projeto (o repositório está no GitHub, o download não) | 5 | 1830 MB |
 | C | Só código-fonte de um commit fixo do GitHub (não é um executável instalado) | 5 | 468 MB |
 | D | Pacote Python no ambiente partilhado (PyPI) | 9 | 837 MB |
@@ -111,6 +111,19 @@ Editor hexadecimal com padrões e analisadores. Serve para inspecionar e editar 
 - Instalação pela app: **automática**
 - Download — aplicação (63 MB): <https://github.com/WerWolv/ImHex/releases/download/v1.38.1/imhex-1.38.1-Windows-Portable-x86_64.zip>  
   SHA-256 `32520e57712894bc8304c4b01553223e7dda25852326184f99dfd72a09a80187` (confirmado pelo editor)
+
+### hashcat
+
+Recuperação de palavras-passe por dicionário e força bruta, acelerada por GPU. Serve para auditar a força de senhas e recuperar hashes em testes de segurança e perícia forense (senhas tuas ou com autorização).
+
+- Pasta: `Ferramentas/hashcat` · instalada ocupa: 99 MB · versão: 8.0.0
+- Origem: <https://github.com/hashcat/hashcat>
+- Instalação pela app: **automática**
+- Licença: MIT
+- Depende de: Core7Zip
+- Download — aplicação (release 8.0.0) (19 MB): <https://github.com/hashcat/hashcat/releases/download/v8.0.0/hashcat-8.0.0.7z>  
+  SHA-256 `9fa86e1bfd5dd898d3c83aa38a67b08db1ba5d2f5252dffa2af44a8c62585f49` (do ficheiro descarregado; sem confirmação do editor)
+- Nota: Usa a GPU (OpenCL/CUDA) se houver drivers; sem GPU corre em CPU. É uma ferramenta de auditoria: usa-a só em hashes teus ou com autorização expressa.
 
 ### ImageMagick
 
