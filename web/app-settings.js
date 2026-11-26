@@ -181,7 +181,9 @@ function renderRig() {
   if (!box.dataset.saving && !box.dataset.failed) $("#rig-status").textContent = rig.enabled
     ? ((rig.models || []).length > 1 ? `Em uso · ${rig.models.length} modelos: ${rig.models.join(", ")}` : `Em uso · ${rig.model || "modelo"}${rig.context ? " · contexto " + formatTokens(rig.context) : ""}`)
     : rigDraft ? "Escreve o endereço e a chave da rig; a app liga-se sozinha." : "";
-  $("#rig-admin").classList.toggle("hidden", !(rig.enabled && rig.admin && rig.address));   // só aparece se a chave for de administrador
+  const showAdmin = !!(rig.enabled && rig.admin && rig.address);   // só aparece se a chave for de administrador
+  $("#rig-admin").classList.toggle("hidden", !showAdmin);
+  if ($("#btn-rig-admin")) $("#btn-rig-admin").classList.toggle("hidden", !showAdmin);   // o mesmo botão na barra do topo
   if (box.dataset.bound) return;
   box.dataset.bound = "1";
   $("#rig-admin").onclick = () => {

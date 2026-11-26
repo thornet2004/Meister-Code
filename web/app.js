@@ -93,6 +93,7 @@ function bindEvents() {
   $("#agent-badge").addEventListener("click", openSettings);
   $("#btn-open-dir").addEventListener("click", () => call("open_output_dir"));
   $("#btn-new-chat").addEventListener("click", createConversation);
+  $("#btn-rig-admin").addEventListener("click", () => window.openRigAdmin && window.openRigAdmin());
   $("#btn-gallery").addEventListener("click", openGallery);
   $("#gallery-close").addEventListener("click", () => $("#gallery-modal").classList.add("hidden"));
 
