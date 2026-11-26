@@ -256,10 +256,24 @@ def speak(tools_root, text, cancel=None, tone='normal', wanted='', kind='piper',
         return dict(audio='', text='', seconds=0.0, voice='', mime='audio/wav')
     if kind == 'edge':
         started = time.monotonic()
-        data = _edge_speak(said, edge_voice or EDGE_VOICES[0], tone)
+        try:
+            data = _edge_speak(said, edge_voice or EDGE_VOICES[0], tone)
+        except SpeechError:
+            # a voz online falhou (sem internet, ou o serviço recusou): não deixa o utilizador sem resposta nem
+            # com um erro a meio da conversa — lê a frase com a Piper local e segue.
+            result = _piper_speak(tools_root, said, tone, wanted, cancel)
+            result['fallback'] = 'edge'
+            return result
         if not data:
-            raise SpeechError('A voz natural (Edge) não devolveu áudio.')
+            result = _piper_speak(tools_root, said, tone, wanted, cancel)
+            result['fallback'] = 'edge'
+            return result
         return dict(audio=base64.b64encode(data).decode('ascii'), text=said, seconds=round(time.monotonic() - started, 2), voice=edge_voice or EDGE_VOICES[0], mime='audio/mpeg')
+    return _piper_speak(tools_root, said, tone, wanted, cancel)
+
+
+def _piper_speak(tools_root, said, tone='normal', wanted='', cancel=None) -> dict:
+    """Sintetiza ``said`` com a Piper local (o texto não sai do PC). Devolve ``audio`` (base64) + ``mime``."""
     factor = 2 ** (-TONES.get(tone, 0) / 12)
     found = engine(tools_root, wanted)
     if not found['ready']:

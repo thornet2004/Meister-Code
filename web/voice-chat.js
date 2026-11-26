@@ -37,7 +37,7 @@
 
   const language = () => { try { return localStorage.getItem('voiceLanguage') || 'pt'; } catch (e) { return 'pt'; } };
   // Segundos que o agente fica à escuta depois de ser chamado pelo nome (Configurações → «Escuta após o nome»).
-  const listenWindowMs = () => { const s = Number(state.preferences && state.preferences.voice_listen_seconds); return (s >= 2 ? s : 8) * 1000; };
+  const listenWindowMs = () => { const s = Number(state.preferences && state.preferences.voice_listen_seconds); return (s >= 2 ? s : 12) * 1000; };
 
   function paint(next) {
     mode = next;
@@ -230,6 +230,14 @@
     return null;
   }
 
+  // Agradecimentos, saudações e respostas curtas sociais não levam o «vou já tratar disso» — respondem-se logo
+  // (senão dizia primeiro «vou já tratar disso» e só depois «de nada»).
+  function smallTalk(text) {
+    const t = text.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z\s]/g, " ").trim();
+    if (!t || t.split(/\s+/).length > 4) return false;   // frase com alguma dimensão é um pedido, não conversa de circunstância
+    return /\b(obrigad[oa]|obrigadao|de nada|adeus|ate (logo|ja|amanha|depois)|bom dia|boa (tarde|noite)|ola|oi|tudo bem|otim[oa]|boa|fixe|perfeito|esta bem|okay|ok|sim|nao|claro|combinado|valeu|boa noite)\b/.test(t);
+  }
+
   // Uma transcrição de cada vez (o servidor não aceita duas). A frase ouvida enquanto outra transcreve fica em «queued» e
   // transcreve-se logo a seguir — assim a pergunta dita depois do nome não se perde no tempo da transcrição. O tratamento
   // (responder/interromper) corre à parte, para não travar a interrupção da resposta.
@@ -244,9 +252,16 @@
     const all = new Float32Array(frames.reduce((sum, frame) => sum + frame.length, 0));
     let at = 0;
     for (const frame of frames) { all.set(frame, at); at += frame.length; }
+    const wav = wavBase64(resample(all, mic ? mic.context.sampleRate : RATE));
     let result;
-    try { result = await call('transcribe_voice', wavBase64(resample(all, mic ? mic.context.sampleRate : RATE)), language(), true); }
+    try { result = await call('transcribe_voice', wav, language(), true); }
     catch (error) { result = { ok: false, error: String(error && error.message || error) }; }
+    // Arranque a frio: a 1.ª transcrição às vezes falha enquanto o Whisper acorda. Em vez de perder a frase e exigir
+    // uma 2.ª tentativa tua, repete-se aqui o mesmo áudio uma vez (não quando apenas não se percebeu ou está ocupado).
+    if (!result.ok && !/Não percebi|Não ouvi|demasiado curta|Já há uma transcrição/.test(result.error || '')) {
+      try { result = await call('transcribe_voice', wav, language(), true); }
+      catch (error) { result = { ok: false, error: String(error && error.message || error) }; }
+    }
     transcribing = false;
     if (queued && mode !== 'off') { const next = queued; queued = null; finishUtterance(next); }   // a frase ouvida durante a transcrição trata-se já
     if (mode === 'off') return;
@@ -285,7 +300,7 @@
     composer.value = (composer.value.trim() ? composer.value.trim() + ' ' : '') + command;
     // confirma logo, de forma natural e sem repetir o pedido à letra (útil quando estás longe do PC); varia para não soar a robô
     const ACKS = ['Ok, deixa-me ver e já te digo.', 'Certo, vou já tratar disso.', 'Ok, um instante e já te digo.', 'Deixa ver isso, já te digo.', 'Certo, já vejo isso e digo-te.'];
-    say(ACKS[Math.floor(Math.random() * ACKS.length)]);
+    if (!smallTalk(command)) say(ACKS[Math.floor(Math.random() * ACKS.length)]);   // agradecimentos/sociais respondem-se logo
     turns++;
     paint('thinking');
     try { await send(); } finally { turns--; feed('', true); settle(); }

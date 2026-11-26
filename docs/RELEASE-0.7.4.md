@@ -15,7 +15,7 @@ Descarrega `Meister-IA-IDE-0.7.4-Setup.exe` e corre-o (Windows 10 ou 11, 64 bits
 **SHA-256 do instalador**
 
 ```
-476730506bbd09662b01096130dd46cb74d4b90ff98598d25c60c4e58d6217e3
+970aaca67ad640f97d38381c87190b91b405f56ba992e7c062a166918de30828
 ```
 
 Para conferir, no PowerShell: `Get-FileHash .\Meister-IA-IDE-0.7.4-Setup.exe`
