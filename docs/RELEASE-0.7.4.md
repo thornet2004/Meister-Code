@@ -15,7 +15,7 @@ Descarrega `Meister-IA-IDE-0.7.4-Setup.exe` e corre-o (Windows 10 ou 11, 64 bits
 **SHA-256 do instalador**
 
 ```
-6026e2cc2080b596e0f6ac7300126c13eacbcfbaf622876601be727e2dde2e61
+68eb757d6f0bf11f58d14c52725848cf82a0acc722ab282ba09635fb9c1abe9c
 ```
 
 Para conferir, no PowerShell: `Get-FileHash .\Meister-IA-IDE-0.7.4-Setup.exe`
@@ -31,6 +31,7 @@ As ferramentas não vêm no instalador: instalam-se dentro da app, em **Ferramen
 - Pedidos longos: os resultados antigos são encurtados perto do limite da janela de contexto; quando um pedido pára por um limite, a app diz porquê e oferece «Continuar».
 - Modo «Provedor local» para modelos a correr numa rig (ver o projeto [Meister-HiveOs-IA-Tokens-Miner](https://github.com/thornet2004/Meister-HiveOs-IA-Tokens-Miner)).
 - Conversa por voz, com confirmação natural quando falas (não repete o pedido à letra), e acesso pelo telemóvel na rede de casa ou por VPN (o telemóvel fica lembrado, só pede o código à primeira vez).
+- Fórmulas matemáticas desenhadas (LaTeX/KaTeX): frações, expoentes e equações aparecem tipografadas, como num livro.
 - Quem tem uma rig partilhada com amigos administra as chaves a partir da própria app, com um atalho para a página de administração da rig.
 - 47 ferramentas instaláveis a pedido (análise, engenharia inversa, hardware), incluindo o hashcat.
 

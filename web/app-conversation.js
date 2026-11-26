@@ -188,6 +188,7 @@ function renderMessage(m, index = null, options = {}) {
     const bubble = document.createElement("div");
     bubble.className = "bubble";
     bubble.innerHTML = formatText(m.text);
+    renderMath(bubble);
     wrap.appendChild(bubble);
   }
 
