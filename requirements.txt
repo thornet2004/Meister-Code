@@ -5,6 +5,12 @@ pg8000==1.31.6
 PyMySQL==1.2.3
 # Voz natural opcional na conversa por voz (Edge-TTS, online: o texto vai para a Microsoft). O padrão é o Piper (local).
 edge-tts>=7.0
+# Análise de folhas de Excel (ferramenta excel_analisar, SheetBrain incorporada em sheetbrain/).
+# openpyxl lê o .xlsx; pandas é usado por um helper de análise; openai é o cliente de chat
+# (a SheetBrain fala por API compatível com OpenAI). matplotlib NÃO é preciso (fica opcional).
+openai>=1.0
+openpyxl>=3.1
+pandas>=2.0
 # Opcional (recomendado): ao apagar a pasta de um projeto, enviá-la para a
 # Reciclagem. Sem isto, a app mantém os ficheiros e apresenta o erro.
 send2trash>=1.8

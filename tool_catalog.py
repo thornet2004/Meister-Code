@@ -32,6 +32,8 @@ LOCAL_TOOLS = {
         tool("conhecimento_procurar", "Pesquisa a base de conhecimento do projeto por texto. Sem consulta devolve as notas mais recentes. Devolve id, título, etiquetas e um excerto de cada.", {"consulta":{"type":"string"},"limite":{"type":"integer"}}),
         tool("conhecimento_ler", "Lê uma nota completa da base de conhecimento pelo seu id.", {"id":{"type":"integer"}}, ["id"]),
         tool("conhecimento_apagar", "Apaga uma nota da base de conhecimento pelo seu id.", {"id":{"type":"integer"}}, ["id"]),
+        tool("excel_analisar", "Responde com rigor a uma pergunta sobre uma folha de Excel (.xlsx/.xlsm): lê a estrutura, calcula e valida. Para totais, médias, top-N, tendências e cruzar valores, mesmo em folhas grandes. Devolve resposta, confiança e se foi validada. Usa o modelo de conversa (tem de ser compatível com OpenAI).",
+             {"caminho":{"type":"string","description":"Caminho do .xlsx/.xlsm."},"pergunta":{"type":"string","description":"Pergunta sobre os dados."},"iteracoes":{"type":"integer"},"validar":{"type":"boolean"}}, ["caminho","pergunta"]),
     ]
 }
 

@@ -1,5 +1,5 @@
 # -*- mode: python ; coding: utf-8 -*-
-from PyInstaller.utils.hooks import collect_all, copy_metadata
+from PyInstaller.utils.hooks import collect_all, collect_submodules, copy_metadata
 from pathlib import Path
 import runpy
 from PyInstaller.utils.win32.versioninfo import VSVersionInfo,FixedFileInfo,StringFileInfo,StringTable,StringStruct,VarFileInfo,VarStruct
@@ -37,6 +37,18 @@ datas += tmp_ret[0]; binaries += tmp_ret[1]; hiddenimports += tmp_ret[2]
 tmp_ret = collect_all('aiohttp')  # usado pelo edge-tts
 datas += tmp_ret[0]; binaries += tmp_ret[1]; hiddenimports += tmp_ret[2]
 
+# Análise de Excel (ferramenta excel_analisar): a SheetBrain incorporada (sheetbrain/) e o
+# que ela usa — openai (cliente de chat), openpyxl (ler .xlsx) e pandas (um helper).
+# O matplotlib e o tiktoken NÃO entram: o matplotlib é opcional (só gráfico→Excel) e o
+# tiktoken foi removido do código vendorizado.
+hiddenimports += collect_submodules('sheetbrain')
+hiddenimports += ['excel_tool', 'pandas']
+tmp_ret = collect_all('openai')
+datas += tmp_ret[0]; binaries += tmp_ret[1]; hiddenimports += tmp_ret[2]
+tmp_ret = collect_all('openpyxl')
+datas += tmp_ret[0]; binaries += tmp_ret[1]; hiddenimports += tmp_ret[2]
+datas += copy_metadata('openai')
+
 
 a = Analysis(
     ['app.py'],
@@ -47,7 +59,7 @@ a = Analysis(
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
-    excludes=[],
+    excludes=['matplotlib', 'tiktoken'],
     noarchive=False,
     optimize=0,
 )

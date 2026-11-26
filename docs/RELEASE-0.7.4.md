@@ -15,7 +15,7 @@ Descarrega `Meister-IA-IDE-0.7.4-Setup.exe` e corre-o (Windows 10 ou 11, 64 bits
 **SHA-256 do instalador**
 
 ```
-970aaca67ad640f97d38381c87190b91b405f56ba992e7c062a166918de30828
+b947e19aadf828d8c7a5b704c86a118dc83838c10d815d9cc9a2b7d541f14c6c
 ```
 
 Para conferir, no PowerShell: `Get-FileHash .\Meister-IA-IDE-0.7.4-Setup.exe`
@@ -33,6 +33,7 @@ As ferramentas não vêm no instalador: instalam-se dentro da app, em **Ferramen
 - Conversa por voz, com confirmação natural quando falas (não repete o pedido à letra), leitura correta de horas e unidades, e voz à escolha: Piper (local, privada) ou uma voz natural online. E acesso pelo telemóvel na rede de casa ou por VPN (o telemóvel fica lembrado, só pede o código à primeira vez).
 - Fórmulas matemáticas desenhadas (LaTeX/KaTeX): frações, expoentes e equações aparecem tipografadas, como num livro.
 - Fotos lidas sem trocar de modelo: se o modelo de conversa não vê imagens mas o provedor tem um que vê, a app lê a imagem com esse e o modelo de conversa responde.
+- Análise de folhas de Excel: o agente analisa ficheiros `.xlsx`/`.xlsm` e responde com rigor (lê a estrutura, calcula e valida), útil em folhas grandes ou com layout complicado. Usa o modelo de conversa (compatível com OpenAI, ex.: a tua rig).
 - Quem tem uma rig partilhada com amigos administra as chaves a partir da própria app, com um atalho para a página de administração da rig.
 - 47 ferramentas instaláveis a pedido (análise, engenharia inversa, hardware), incluindo o hashcat.
 

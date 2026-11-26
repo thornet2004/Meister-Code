@@ -356,7 +356,14 @@ class RigBridgeTests(unittest.TestCase):
         self.assertEqual(seen[-1], [True, False, False], 'com a janela do modelo conhecida, corta-se antes de pedir')
         self.assertIn('janela de contexto', steps)
         seen, steps = run(0)
-        self.assertEqual(seen[-2:], [[False, False, False], [True, True, False]], 'sem a conhecer: o servidor recusa, corta-se e repete-se uma vez')
+        # Sem a janela conhecida, o servidor recusa e corta-se e repete-se UMA vez. Quantos
+        # resultados são aparados depende do tamanho do prompt (nº de ferramentas oferecidas):
+        # com o catálogo atual, o recurso apara os três para caber (antes da excel_analisar
+        # eram dois). O que importa é: a 1.ª ida vai inteira, a seguir corta-se de uma vez.
+        self.assertEqual(seen[-2], [False, False, False], 'a 1.ª ida vai inteira; o servidor é que recusa')
+        corte = seen[-1]
+        self.assertTrue(corte[0], 'na repetição corta-se para caber, a começar pelos mais antigos')
+        self.assertEqual(corte, sorted(corte, reverse=True), 'os aparados são sempre os mais antigos (sem buracos)')
         self.assertIn('janela de contexto', steps)
 
     def test_a_long_request_is_stopped_by_the_users_limits_not_by_a_hidden_ceiling(self):

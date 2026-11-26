@@ -783,6 +783,16 @@ class ChatApi:
                     result = store.search(consulta,args.get("limite",20),query_vector=qv,signature=signature or "")
                 elif name == "conhecimento_ler": result = store.read(args.get("id"))
                 else: result = store.forget(args.get("id"))
+            elif name == "excel_analisar":
+                import excel_tool
+                provider, model = _resolve_agent_model(config.load_config(), agent_ctx.get("profile", "build"))
+                if provider is None or model is None:
+                    result = {"ok": False, "erro": "Não há modelo de conversa escolhido para a análise."}
+                else:
+                    path = scoped_path(args.get("caminho", ""), context)
+                    result = excel_tool.analyse(str(path), args.get("pergunta", ""), provider, model,
+                                                max_turns=int(args.get("iteracoes", 3) or 3),
+                                                validation=args.get("validar", True) is not False)
             else:
                 memory = GraphMemory(meta_dir)
                 if name == "memoria_guardar": result = memory.save(args.get("nome"),args.get("tipo","facto"),args.get("observacoes",[]))
