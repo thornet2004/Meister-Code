@@ -268,7 +268,9 @@
     if (chatBusy) { muted = false; showError('A resposta anterior ainda não parou; repete quando terminar.'); return paint('thinking'); }
     muted = false;
     composer.value = (composer.value.trim() ? composer.value.trim() + ' ' : '') + command;
-    say('Percebido. ' + command);   // confirma logo e repete o pedido, antes de o modelo começar (útil quando estás longe do PC)
+    // confirma logo, de forma natural e sem repetir o pedido à letra (útil quando estás longe do PC); varia para não soar a robô
+    const ACKS = ['Ok, deixa-me ver e já te digo.', 'Certo, vou já tratar disso.', 'Ok, um instante e já te digo.', 'Deixa ver isso, já te digo.', 'Certo, já vejo isso e digo-te.'];
+    say(ACKS[Math.floor(Math.random() * ACKS.length)]);
     turns++;
     paint('thinking');
     try { await send(); } finally { turns--; feed('', true); settle(); }
