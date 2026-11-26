@@ -205,6 +205,30 @@ class ContextTests(unittest.TestCase):
         self.assertNotIn('image_url', str(clean))
         self.assertIsInstance(original[1]['content'], list)
 
+    def test_vision_model_reads_image_for_text_model(self):
+        import chat_messages
+        prov = dict(models=[dict(id='texto', type='chat'), dict(id='vl', type='chat', accepts_images=True)])
+        self.assertEqual(chat_messages._vision_model(prov)['id'], 'vl')  # acha o modelo que vê
+        self.assertIsNone(chat_messages._vision_model(dict(models=[dict(id='texto', type='chat')])))
+        msgs = [dict(role='user', content=[dict(type='text', text='Que conta é esta?'), dict(type='image_url', image_url=dict(url='data:image/png;base64,AAAA'))])]
+        self.assertTrue(chat_messages._has_images(msgs))
+        seen = {}
+        def fake_adapter(provider, model, messages, tools, opts):
+            seen['model'] = model['id']
+            return dict(content='(8/2)^3 = 64')
+        out, note = chat_messages._read_image_with_vision(fake_adapter, prov, prov['models'][1], msgs)
+        self.assertEqual(note, 'ok')
+        self.assertEqual(seen['model'], 'vl')  # leu com o modelo de visão
+        self.assertIsInstance(out[0]['content'], str)  # a imagem virou texto
+        self.assertIn('(8/2)^3 = 64', out[0]['content'])  # inclui a leitura
+        self.assertIn('Que conta é esta?', out[0]['content'])  # mantém o pedido do utilizador
+        self.assertFalse(chat_messages._has_images(out))  # já não há imagem para o modelo forte
+        def boom(*a):
+            raise RuntimeError('falha')
+        out2, note2 = chat_messages._read_image_with_vision(boom, prov, prov['models'][1], msgs)
+        self.assertTrue(note2.startswith('erro:'))  # numa falha, nota de erro
+        self.assertTrue(chat_messages._has_images(out2))  # e a imagem fica (não se perdeu)
+
     def test_new_install_agent_can_write_and_off_is_explained(self):
         self.assertEqual(config.default_config()['preferences']['agent'], dict(enabled=True, scope='computer', approval='writes', confirm_dangerous=True))
         cfg = config.default_config()

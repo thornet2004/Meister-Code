@@ -419,6 +419,50 @@ def _without_images(messages: list[dict]) -> list[dict]:
     return out
 
 
+# Um modelo de visão lê a imagem quando o modelo de conversa é só de texto; o de conversa responde com a leitura.
+_VISION_READ_PROMPT = (
+    'Transcreve fielmente TODO o conteúdo desta imagem: o texto, a matemática em LaTeX '
+    '(frações com \\frac, expoentes, raízes, etc.), tabelas e tudo o que estiver escrito, '
+    'incluindo manuscrito. NÃO resolvas nem comentes — devolve só a transcrição do que vês.')
+
+
+def _has_images(messages: list[dict]) -> bool:
+    return any(isinstance(m.get('content'), list) and any(isinstance(p, dict) and p.get('type') == 'image_url' for p in m['content']) for m in messages)
+
+
+def _vision_model(provider: dict | None) -> dict | None:
+    """Primeiro modelo de conversa do provedor que lê imagens (para ler fotos quando o modelo escolhido é só de texto)."""
+    for entry in (provider or {}).get('models') or []:
+        if entry.get('accepts_images') and entry.get('type', 'chat') == 'chat':
+            return entry
+    return None
+
+
+def _read_image_with_vision(chat_adapter, provider: dict, reader_model: dict, messages: list[dict]) -> tuple[list[dict], str | None]:
+    """Lê a imagem da última mensagem do utilizador com o modelo de visão e troca-a pela transcrição em texto.
+    Devolve (mensagens, nota): nota é 'ok', 'vazio', 'erro:<...>' ou None (não havia imagem para ler)."""
+    idx = next((i for i in range(len(messages) - 1, -1, -1)
+                if messages[i].get('role') == 'user' and isinstance(messages[i].get('content'), list)
+                and any(isinstance(p, dict) and p.get('type') == 'image_url' for p in messages[i]['content'])), None)
+    if idx is None:
+        return messages, None
+    content = messages[idx]['content']
+    images = [p for p in content if isinstance(p, dict) and p.get('type') == 'image_url']
+    texts = ' '.join(p.get('text', '') for p in content if isinstance(p, dict) and p.get('type') == 'text').strip()
+    read_messages = [dict(role='user', content=[dict(type='text', text=_VISION_READ_PROMPT), *images])]
+    try:
+        res = chat_adapter(provider, reader_model, read_messages, [], {})
+        reading = (res.get('content') or '').strip()
+    except Exception as exc:  # noqa: BLE001
+        return messages, 'erro:' + str(exc)[:200]
+    if not reading:
+        return messages, 'vazio'
+    note = (texts + '\n\n' if texts else '') + '[Conteúdo da imagem, lido por um modelo de visão:]\n"""\n' + reading + '\n"""'
+    out = list(messages)
+    out[idx] = {**messages[idx], 'content': note}
+    return out, 'ok'
+
+
 def _msg_for_model(m: dict, allow_images: bool, include_steps: bool = True, include_image_data: bool = True) -> dict | None:
     role = m.get("role")
     if role == "summary":

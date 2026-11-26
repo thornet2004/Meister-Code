@@ -22,7 +22,7 @@ import time
 import uuid
 from agent_runtime import BUILD_CHILD_TOOLS, CHILD_TOOLS, READ_TOOLS
 from api_helpers import _TYPE_LABEL, _err, _error_turn, _fmt_exc, _now, _ok, _resolve_agent_model, _resolve_model
-from chat_messages import COMPACT_KEEP_MSGS, _accepts_images, _build_model_messages, _compact_command, _data_url, _fit_context, _load_conversation, _media_command, _memory_system, _save_attachments, _save_conversation, _without_images
+from chat_messages import COMPACT_KEEP_MSGS, _accepts_images, _build_model_messages, _compact_command, _data_url, _fit_context, _has_images, _load_conversation, _media_command, _memory_system, _read_image_with_vision, _save_attachments, _save_conversation, _vision_model, _without_images
 from code_context import CodeIndex, Continuity
 from coding_tools import Checkpoints, digest as file_digest
 from command_jobs import listing as list_commands, load as load_command
@@ -205,7 +205,6 @@ class ChatApi:
             model_messages = _build_model_messages(conv, agent_ctx, tools)
             # um modelo só de texto recusa o pedido inteiro se a conversa levar imagens (por exemplo as geradas antes)
             vision = _accepts_images(provider, model)
-            if not vision:model_messages = _without_images(model_messages)
             model_messages.insert(1,dict(role='system',content=self._hooks_description(agent_ctx)))
             if resume_run:model_messages.insert(-1,dict(role='user',content=journal.prompt()+'\nInstrução adicional: '+resume_instruction))
             memory = GraphMemory(meta_dir).search()
@@ -216,6 +215,19 @@ class ChatApi:
             generated: list[dict] = []
             steps: list[dict] = []
             parts: list[str] = []
+            # Modelo de conversa só de texto + imagem no pedido: se o provedor tiver um modelo que vê (ex.: o da rig),
+            # ele LÊ a imagem e a conversa continua com o modelo forte a responder sobre a leitura — sem trocar de modelo.
+            if not vision:
+                reader = _vision_model(provider)
+                if reader is not None and reader.get('id') != (model or {}).get('id') and _has_images(model_messages):
+                    self._stream_js("window.setStatusMessage && window.setStatusMessage('🖼️ A ler a imagem…')")
+                    model_messages, note = _read_image_with_vision(chat_adapter, provider, reader, model_messages)
+                    label = reader.get('name') or reader.get('id') or 'visão'
+                    if note == 'ok':
+                        steps.append(dict(kind='tool', title='leitura da imagem', body='A imagem foi lida pelo modelo de visão (%s); a resposta usa essa leitura.' % label, ok=True))
+                    elif note and note.startswith('erro:'):
+                        steps.append(dict(kind='tool', title='leitura da imagem', body='Não consegui ler a imagem com o modelo de visão: ' + note[5:], ok=False))
+                model_messages = _without_images(model_messages)
             usage_totals = {"prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0}
             reported_cost = None  # soma do custo devolvido pelo provedor, quando vem
             cancelled = False
