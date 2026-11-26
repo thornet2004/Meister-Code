@@ -267,6 +267,8 @@ class Api(SystemApi, McpApi, WorkspaceApi, ProvidersApi, OperationsApi, ContextA
                 if not 2<=value<=30:return _err('Tempo de escuta inválido (2 a 30 segundos).')
             if key=='personality' and value not in ('neutra','sociavel','sarcastico','bruto','profissional'):return _err('Personalidade inválida.')
             if key=='voice_tone' and value not in ('normal','grave','muito_grave','profunda'):return _err('Tom de voz inválido.')
+            if key=='voice_engine' and value not in ('piper','edge'):return _err('Motor de voz inválido.')
+            if key=='edge_voice' and value not in ('pt-PT-RaquelNeural','pt-PT-DuarteNeural'):return _err('Voz natural inválida.')
             if key=='picker_type' and value not in ('chat','code','image','video','audio'):return _err('Tipo de modelo inválido.')
             if key == "mcp_profile" and value not in config.MCP_PROFILES:
                 return _err("Perfil de integrações inválido.")

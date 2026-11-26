@@ -75,11 +75,11 @@
     if (current) current.play().catch(() => {});
   }
 
-  function play(audio, mine) {
+  function play(audio, mine, mime) {
     return new Promise(async (resolve) => {
       if (held) await new Promise((go) => resumers.push(go));   // à espera de saber se foste tu a interromper
       if (mine !== generation || mode === 'off') return resolve();
-      const sound = new Audio('data:audio/wav;base64,' + audio);
+      const sound = new Audio('data:' + (mime || 'audio/wav') + ';base64,' + audio);
       current = sound;
       let over = false;
       const done = () => { if (over) return; over = true; if (current === sound) current = null; resolve(); };
@@ -93,19 +93,34 @@
     });
   }
 
+  // Antes de o Piper ler, normaliza para soar bem: horas (20h30 → "20 horas e 30 minutos"), unidades e símbolos.
+  function forSpeech(text) {
+    return text
+      .replace(/(\d{1,2})\s*h\s*(\d{2})\s*m?\b/gi, "$1 horas e $2 minutos")
+      .replace(/(\d{1,2})\s*h(?![\wáéíóúâêôãõ])/gi, "$1 horas")
+      .replace(/(\d{1,3})\s*min\b/gi, "$1 minutos")
+      .replace(/(\d{1,3})\s*%/g, "$1 por cento")
+      .replace(/(\d+)\s*(?:º|°)\s*C\b/gi, "$1 graus")
+      .replace(/(\d+)\s*km\/h\b/gi, "$1 quilómetros por hora")
+      .replace(/(\d+)\s*km\b/gi, "$1 quilómetros")
+      .replace(/(\d+)\s*kg\b/gi, "$1 quilos")
+      .replace(/(\d+)\s*€/g, "$1 euros")
+      .replace(/€\s*(\d+)/g, "$1 euros");
+  }
+
   function say(text) {
     const mine = generation;
     waiting++;
     const audio = synth.then(async () => {
-      if (mine !== generation || mode === 'off') return '';
-      const result = await call('speak_text', text);
-      if (!result.ok) { if (!warned) { warned = true; showError(result.error); } return ''; }
-      return result.audio || '';
-    }).catch(() => '');
+      if (mine !== generation || mode === 'off') return null;
+      const result = await call('speak_text', forSpeech(text));
+      if (!result.ok) { if (!warned) { warned = true; showError(result.error); } return null; }
+      return result.audio ? { audio: result.audio, mime: result.mime || 'audio/wav' } : null;
+    }).catch(() => null);
     synth = audio;
     player = player.then(async () => {
       const data = await audio;
-      if (data) await play(data, mine);
+      if (data) await play(data.audio, mine, data.mime);
       if (mine === generation) { waiting = Math.max(0, waiting - 1); settle(); }
     });
   }
@@ -276,6 +291,15 @@
     try { await send(); } finally { turns--; feed('', true); settle(); }
   }
 
+  // Arranque a frio: um disparo curto e silencioso ao Whisper deixa-o quente, para a 1.ª transcrição real não falhar.
+  async function warmWhisper() {
+    if (transcribing || mode === 'off' || !mic) return;
+    transcribing = true;
+    try { await call('transcribe_voice', wavBase64(new Float32Array(Math.round(RATE * 0.4))), language(), true); } catch (e) { /* ignora */ }
+    transcribing = false;
+    if (queued) { const q = queued; queued = null; finishUtterance(q); }
+  }
+
   /* ---------- ligar e desligar ---------- */
   async function start() {
     const status = await call('get_voice_input');
@@ -302,11 +326,14 @@
     noise = 0.004; loudRun = 0; recent = []; taken = []; warned = false; interrupting = false; muted = false; awakeUntil = 0; transcribing = false; queued = null;
     call('set_preference', 'voice_reply', true);   // o modelo passa a responder curto e sem formatação
     paint('listening');
+    warmWhisper();   // aquece já o Whisper para a 1.ª pergunta não falhar
+    mic.warmTimer = setInterval(() => { if (mode !== 'off') warmWhisper(); }, 90000);   // mantém-no quente enquanto está parado
   }
 
   async function stop() {
     const opened = mic;
     mic = null;
+    if (opened && opened.warmTimer) clearInterval(opened.warmTimer);
     const was = mode;
     stopSpeech();
     paint('off');
@@ -332,24 +359,40 @@
 
   // Voz e tom (Configurações → Aparência): guarda a escolha e diz uma frase para se ouvir a diferença.
   const tone = document.querySelector('#voice-tone-select'), picker = document.querySelector('#voice-name-select');
+  async function sampleVoice() {
+    const sample = await call('speak_text', 'Esta é a voz que vais ouvir na conversa.');
+    if (!sample.ok) return showError(sample.error);
+    if (sample.audio) new Audio('data:' + (sample.mime || 'audio/wav') + ';base64,' + sample.audio).play().catch(() => {});
+  }
   async function choose(key, value) {
     const saved = await call('set_preference', key, value);
     if (!saved.ok) return showError(saved.error);
     applyState(saved);
-    const sample = await call('speak_text', 'Esta é a voz que vais ouvir na conversa.');
-    if (!sample.ok) return showError(sample.error);
-    if (sample.audio) new Audio('data:audio/wav;base64,' + sample.audio).play().catch(() => {});
+    sampleVoice();
+  }
+  // O seletor junta as vozes Piper (locais) e as do Edge (naturais, mas online): a escolha define o motor da voz.
+  async function chooseVoice(value) {
+    let r;
+    if (value.indexOf('edge:') === 0) { r = await call('set_preference', 'voice_engine', 'edge'); if (r.ok) r = await call('set_preference', 'edge_voice', value.slice(5)); }
+    else { r = await call('set_preference', 'voice_engine', 'piper'); if (r.ok) r = await call('set_preference', 'voice_name', value); }
+    if (!r.ok) return showError(r.error);
+    applyState(r);
+    sampleVoice();
   }
   if (tone) tone.onchange = () => choose('voice_tone', tone.value);
-  if (picker) picker.onchange = () => choose('voice_name', picker.value);
+  if (picker) picker.onchange = () => chooseVoice(picker.value);
   // a lista de vozes vem do que está instalado; atualiza-se ao abrir as Configurações
   async function listVoices() {
     if (!picker) return;
     const status = await call('get_voice_input');
     const voices = (status.ok && status.speech && status.speech.voices) || [];
     picker.replaceChildren(...(voices.length ? voices : ['']).map((name) => new Option(name ? name.replace(/^pt_PT-/, '').replace(/-medium$|-low$|-high$/, '') + (name.startsWith('pt_PT') ? ' (Portugal)' : '') : '(por instalar)', name)));
-    picker.value = (status.ok && status.speech && status.speech.voice) || '';
-    picker.disabled = voices.length < 2;
+    picker.add(new Option('🌐 Raquel — natural, online (vai à Microsoft)', 'edge:pt-PT-RaquelNeural'));
+    picker.add(new Option('🌐 Duarte — natural, online (vai à Microsoft)', 'edge:pt-PT-DuarteNeural'));
+    const prefs = state.preferences || {};
+    if (prefs.voice_engine === 'edge') picker.value = 'edge:' + (prefs.edge_voice || 'pt-PT-RaquelNeural');
+    else picker.value = (status.ok && status.speech && status.speech.voice) || '';
+    picker.disabled = false;
   }
   const settings = document.querySelector('#btn-settings');
   if (settings) settings.addEventListener('click', () => { listVoices().catch(() => {}); });

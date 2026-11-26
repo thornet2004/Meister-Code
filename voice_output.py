@@ -209,19 +209,61 @@ def warm(tools_root, wanted='') -> bool:
             return False
 
 
-def speak(tools_root, text, cancel=None, tone='normal', wanted='') -> dict:
-    """Sintetiza ``text`` e devolve ``audio`` (WAV em base64; vazio se não houver nada para dizer)."""
+# Vozes neurais pt-PT do Edge-TTS (grátis, online: o texto VAI para a Microsoft — por isso é opção, não o padrão).
+EDGE_VOICES = ('pt-PT-RaquelNeural', 'pt-PT-DuarteNeural')
+EDGE_PITCH = {'normal': 0, 'grave': -15, 'muito_grave': -30, 'profunda': -45}
+
+
+def _edge_speak(text, voice, tone) -> bytes:
+    """Sintetiza pelo Edge-TTS (online). Devolve MP3. Levanta SpeechError se faltar a biblioteca ou a rede."""
+    try:
+        import asyncio
+
+        import edge_tts
+    except ImportError:
+        raise SpeechError('A voz natural (Edge) não está disponível nesta versão.') from None
+    if voice not in EDGE_VOICES:
+        voice = EDGE_VOICES[0]
+    pitch = '%+dHz' % EDGE_PITCH.get(tone, 0)
+
+    async def run():
+        chunks = bytearray()
+        async for part in edge_tts.Communicate(text, voice, pitch=pitch).stream():
+            if part.get('type') == 'audio' and part.get('data'):
+                chunks += part['data']
+        return bytes(chunks)
+
+    last = None
+    for attempt in range(3):  # o serviço às vezes recusa por ritmo; tenta de novo
+        try:
+            data = asyncio.run(run())
+            if data:
+                return data
+        except Exception as exc:  # noqa: BLE001
+            last = exc
+        time.sleep(0.6)
+    raise SpeechError('A voz natural (Edge) falhou — precisa de internet. ' + (str(last)[:160] if last else 'não devolveu áudio.'))
+
+
+def speak(tools_root, text, cancel=None, tone='normal', wanted='', kind='piper', edge_voice='') -> dict:
+    """Sintetiza ``text`` e devolve ``audio`` (base64) + ``mime``. ``kind``: 'piper' (local) ou 'edge' (natural, online)."""
     if not isinstance(text, str):
         raise SpeechError('Texto em falta.')
     if len(text) > MAX_CHARS * 4:
         raise SpeechError('Texto demasiado longo para dizer de uma vez.')
+    said = speakable(text)[:MAX_CHARS]
+    if not re.search(r'\w', said):
+        return dict(audio='', text='', seconds=0.0, voice='', mime='audio/wav')
+    if kind == 'edge':
+        started = time.monotonic()
+        data = _edge_speak(said, edge_voice or EDGE_VOICES[0], tone)
+        if not data:
+            raise SpeechError('A voz natural (Edge) não devolveu áudio.')
+        return dict(audio=base64.b64encode(data).decode('ascii'), text=said, seconds=round(time.monotonic() - started, 2), voice=edge_voice or EDGE_VOICES[0], mime='audio/mpeg')
     factor = 2 ** (-TONES.get(tone, 0) / 12)
     found = engine(tools_root, wanted)
     if not found['ready']:
         raise SpeechError(found['reason'])
-    said = speakable(text)[:MAX_CHARS]
-    if not re.search(r'\w', said):
-        return dict(audio='', text='', seconds=0.0, voice=found['voice_name'])
     work = Path(tempfile.mkdtemp(prefix='meistercode-fala-'))
     started = time.monotonic()
     try:
@@ -239,6 +281,6 @@ def speak(tools_root, text, cancel=None, tone='normal', wanted='') -> dict:
         data = target.read_bytes()
         if factor < 1:
             data = _lower(data, factor)
-        return dict(audio=base64.b64encode(data).decode('ascii'), text=said, seconds=round(time.monotonic() - started, 2), voice=found['voice_name'])
+        return dict(audio=base64.b64encode(data).decode('ascii'), text=said, seconds=round(time.monotonic() - started, 2), voice=found['voice_name'], mime='audio/wav')
     finally:
         shutil.rmtree(work, ignore_errors=True)

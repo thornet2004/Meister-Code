@@ -405,12 +405,14 @@ class SystemApi:
             return _err(str(exc))
 
     def speak_text(self, text: str) -> dict:
-        """Diz uma frase com a voz local (Piper) e devolve o WAV em base64. O texto não sai do PC."""
+        """Diz uma frase. Piper (local, o texto não sai do PC) ou Edge (voz natural, online: o texto vai para a Microsoft)."""
         try:
             import voice_output
             with voice_output.BUSY:
                 preferences = config.load_config().get('preferences', {})
-                return _ok(**voice_output.speak(folder_tools.root(), text, tone=preferences.get('voice_tone', 'normal'), wanted=preferences.get('voice_name', '')))
+                return _ok(**voice_output.speak(folder_tools.root(), text, tone=preferences.get('voice_tone', 'normal'),
+                                                wanted=preferences.get('voice_name', ''), kind=preferences.get('voice_engine', 'piper'),
+                                                edge_voice=preferences.get('edge_voice', '')))
         except Exception as exc:
             return _err(str(exc))
 
